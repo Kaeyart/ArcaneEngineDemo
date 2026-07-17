@@ -1,0 +1,12 @@
+Arcane Engine v1.2.1 Profile Migration Hotfix
+Validation date: 2026-07-15
+
+PASS - Profile schema-7 migration occurs exactly once inside ProfileData.Normalize().
+PASS - loadedVersion is declared in the same method scope as every loadedVersion migration check.
+PASS - accessibility is initialized before the schema-7 accessibility defaults are applied.
+PASS - ProfileManager.LoadBackup contains no loadedVersion or accessibility references.
+PASS - Raw C# brace totals match across all 32 source files.
+PASS - Linux build helper passes bash syntax validation.
+PASS - Project, build, title-screen, and systems release versions agree on 1.2.1.
+
+Unity Editor compilation cannot be executed in the packaging environment. Open the project with Unity 6000.5.2f1 to perform Unity's full semantic compilation and runtime test.

@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d282c998657c39d7d88c187704855d29, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ArcaneEngine.Runtime::ArcaneEngine.RelicDefinition
+  id: dying_sun
+  sourceCoreId: fireball
+  displayName: Dying Sun
+  description: A slow miniature sun pulls enemies inward and detonates on expiry.
+  signatureRule: 'Immutable: gravitational miniature sun.'
+  signature: 1
+  shardCost: 1
+  requiredBossKills: 1
+  color: {r: 1, g: 0.26, b: 0.02, a: 1}

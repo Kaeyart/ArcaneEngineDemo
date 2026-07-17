@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!129 &1
+PlayerSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 27
+  productGUID: 7f5e4d3c2b1a4d6f8e9a0b1c2d3e4f50
+  AndroidProfiler: 0
+  companyName: Kaey Games
+  productName: Arcane Engine - The Relic Forge
+  defaultScreenWidth: 1600
+  defaultScreenHeight: 900
+  defaultScreenWidthWeb: 1600
+  defaultScreenHeightWeb: 900
+  m_StereoRenderingPath: 0
+  m_ActiveColorSpace: 1
+  useHDRDisplay: 0
+  targetFrameRate: 120
+  runInBackground: 1
+  captureSingleScreen: 0
+  resizableWindow: 1
+  visibleInBackground: 1
+  allowFullscreenSwitch: 1
+  fullscreenMode: 3
+  m_BuildTargetEnableVuforiaSettings: 0
+  scriptingBackend:
+    Standalone: 0
+  managedStrippingLevel:
+    Standalone: 1
+  allowUnsafeCode: 0
+  useDeterministicCompilation: 1
+  dynamicBatching: 0
+  additionalIl2CppArgs: 
+  scriptingRuntimeVersion: 1
+  gcIncremental: 1
+  activeInputHandler: 1
+  applicationIdentifier:
+    Standalone: com.kaeygames.arcaneengine
+  bundleVersion: 2.1.0

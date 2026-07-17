@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: 
+  m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:SpellCoreDefinition
+  id: gravity_field
+  displayName: Gravity Field
+  description: Creates a damaging field at the cursor that pulls nearby enemies.
+  delivery: 7
+  castMethod: 0
+  element: 4
+  color: {r: 0.55, g: 0.12, b: 0.9, a: 1}
+  baseDamage: 11
+  manaCost: 27
+  cooldown: 3.5
+  speed: 0
+  lifetime: 5
+  size: 0.5
+  radius: 4.2
+  tags:
+  - zone
+  - pull

@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d282c998657c39d7d88c187704855d29, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ArcaneEngine.Runtime::ArcaneEngine.RelicDefinition
+  id: venom_burst
+  sourceCoreId: poison_bolt
+  displayName: Venom Burst
+  description: Poison Bolt becomes a lasting toxic field that pulls enemies inward.
+  signatureRule: 'Legendary Effect: pulling poison field.'
+  signature: 17
+  shardCost: 1
+  requiredBossKills: 1
+  color: {r: 0.25, g: 1, b: 0.12, a: 1}

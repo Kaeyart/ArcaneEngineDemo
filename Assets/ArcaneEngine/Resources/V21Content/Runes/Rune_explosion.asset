@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: 
+  m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:SpellModifierDefinition
+  id: explosion
+  displayName: Greater Area
+  flavorName: Hungry Detonation
+  shortDescription: 'Greatly increases effect radius. Advanced area support: a larger
+    radius increase with a wider branching shape.'
+  advancedDescription: 'Payload: +2.2 effect radius and +12% mana. Advanced area
+    support: a larger radius increase with a wider branching shape.'
+  effect: 7
+  category: 2
+  connectorFamily: 0
+  magnitude: 2.2
+  inputSide: 3
+  outputSides: 0000000005000000
+  shape:
+  - q: 0
+    r: 0
+  - q: 0
+    r: 1
+  - q: 1
+    r: -1
+  uiColor: {r: 1, g: 0.42, b: 0.1, a: 1}
+  instability: 6
+  preparationCost: 2
+  capacityCost: 3
+  stackable: 1
+  availableAsSupport: 1
+  compatibleDeliveries: 

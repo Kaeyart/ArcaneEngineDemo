@@ -1,0 +1,15 @@
+THIS IS THE UNITY PROJECT FOLDER.
+
+In Unity Hub choose Add > Add project from disk and select this exact folder.
+It is the folder that directly contains:
+
+  Assets
+  Packages
+  ProjectSettings
+
+Required Editor: Unity 6000.5.2f1.
+Do not select the .zip file. Extract the archive first.
+
+Installed milestone: Arcane Engine v1.4.0 SPELLCRAFT AND SPELL LINKS.
+
+Open Assets/ArcaneEngine/Scenes/Main.unity, then press Play.
