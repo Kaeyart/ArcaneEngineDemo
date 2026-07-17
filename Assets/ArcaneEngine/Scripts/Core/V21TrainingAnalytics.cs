@@ -23,7 +23,7 @@ namespace ArcaneEngine
         public float dps;
         public float criticalRate;
         public float damagePerMana;
-        public Dictionary<string, float> damageBySpell = new Dictionary<string, float>();
+        [NonSerialized] public Dictionary<string, float> damageBySpell = new Dictionary<string, float>();
     }
 
     public sealed class V21TrainingAnalytics : MonoBehaviour

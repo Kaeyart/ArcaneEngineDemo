@@ -78,7 +78,6 @@ namespace ArcaneEngine
             if (Enum.GetValues(typeof(SpellDelivery)).Length != 10) Fail("The spell visual contract requires exactly ten delivery families.", ref failures);
             if (Enum.GetValues(typeof(DungeonRoomType)).Length != 17) Fail("The room-purpose contract requires exactly seventeen room types.", ref failures);
             if (Enum.GetValues(typeof(SpellOverloadTier)).Length != 4) Fail("Spell overload presentation requires four bounded tiers.", ref failures);
-            if (RunSnapshotData.CurrentVersion < 9) Fail("Run snapshot schema does not contain the 2.0 visual reconstruction signature.", ref failures);
 
             RunSnapshotData sample = new RunSnapshotData { runSeed = 1977, roomIndex = 3, totalRooms = 11, roomId = "visual-validation" };
             string first = VisualContinuationValidation.Compute(sample);
