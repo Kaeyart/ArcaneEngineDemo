@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!83 &-4719520429663057777
+--- !u!83 &-5860857071790150801
 AudioClip:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -28,7 +28,7 @@ AudioClip:
     m_Offset: 0
     m_Size: 0
   m_EditorCompressionFormat: 0
---- !u!83 &-4401421054279221487
+--- !u!83 &-5343152953871472636
 AudioClip:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -71,14 +71,14 @@ MonoBehaviour:
   stableId: boss_phase
   category: Effects
   clips:
-  - {fileID: 7983456523748219190}
-  - {fileID: -4401421054279221487}
-  - {fileID: -4719520429663057777}
+  - {fileID: 6604310547129508905}
+  - {fileID: -5343152953871472636}
+  - {fileID: -5860857071790150801}
   pitchRange: {x: 0.95, y: 1.05}
   volumeRange: {x: 0.82, y: 1}
   maxVoices: 8
   loop: 0
---- !u!83 &7983456523748219190
+--- !u!83 &6604310547129508905
 AudioClip:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

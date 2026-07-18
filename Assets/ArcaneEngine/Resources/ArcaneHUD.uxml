@@ -1,7 +1,6 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
     <ui:Style src="project://database/Assets/ArcaneEngine/Resources/ArcaneHUD.uss" />
   <ui:VisualElement name="hud-root" style="flex-grow:1;position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none;">
-    <!-- Top-left: Player bars -->
     <ui:VisualElement name="player-bars" style="position:absolute;top:16px;left:16px;width:280px;">
       <ui:VisualElement name="health-bar-bg" style="height:18px;background-color:rgba(0,0,0,0.6);border-radius:4px;margin-bottom:6px;">
         <ui:VisualElement name="health-bar-fill" style="height:100%;width:100%;background-color:rgb(220,40,60);border-radius:4px;" />
@@ -12,32 +11,29 @@
       <ui:VisualElement name="ward-bar-bg" style="height:10px;background-color:rgba(0,0,0,0.6);border-radius:4px;">
         <ui:VisualElement name="ward-bar-fill" style="height:100%;width:100%;background-color:rgb(180,140,255);border-radius:4px;" />
       </ui:VisualElement>
-      <ui:Label name="player-stats-label" text="HP: 100/100 | MP: 100/100" style="color:rgba(200,200,220,0.9);font-size:11px;margin-top:4px;unity-font-style:bold;" />
+      <ui:Label name="player-stats-label" text="HP: 100/100 | MP: 100/100" style="color:rgba(200,200,220,0.9);font-size:11px;margin-top:4px;-unity-font-style:bold;" />
     </ui:VisualElement>
 
-    <!-- Bottom-center: Spell slots -->
-    <ui:VisualElement name="spell-slots" style="position:absolute;bottom:24px;left:50%;transform:translateX(-50%);flex-direction:row;">
-      <ui:VisualElement name="spell-slot-1" style="width:56px;height:56px;background-color:rgba(10,12,20,0.75);border-width:2px;border-color:rgba(200,200,255,0.3);border-radius:8px;margin:0 8px;align-items:center;justify-content:center;">
-        <ui:Label text="1" style="color:rgba(200,200,255,0.5);font-size:22px;unity-font-style:bold;" />
-        <ui:Label name="spell-1-cooldown" text="" style="color:rgba(255,200,80,1);font-size:16px;position:absolute;unity-font-style:bold;" />
+    <ui:VisualElement name="spell-slots" style="position:absolute;bottom:24px;left:0;right:0;flex-direction:row;align-items:center;justify-content:center;">
+      <ui:VisualElement name="spell-slot-1" style="width:56px;height:56px;background-color:rgba(10,12,20,0.75);border-width:2px;border-color:rgba(200,200,255,0.3);border-radius:8px;margin-left:8px;margin-right:8px;align-items:center;justify-content:center;">
+        <ui:Label text="1" style="color:rgba(200,200,255,0.5);font-size:22px;-unity-font-style:bold;" />
+        <ui:Label name="spell-1-cooldown" text="" style="color:rgba(255,200,80,1);font-size:16px;position:absolute;-unity-font-style:bold;" />
       </ui:VisualElement>
-      <ui:VisualElement name="spell-slot-2" style="width:56px;height:56px;background-color:rgba(10,12,20,0.75);border-width:2px;border-color:rgba(200,200,255,0.3);border-radius:8px;margin:0 8px;align-items:center;justify-content:center;">
-        <ui:Label text="2" style="color:rgba(200,200,255,0.5);font-size:22px;unity-font-style:bold;" />
-        <ui:Label name="spell-2-cooldown" text="" style="color:rgba(255,200,80,1);font-size:16px;position:absolute;unity-font-style:bold;" />
+      <ui:VisualElement name="spell-slot-2" style="width:56px;height:56px;background-color:rgba(10,12,20,0.75);border-width:2px;border-color:rgba(200,200,255,0.3);border-radius:8px;margin-left:8px;margin-right:8px;align-items:center;justify-content:center;">
+        <ui:Label text="2" style="color:rgba(200,200,255,0.5);font-size:22px;-unity-font-style:bold;" />
+        <ui:Label name="spell-2-cooldown" text="" style="color:rgba(255,200,80,1);font-size:16px;position:absolute;-unity-font-style:bold;" />
       </ui:VisualElement>
-      <ui:VisualElement name="spell-slot-3" style="width:56px;height:56px;background-color:rgba(10,12,20,0.75);border-width:2px;border-color:rgba(200,200,255,0.3);border-radius:8px;margin:0 8px;align-items:center;justify-content:center;">
-        <ui:Label text="3" style="color:rgba(200,200,255,0.5);font-size:22px;unity-font-style:bold;" />
-        <ui:Label name="spell-3-cooldown" text="" style="color:rgba(255,200,80,1);font-size:16px;position:absolute;unity-font-style:bold;" />
+      <ui:VisualElement name="spell-slot-3" style="width:56px;height:56px;background-color:rgba(10,12,20,0.75);border-width:2px;border-color:rgba(200,200,255,0.3);border-radius:8px;margin-left:8px;margin-right:8px;align-items:center;justify-content:center;">
+        <ui:Label text="3" style="color:rgba(200,200,255,0.5);font-size:22px;-unity-font-style:bold;" />
+        <ui:Label name="spell-3-cooldown" text="" style="color:rgba(255,200,80,1);font-size:16px;position:absolute;-unity-font-style:bold;" />
       </ui:VisualElement>
     </ui:VisualElement>
 
-    <!-- Center: Crosshair -->
-    <ui:VisualElement name="crosshair" style="position:absolute;top:50%;left:50%;transform:translateX(-50%) translateY(-50%);width:24px;height:24px;">
-      <ui:VisualElement style="position:absolute;top:10px;left:0;width:24px;height:2px;background-color:rgba(255,255,255,0.4);" />
-      <ui:VisualElement style="position:absolute;top:0;left:10px;width:2px;height:24px;background-color:rgba(255,255,255,0.4);" />
+    <ui:VisualElement name="crosshair" style="position:absolute;top:0;left:0;right:0;bottom:0;align-items:center;justify-content:center;">
+      <ui:VisualElement style="width:24px;height:2px;background-color:rgba(255,255,255,0.4);" />
+      <ui:VisualElement style="width:2px;height:24px;background-color:rgba(255,255,255,0.4);position:absolute;" />
     </ui:VisualElement>
 
-    <!-- Top-right: Combat log -->
     <ui:VisualElement name="combat-log" style="position:absolute;top:16px;right:16px;width:260px;max-height:140px;overflow:hidden;">
       <ui:Label name="log-line-1" text="" style="color:rgba(180,190,210,0.8);font-size:10px;margin-bottom:2px;" />
       <ui:Label name="log-line-2" text="" style="color:rgba(180,190,210,0.6);font-size:10px;margin-bottom:2px;" />

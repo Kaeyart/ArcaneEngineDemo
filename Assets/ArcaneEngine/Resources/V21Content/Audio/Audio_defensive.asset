@@ -1,12 +1,12 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!83 &-8421293574187589560
+--- !u!83 &-7467220315761141368
 AudioClip:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: defensive_take_3
+  m_Name: defensive_take_1
   m_LoadType: 0
   m_Channels: 1
   m_Frequency: 44100
@@ -28,13 +28,13 @@ AudioClip:
     m_Offset: 0
     m_Size: 0
   m_EditorCompressionFormat: 0
---- !u!83 &-347301421952049453
+--- !u!83 &-758365726186975303
 AudioClip:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: defensive_take_1
+  m_Name: defensive_take_2
   m_LoadType: 0
   m_Channels: 1
   m_Frequency: 44100
@@ -71,20 +71,20 @@ MonoBehaviour:
   stableId: defensive
   category: Effects
   clips:
-  - {fileID: -347301421952049453}
-  - {fileID: 296161936336302398}
-  - {fileID: -8421293574187589560}
+  - {fileID: -7467220315761141368}
+  - {fileID: -758365726186975303}
+  - {fileID: 1628995534572378862}
   pitchRange: {x: 0.95, y: 1.05}
   volumeRange: {x: 0.82, y: 1}
   maxVoices: 8
   loop: 0
---- !u!83 &296161936336302398
+--- !u!83 &1628995534572378862
 AudioClip:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: defensive_take_2
+  m_Name: defensive_take_3
   m_LoadType: 0
   m_Channels: 1
   m_Frequency: 44100
