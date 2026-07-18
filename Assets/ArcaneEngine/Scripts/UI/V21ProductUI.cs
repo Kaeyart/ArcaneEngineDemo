@@ -268,38 +268,48 @@ namespace ArcaneEngine
             bool core = cell.Equals(new HexCoord(0, 0));
             SpellModifierDefinition definition = piece == null ? null : DemoCatalog.GetModifier(piece.modifierId);
             string text = core ? "CORE" : definition == null ? (board.IsCellUnlocked(cell) ? "·" : "×") : definition.displayName.Substring(0, Mathf.Min(4, definition.displayName.Length)).ToUpperInvariant();
-            Button button = ActionButton(text, () => OnHexClicked(world, board, cell));
-            button.name = "SpellHex_" + cell.q + "_" + cell.r;
-            button.userData = cell;
-            button.style.position = Position.Absolute;
-            button.style.left = x;
-            button.style.top = y;
-            button.style.width = button.style.height = size;
-            button.style.unityTextAlign = TextAnchor.MiddleCenter;
-            button.style.backgroundColor = core ? DemoCatalog.GetCore(board.coreId).color :
+            VisualElement cellEl = new VisualElement();
+            cellEl.name = "SpellHex_" + cell.q + "_" + cell.r;
+            cellEl.userData = cell;
+            cellEl.style.position = Position.Absolute;
+            cellEl.style.left = x;
+            cellEl.style.top = y;
+            cellEl.style.width = cellEl.style.height = size;
+            Label label = new Label(text);
+            label.style.unityTextAlign = TextAnchor.MiddleCenter;
+            label.style.color = Text;
+            label.style.fontSize = 11;
+            label.style.unityFontStyleAndWeight = FontStyle.Bold;
+            label.style.whiteSpace = WhiteSpace.Normal;
+            cellEl.Add(label);
+            cellEl.style.backgroundColor = core ? DemoCatalog.GetCore(board.coreId).color :
                 definition != null ? definition.uiColor : board.IsCellUnlocked(cell) ? new Color(0.07f, 0.12f, 0.17f) : new Color(0.025f, 0.035f, 0.05f);
-            button.RegisterCallback<PointerDownEvent>(evt =>
+            cellEl.style.alignItems = Align.Center;
+            cellEl.style.justifyContent = Justify.Center;
+            cellEl.RegisterCallback<PointerDownEvent>(evt =>
             {
                 _selectedCell = cell;
                 if (piece != null && evt.button == 0) _dragPiece = piece;
                 if (evt.button == 1 && piece != null)
                 {
-                    if (evt.shiftKey) RemoveAt(world, board, cell);
-                    else
-                    {
-                        string rotateMessage;
-                        if (board.RotateAt(cell, 1, out rotateMessage)) Changed(rotateMessage); else SetMessage(rotateMessage);
-                    }
+                    _ignoreHexClickFrame = Time.frameCount;
+                    evt.StopPropagation();
+                    if (!world.CanEditSpells) { SetMessage(world.SpellEditLockReason); return; }
+                    string removedId;
+                    if (board.RemoveAt(cell, out removedId)) { world.ReturnModifier(removedId); Changed("Support Rune returned to the Run inventory."); }
+                    _dragRune = null;
+                    _selectedRune = null;
+                    _selectedCell = null;
                 }
             });
-            button.RegisterCallback<PointerUpEvent>(_ =>
+            cellEl.RegisterCallback<PointerUpEvent>(_ =>
             {
                 if (_dragPiece != null && piece != _dragPiece) { _ignoreHexClickFrame = Time.frameCount; MovePiece(world, board, _dragPiece, cell); }
                 else if (!string.IsNullOrEmpty(_dragRune)) { _ignoreHexClickFrame = Time.frameCount; PlaceRune(world, board, _dragRune, cell); }
                 _dragPiece = null;
                 _dragRune = null;
             });
-            return button;
+            return cellEl;
         }
 
         private void HandleWorkshopDrop(PointerUpEvent evt)
