@@ -10,28 +10,26 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: 
+  m_Name: Rune_mana_conversion
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:SpellModifierDefinition
-  id: mana_conversion
-  displayName: Mana Furnace
-  flavorName: Mana Furnace
-  shortDescription: Converts excess mana cost into damage.
-  advancedDescription: 'Resource: +30% cost and +35% power.'
-  effect: 33
-  category: 8
+  id: 
+  displayName: 
+  flavorName: 
+  shortDescription: 
+  advancedDescription: 
+  effect: 0
+  category: 0
   connectorFamily: 0
-  magnitude: 0.35
+  magnitude: 1
   inputSide: 3
   outputSides: 00000000
   shape:
   - q: 0
     r: 0
-  - q: 0
-    r: 1
-  uiColor: {r: 0.2, g: 0.45, b: 1, a: 1}
-  instability: 5
-  preparationCost: 3
-  capacityCost: 3
+  uiColor: {r: 1, g: 1, b: 1, a: 1}
+  instability: 0
+  preparationCost: 1
+  capacityCost: 1
   stackable: 1
   availableAsSupport: 1
   compatibleDeliveries: 

@@ -12,16 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: Affix_of_capacity
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21AffixContentAsset
-  stableId: of_capacity
-  displayName: of Capacity
-  stat: trigger_energy
-  kind: 2
-  group: trigger_energy
-  tags:
-  - trigger
-  slots: 00000000020000000900000008000000
-  baseMinimum: 6
-  baseMaximum: 15
+  stableId: 
+  displayName: 
+  stat: 
+  kind: 0
+  group: 
+  tags: []
+  slots: 
+  baseMinimum: 0
+  baseMaximum: 0
   percentage: 0
   local: 0
-  weight: 72
+  weight: 50

@@ -12,16 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: Affix_of_embers
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21AffixContentAsset
-  stableId: of_embers
-  displayName: of Embers
-  stat: fire_resist
-  kind: 2
-  group: fire_resist
-  tags:
-  - any
+  stableId: 
+  displayName: 
+  stat: 
+  kind: 0
+  group: 
+  tags: []
   slots: 
-  baseMinimum: 0.04
-  baseMaximum: 0.1
-  percentage: 1
+  baseMinimum: 0
+  baseMaximum: 0
+  percentage: 0
   local: 0
-  weight: 100
+  weight: 50

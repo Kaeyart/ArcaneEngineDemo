@@ -12,16 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: Affix_of_arcing
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21AffixContentAsset
-  stableId: of_arcing
-  displayName: of Arcing
-  stat: chain_range
-  kind: 2
-  group: chain_range
-  tags:
-  - caster
-  slots: 080000000900000005000000
-  baseMinimum: 0.35
-  baseMaximum: 0.8
+  stableId: 
+  displayName: 
+  stat: 
+  kind: 0
+  group: 
+  tags: []
+  slots: 
+  baseMinimum: 0
+  baseMaximum: 0
   percentage: 0
   local: 0
-  weight: 52
+  weight: 50

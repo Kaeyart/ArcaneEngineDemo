@@ -10,22 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: 
+  m_Name: Spell_storm_orb
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:SpellCoreDefinition
-  id: storm_orb
-  displayName: Storm Orb
-  description: A slower lightning orb built for chaining and area damage.
+  id: 
+  displayName: 
+  description: 
   delivery: 0
   castMethod: 0
-  element: 2
-  color: {r: 0.4, g: 0.58, b: 1, a: 1}
-  baseDamage: 27
-  manaCost: 19
-  cooldown: 0.7
-  speed: 7
-  lifetime: 3.2
-  size: 0.85
-  radius: 1.7
-  tags:
-  - projectile
-  - chain
+  element: 0
+  color: {r: 1, g: 1, b: 1, a: 1}
+  baseDamage: 0
+  manaCost: 0
+  cooldown: 0
+  speed: 0
+  lifetime: 0
+  size: 0
+  radius: 0
+  tags: []

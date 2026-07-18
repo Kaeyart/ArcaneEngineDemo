@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: 
+  m_Name: Item_ember_glove_l
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:ItemDefinition
-  id: ember_glove_l
-  displayName: Ember Glove
-  description: Ember set. Spell power and critical damage.
-  slot: 4
-  rarity: 2
+  id: 
+  displayName: 
+  description: 
+  slot: 0
+  rarity: 0
   twoHanded: 0
   health: 0
   mana: 0
@@ -24,16 +24,14 @@ MonoBehaviour:
   armor: 0
   resistance: 0
   critChance: 0
-  critDamage: 0.35
-  spellPower: 0.14
+  critDamage: 0
+  spellPower: 0
   cooldownReduction: 0
   triggerEnergy: 0
   mutation: 0
-  setId: ember
+  setId: 
   grantedCoreId: 
   baseFamily: 
   implicitText: 
-  itemTags:
-  - caster
-  - weapon
-  color: {r: 0.75, g: 0.25, b: 1, a: 1}
+  itemTags: []
+  color: {r: 1, g: 1, b: 1, a: 1}

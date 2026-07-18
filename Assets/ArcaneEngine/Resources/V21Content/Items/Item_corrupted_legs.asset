@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: 
+  m_Name: Item_corrupted_legs
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:ItemDefinition
-  id: corrupted_legs
-  displayName: Legguards of the Red Equation
-  description: Corrupted power raises spell output and instability.
-  slot: 6
-  rarity: 3
+  id: 
+  displayName: 
+  description: 
+  slot: 0
+  rarity: 0
   twoHanded: 0
   health: 0
   mana: 0
@@ -25,15 +25,13 @@ MonoBehaviour:
   resistance: 0
   critChance: 0
   critDamage: 0
-  spellPower: 0.18
+  spellPower: 0
   cooldownReduction: 0
   triggerEnergy: 0
-  mutation: 9
+  mutation: 0
   setId: 
   grantedCoreId: 
   baseFamily: 
   implicitText: 
-  itemTags:
-  - armor
-  - ward
-  color: {r: 1, g: 0.08, b: 0.18, a: 1}
+  itemTags: []
+  color: {r: 1, g: 1, b: 1, a: 1}

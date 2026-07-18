@@ -10,18 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: 
+  m_Name: Item_iron_chest
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:ItemDefinition
-  id: iron_chest
-  displayName: Ironweave Chest
-  description: Warden set. A dependable layer of armor and life.
-  slot: 3
+  id: 
+  displayName: 
+  description: 
+  slot: 0
   rarity: 0
   twoHanded: 0
-  health: 28
+  health: 0
   mana: 0
   movementSpeed: 0
-  armor: 12
+  armor: 0
   resistance: 0
   critChance: 0
   critDamage: 0
@@ -29,11 +29,9 @@ MonoBehaviour:
   cooldownReduction: 0
   triggerEnergy: 0
   mutation: 0
-  setId: warden
+  setId: 
   grantedCoreId: 
   baseFamily: 
   implicitText: 
-  itemTags:
-  - armor
-  - ward
-  color: {r: 0.65, g: 0.68, b: 0.72, a: 1}
+  itemTags: []
+  color: {r: 1, g: 1, b: 1, a: 1}

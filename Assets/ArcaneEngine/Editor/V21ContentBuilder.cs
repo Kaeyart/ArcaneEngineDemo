@@ -324,6 +324,7 @@ namespace ArcaneEngine.Editor
             }
             EditorUtility.CopySerialized(source, target);
             target.hideFlags = HideFlags.None;
+            target.name = System.IO.Path.GetFileNameWithoutExtension(path);
             EditorUtility.SetDirty(target);
         }
 

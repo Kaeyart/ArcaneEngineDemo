@@ -10,28 +10,26 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: 
+  m_Name: Rune_accelerate
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:SpellModifierDefinition
-  id: accelerate
-  displayName: Acceleration
-  flavorName: Gathering Velocity
-  shortDescription: 'Projectiles accelerate over time. Advanced speed support: stronger
-    acceleration using the same compact shape.'
-  advancedDescription: 'Movement: +8 speed per second. Advanced speed support: stronger
-    acceleration using the same compact shape.'
-  effect: 22
-  category: 1
+  id: 
+  displayName: 
+  flavorName: 
+  shortDescription: 
+  advancedDescription: 
+  effect: 0
+  category: 0
   connectorFamily: 0
-  magnitude: 8
+  magnitude: 1
   inputSide: 3
   outputSides: 00000000
   shape:
   - q: 0
     r: 0
-  uiColor: {r: 0.3, g: 0.85, b: 1, a: 1}
-  instability: 2
+  uiColor: {r: 1, g: 1, b: 1, a: 1}
+  instability: 0
   preparationCost: 1
   capacityCost: 1
   stackable: 1
   availableAsSupport: 1
-  compatibleDeliveries: 00000000
+  compatibleDeliveries: 

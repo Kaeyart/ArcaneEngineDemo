@@ -12,16 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: Affix_aegisborn
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21AffixContentAsset
-  stableId: aegisborn
-  displayName: Aegisborn
-  stat: damage_while_shielded
-  kind: 1
-  group: shielded_damage
-  tags:
-  - ward
+  stableId: 
+  displayName: 
+  stat: 
+  kind: 0
+  group: 
+  tags: []
   slots: 
-  baseMinimum: 0.04
-  baseMaximum: 0.1
-  percentage: 1
+  baseMinimum: 0
+  baseMaximum: 0
+  percentage: 0
   local: 0
-  weight: 64
+  weight: 50

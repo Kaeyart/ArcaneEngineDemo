@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: 
+  m_Name: Item_echoing_saint
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:ItemDefinition
-  id: echoing_saint
-  displayName: Hand of the Echoing Saint
-  description: Slot 1 manual casts also invoke customized Slot 2.
-  slot: 5
-  rarity: 3
+  id: 
+  displayName: 
+  description: 
+  slot: 0
+  rarity: 0
   twoHanded: 0
   health: 0
   mana: 0
@@ -28,12 +28,10 @@ MonoBehaviour:
   spellPower: 0
   cooldownReduction: 0
   triggerEnergy: 0
-  mutation: 5
+  mutation: 0
   setId: 
   grantedCoreId: 
   baseFamily: 
   implicitText: 
-  itemTags:
-  - caster
-  - weapon
-  color: {r: 1, g: 0.82, b: 0.2, a: 1}
+  itemTags: []
+  color: {r: 1, g: 1, b: 1, a: 1}

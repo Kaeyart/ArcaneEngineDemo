@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: RoomDefinition_combat_0
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21RoomDefinitionAsset
-  stableId: combat_0
-  displayName: Ossuary I
-  biome: The Ossuary Catacombs
+  stableId: 
+  displayName: 
+  biome: 
   roomType: 0
-  difficulty: 1
+  difficulty: 0
   obstaclePattern: 0
   hasHazards: 0
-  floorColor: {r: 0.07, g: 0.08, b: 0.12, a: 1}
-  accentColor: {r: 0.2, g: 0.55, b: 0.8, a: 1}
+  floorColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  accentColor: {r: 0, g: 1, b: 1, a: 1}

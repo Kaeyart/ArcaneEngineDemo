@@ -10,16 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: 
+  m_Name: Rune_double_shot
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:SpellModifierDefinition
-  id: double_shot
-  displayName: Double Shot
-  flavorName: Double Shot
-  shortDescription: 'Adds one projectile with slightly lower damage. Basic Multishot:
-    adds one projectile for a lower Capacity Cost and an easier shape.'
-  advancedDescription: 'Pattern: +1 projectile, moderate spread, and 72% damage per
-    projectile. Basic Multishot: adds one projectile for a lower Capacity Cost and
-    an easier shape.'
+  id: 
+  displayName: 
+  flavorName: 
+  shortDescription: 
+  advancedDescription: 
   effect: 0
   category: 0
   connectorFamily: 0
@@ -29,12 +26,10 @@ MonoBehaviour:
   shape:
   - q: 0
     r: 0
-  - q: 0
-    r: 1
-  uiColor: {r: 1, g: 0.75, b: 0.25, a: 1}
-  instability: 2
+  uiColor: {r: 1, g: 1, b: 1, a: 1}
+  instability: 0
   preparationCost: 1
-  capacityCost: 2
+  capacityCost: 1
   stackable: 1
   availableAsSupport: 1
-  compatibleDeliveries: 0000000005000000
+  compatibleDeliveries: 

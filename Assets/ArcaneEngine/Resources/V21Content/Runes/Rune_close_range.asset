@@ -10,31 +10,26 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: 
+  m_Name: Rune_close_range
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:SpellModifierDefinition
-  id: close_range
-  displayName: Close-Range Power
-  flavorName: Nearfield Equation
-  shortDescription: Deals more damage near the caster and less at long range.
-  advancedDescription: 'Condition: up to 35% more damage inside four metres, 15%
-    less beyond ten.'
-  effect: 51
-  category: 2
+  id: 
+  displayName: 
+  flavorName: 
+  shortDescription: 
+  advancedDescription: 
+  effect: 0
+  category: 0
   connectorFamily: 0
-  magnitude: 0.35
+  magnitude: 1
   inputSide: 3
   outputSides: 00000000
   shape:
   - q: 0
     r: 0
-  - q: 0
-    r: 1
-  - q: 0
-    r: -1
-  uiColor: {r: 1, g: 0.34, b: 0.3, a: 1}
-  instability: 5
-  preparationCost: 3
-  capacityCost: 3
-  stackable: 0
+  uiColor: {r: 1, g: 1, b: 1, a: 1}
+  instability: 0
+  preparationCost: 1
+  capacityCost: 1
+  stackable: 1
   availableAsSupport: 1
   compatibleDeliveries: 

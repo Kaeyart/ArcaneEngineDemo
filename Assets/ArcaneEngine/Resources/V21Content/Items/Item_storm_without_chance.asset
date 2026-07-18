@@ -10,14 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: 
+  m_Name: Item_storm_without_chance
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:ItemDefinition
-  id: storm_without_chance
-  displayName: Storm Without Chance
-  description: All prepared spells become Lightning and gain power, but critical
-    strikes are disabled.
+  id: 
+  displayName: 
+  description: 
   slot: 0
-  rarity: 3
+  rarity: 0
   twoHanded: 0
   health: 0
   mana: 0
@@ -29,12 +28,10 @@ MonoBehaviour:
   spellPower: 0
   cooldownReduction: 0
   triggerEnergy: 0
-  mutation: 10
+  mutation: 0
   setId: 
   grantedCoreId: 
   baseFamily: 
   implicitText: 
-  itemTags:
-  - armor
-  - ward
-  color: {r: 0.3, g: 0.62, b: 1, a: 1}
+  itemTags: []
+  color: {r: 1, g: 1, b: 1, a: 1}

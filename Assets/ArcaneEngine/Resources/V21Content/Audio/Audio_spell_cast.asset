@@ -15,14 +15,14 @@ MonoBehaviour:
   stableId: spell_cast
   category: Effects
   clips:
-  - {fileID: 8790351000332713597}
-  - {fileID: 8765077962492676735}
-  - {fileID: 4822527176543676614}
+  - {fileID: 7048147667094261802}
+  - {fileID: 4065749088323834984}
+  - {fileID: 3749385922419688917}
   pitchRange: {x: 0.95, y: 1.05}
   volumeRange: {x: 0.82, y: 1}
   maxVoices: 8
   loop: 0
---- !u!83 &4822527176543676614
+--- !u!83 &3749385922419688917
 AudioClip:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -50,7 +50,7 @@ AudioClip:
     m_Offset: 0
     m_Size: 0
   m_EditorCompressionFormat: 0
---- !u!83 &8765077962492676735
+--- !u!83 &4065749088323834984
 AudioClip:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -78,7 +78,7 @@ AudioClip:
     m_Offset: 0
     m_Size: 0
   m_EditorCompressionFormat: 0
---- !u!83 &8790351000332713597
+--- !u!83 &7048147667094261802
 AudioClip:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

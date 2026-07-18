@@ -12,11 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: ShopService_ReserveRecovery
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21ShopServiceAsset
-  stableId: reserve_recovery
-  specialization: Apothecary
-  title: "Apothecary \xB7 Reserve Tonic"
-  description: Restore Health and Mana. This authored service is stocked only by
-    the Apothecary.
+  stableId: 
+  specialization: 
+  title: 
+  description: 
   serviceContentId: service:recovery
   category: 5
-  price: 27
+  price: 24

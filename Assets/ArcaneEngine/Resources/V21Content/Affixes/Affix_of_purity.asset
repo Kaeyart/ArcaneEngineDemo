@@ -12,16 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: Affix_of_purity
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21AffixContentAsset
-  stableId: of_purity
-  displayName: of Purity
-  stat: corruption_resist
-  kind: 2
-  group: corruption_resist
-  tags:
-  - ward
-  slots: 00000000090000000100000002000000
-  baseMinimum: 2
-  baseMaximum: 6
+  stableId: 
+  displayName: 
+  stat: 
+  kind: 0
+  group: 
+  tags: []
+  slots: 
+  baseMinimum: 0
+  baseMaximum: 0
   percentage: 0
   local: 0
-  weight: 40
+  weight: 50

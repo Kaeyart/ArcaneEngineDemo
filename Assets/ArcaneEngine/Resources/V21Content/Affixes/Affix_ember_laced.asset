@@ -12,16 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: Affix_ember_laced
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21AffixContentAsset
-  stableId: ember_laced
-  displayName: Ember-Laced
-  stat: fire_damage
-  kind: 1
-  group: added_fire
-  tags:
-  - weapon
-  slots: 080000000400000005000000
-  baseMinimum: 0.04
-  baseMaximum: 0.09
-  percentage: 1
+  stableId: 
+  displayName: 
+  stat: 
+  kind: 0
+  group: 
+  tags: []
+  slots: 
+  baseMinimum: 0
+  baseMaximum: 0
+  percentage: 0
   local: 0
-  weight: 62
+  weight: 50

@@ -10,15 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: 
+  m_Name: Rune_beam_delivery
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:SpellModifierDefinition
-  id: beam_delivery
-  displayName: Beam
-  flavorName: Luminous Thread
-  shortDescription: Changes a compatible spell into a focused beam.
-  advancedDescription: 'Delivery replacement: immediate line damage using the spell''s
-    range.'
-  effect: 43
+  id: 
+  displayName: 
+  flavorName: 
+  shortDescription: 
+  advancedDescription: 
+  effect: 0
   category: 0
   connectorFamily: 0
   magnitude: 1
@@ -27,16 +26,10 @@ MonoBehaviour:
   shape:
   - q: 0
     r: 0
-  - q: 0
-    r: 1
-  - q: 0
-    r: -1
-  - q: 1
-    r: -1
-  uiColor: {r: 0.72, g: 0.4, b: 1, a: 1}
-  instability: 8
-  preparationCost: 4
-  capacityCost: 4
-  stackable: 0
+  uiColor: {r: 1, g: 1, b: 1, a: 1}
+  instability: 0
+  preparationCost: 1
+  capacityCost: 1
+  stackable: 1
   availableAsSupport: 1
-  compatibleDeliveries: 0000000002000000
+  compatibleDeliveries: 

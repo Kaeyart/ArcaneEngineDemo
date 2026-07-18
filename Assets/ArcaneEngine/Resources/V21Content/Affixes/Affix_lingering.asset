@@ -12,16 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: Affix_lingering
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21AffixContentAsset
-  stableId: lingering
-  displayName: Lingering
-  stat: zone_damage
-  kind: 1
-  group: zone_damage
-  tags:
-  - caster
-  slots: 080000000900000003000000
-  baseMinimum: 0.06
-  baseMaximum: 0.13
-  percentage: 1
+  stableId: 
+  displayName: 
+  stat: 
+  kind: 0
+  group: 
+  tags: []
+  slots: 
+  baseMinimum: 0
+  baseMaximum: 0
+  percentage: 0
   local: 0
-  weight: 65
+  weight: 50

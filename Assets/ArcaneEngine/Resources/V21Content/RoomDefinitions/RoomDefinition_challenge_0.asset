@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: RoomDefinition_challenge_0
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21RoomDefinitionAsset
-  stableId: challenge_0
-  displayName: Trial Circle I
-  biome: The Ossuary Catacombs
-  roomType: 12
-  difficulty: 1
+  stableId: 
+  displayName: 
+  biome: 
+  roomType: 0
+  difficulty: 0
   obstaclePattern: 0
-  hasHazards: 1
-  floorColor: {r: 0.095, g: 0.055, b: 0.055, a: 1}
-  accentColor: {r: 1, g: 0.35, b: 0.1, a: 1}
+  hasHazards: 0
+  floorColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  accentColor: {r: 0, g: 1, b: 1, a: 1}

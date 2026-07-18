@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: 
+  m_Name: Item_axis_of_six
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:ItemDefinition
-  id: axis_of_six
-  displayName: Axis of Six
-  description: Adds a virtual central connector to each prepared spell board.
-  slot: 9
-  rarity: 3
+  id: 
+  displayName: 
+  description: 
+  slot: 0
+  rarity: 0
   twoHanded: 0
   health: 0
   mana: 0
@@ -28,12 +28,10 @@ MonoBehaviour:
   spellPower: 0
   cooldownReduction: 0
   triggerEnergy: 0
-  mutation: 11
+  mutation: 0
   setId: 
   grantedCoreId: 
   baseFamily: 
   implicitText: 
-  itemTags:
-  - ward
-  - caster
-  color: {r: 0.8, g: 0.25, b: 1, a: 1}
+  itemTags: []
+  color: {r: 1, g: 1, b: 1, a: 1}

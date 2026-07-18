@@ -12,17 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: Affix_circuit
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21AffixContentAsset
-  stableId: circuit
-  displayName: Circuit-Forged
-  stat: trigger_damage
-  kind: 1
-  group: trigger_damage
-  tags:
-  - trigger
-  - caster
-  slots: 00000000020000000900000008000000
-  baseMinimum: 0.06
-  baseMaximum: 0.13
-  percentage: 1
+  stableId: 
+  displayName: 
+  stat: 
+  kind: 0
+  group: 
+  tags: []
+  slots: 
+  baseMinimum: 0
+  baseMaximum: 0
+  percentage: 0
   local: 0
-  weight: 56
+  weight: 50

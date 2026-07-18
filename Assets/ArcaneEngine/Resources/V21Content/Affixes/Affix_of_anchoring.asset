@@ -12,16 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: Affix_of_anchoring
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21AffixContentAsset
-  stableId: of_anchoring
-  displayName: of Anchoring
-  stat: knockback_resist
-  kind: 2
-  group: knockback_resist
-  tags:
-  - armor
-  slots: 030000000600000007000000
-  baseMinimum: 0.06
-  baseMaximum: 0.16
-  percentage: 1
+  stableId: 
+  displayName: 
+  stat: 
+  kind: 0
+  group: 
+  tags: []
+  slots: 
+  baseMinimum: 0
+  baseMaximum: 0
+  percentage: 0
   local: 0
-  weight: 62
+  weight: 50

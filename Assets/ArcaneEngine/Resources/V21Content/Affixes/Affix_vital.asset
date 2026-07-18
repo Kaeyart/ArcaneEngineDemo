@@ -12,16 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: Affix_vital
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21AffixContentAsset
-  stableId: vital
-  displayName: Vital
-  stat: life
-  kind: 1
-  group: life_high
-  tags:
-  - armor
-  slots: 000000000300000006000000
-  baseMinimum: 12
-  baseMaximum: 24
+  stableId: 
+  displayName: 
+  stat: 
+  kind: 0
+  group: 
+  tags: []
+  slots: 
+  baseMinimum: 0
+  baseMaximum: 0
   percentage: 0
-  local: 1
-  weight: 72
+  local: 0
+  weight: 50

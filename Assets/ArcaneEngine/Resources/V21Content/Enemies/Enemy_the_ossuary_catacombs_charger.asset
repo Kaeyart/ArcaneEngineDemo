@@ -12,15 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: Enemy_the_ossuary_catacombs_charger
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21EnemyContentAsset
-  stableId: the_ossuary_catacombs_charger
-  displayName: The Ossuary Catacombs Charger
-  archetype: 3
-  biome: The Ossuary Catacombs
-  mechanicalFamily: Charger
-  counterplay: Sidestep the committed charge, then punish recovery.
-  primary: {r: 0.40499997, g: 0.9, b: 0.60002995, a: 1}
-  telegraph: {r: 1, g: 0.25, b: 0.12, a: 1}
-  anticipationSeconds: 0.9
-  activeSeconds: 0.2
+  stableId: 
+  displayName: 
+  archetype: 0
+  biome: 
+  mechanicalFamily: 
+  counterplay: 
+  primary: {r: 1, g: 1, b: 1, a: 1}
+  telegraph: {r: 1, g: 0, b: 0, a: 1}
+  anticipationSeconds: 0.7
+  activeSeconds: 0.25
   recoverySeconds: 0.5
-  damageRadius: 1.2
+  damageRadius: 1

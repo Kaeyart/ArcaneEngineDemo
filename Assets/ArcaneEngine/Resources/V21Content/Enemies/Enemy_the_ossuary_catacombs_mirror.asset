@@ -12,15 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: Enemy_the_ossuary_catacombs_mirror
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21EnemyContentAsset
-  stableId: the_ossuary_catacombs_mirror
-  displayName: The Ossuary Catacombs Mirror
-  archetype: 6
-  biome: The Ossuary Catacombs
-  mechanicalFamily: Mirror
-  counterplay: Stop firing into reflection and change angle.
-  primary: {r: 0.9, g: 0.63071996, b: 0.40499997, a: 1}
-  telegraph: {r: 1, g: 0.25, b: 0.12, a: 1}
-  anticipationSeconds: 0.65
-  activeSeconds: 0.2
+  stableId: 
+  displayName: 
+  archetype: 0
+  biome: 
+  mechanicalFamily: 
+  counterplay: 
+  primary: {r: 1, g: 1, b: 1, a: 1}
+  telegraph: {r: 1, g: 0, b: 0, a: 1}
+  anticipationSeconds: 0.7
+  activeSeconds: 0.25
   recoverySeconds: 0.5
-  damageRadius: 1.2
+  damageRadius: 1

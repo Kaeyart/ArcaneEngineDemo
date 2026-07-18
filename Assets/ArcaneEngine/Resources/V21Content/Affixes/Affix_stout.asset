@@ -12,18 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: Affix_stout
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21AffixContentAsset
-  stableId: stout
-  displayName: Stout
-  stat: life
-  kind: 1
-  group: life
-  tags:
-  - armor
-  - mobile
-  - ward
+  stableId: 
+  displayName: 
+  stat: 
+  kind: 0
+  group: 
+  tags: []
   slots: 
-  baseMinimum: 8
-  baseMaximum: 18
+  baseMinimum: 0
+  baseMaximum: 0
   percentage: 0
-  local: 1
-  weight: 100
+  local: 0
+  weight: 50

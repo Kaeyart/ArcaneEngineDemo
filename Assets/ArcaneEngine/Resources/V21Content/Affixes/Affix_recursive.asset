@@ -12,16 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: Affix_recursive
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21AffixContentAsset
-  stableId: recursive
-  displayName: Recursive
-  stat: trigger_damage
-  kind: 1
-  group: trigger_depth
-  tags:
-  - trigger
-  slots: 000000000900000008000000
-  baseMinimum: 0.05
-  baseMaximum: 0.12
-  percentage: 1
+  stableId: 
+  displayName: 
+  stat: 
+  kind: 0
+  group: 
+  tags: []
+  slots: 
+  baseMinimum: 0
+  baseMaximum: 0
+  percentage: 0
   local: 0
-  weight: 48
+  weight: 50

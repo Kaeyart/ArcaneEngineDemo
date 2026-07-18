@@ -10,15 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: 
+  m_Name: Item_circuit_monolith
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:ItemDefinition
-  id: circuit_monolith
-  displayName: Circuit Monolith
-  description: A two-handed recursive spell engine with faster trigger recovery and
-    added instability.
-  slot: 8
-  rarity: 3
-  twoHanded: 1
+  id: 
+  displayName: 
+  description: 
+  slot: 0
+  rarity: 0
+  twoHanded: 0
   health: 0
   mana: 0
   movementSpeed: 0
@@ -28,13 +27,11 @@ MonoBehaviour:
   critDamage: 0
   spellPower: 0
   cooldownReduction: 0
-  triggerEnergy: 35
-  mutation: 17
+  triggerEnergy: 0
+  mutation: 0
   setId: 
   grantedCoreId: 
   baseFamily: 
   implicitText: 
-  itemTags:
-  - weapon
-  - caster
-  color: {r: 0.78, g: 0.18, b: 0.82, a: 1}
+  itemTags: []
+  color: {r: 1, g: 1, b: 1, a: 1}

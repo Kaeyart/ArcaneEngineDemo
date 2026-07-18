@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: 
+  m_Name: Item_ritual_glove_l
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:ItemDefinition
-  id: ritual_glove_l
-  displayName: Ritual Glove
-  description: A left glove for ailment rituals.
-  slot: 4
+  id: 
+  displayName: 
+  description: 
+  slot: 0
   rarity: 0
   twoHanded: 0
   health: 0
-  mana: 8
+  mana: 0
   movementSpeed: 0
   armor: 0
   resistance: 0
@@ -31,9 +31,7 @@ MonoBehaviour:
   mutation: 0
   setId: 
   grantedCoreId: 
-  baseFamily: Ritual Glove
-  implicitText: +8 Maximum Mana
-  itemTags:
-  - caster
-  - ward
-  color: {r: 0.48, g: 0.72, b: 0.42, a: 1}
+  baseFamily: 
+  implicitText: 
+  itemTags: []
+  color: {r: 1, g: 1, b: 1, a: 1}

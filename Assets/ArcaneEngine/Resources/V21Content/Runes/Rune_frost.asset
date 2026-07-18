@@ -10,16 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: 
+  m_Name: Rune_frost
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:SpellModifierDefinition
-  id: frost
-  displayName: Frost Conversion
-  flavorName: Glacial Conversion
-  shortDescription: Converts damage to Frost and freezes enemies.
-  advancedDescription: 'Element replacement: 90% damage and at least 1.4 seconds
-    freeze.'
-  effect: 2
-  category: 3
+  id: 
+  displayName: 
+  flavorName: 
+  shortDescription: 
+  advancedDescription: 
+  effect: 0
+  category: 0
   connectorFamily: 0
   magnitude: 1
   inputSide: 3
@@ -27,12 +26,10 @@ MonoBehaviour:
   shape:
   - q: 0
     r: 0
-  - q: 0
-    r: 1
-  uiColor: {r: 0.2, g: 0.85, b: 1, a: 1}
-  instability: 2
+  uiColor: {r: 1, g: 1, b: 1, a: 1}
+  instability: 0
   preparationCost: 1
-  capacityCost: 2
-  stackable: 0
+  capacityCost: 1
+  stackable: 1
   availableAsSupport: 1
   compatibleDeliveries: 

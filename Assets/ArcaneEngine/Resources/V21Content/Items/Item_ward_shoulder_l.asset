@@ -10,30 +10,28 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: 
+  m_Name: Item_ward_shoulder_l
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:ItemDefinition
-  id: ward_shoulder_l
-  displayName: Warden's Left Mantle
-  description: Life, armor and resistance.
-  slot: 1
-  rarity: 1
+  id: 
+  displayName: 
+  description: 
+  slot: 0
+  rarity: 0
   twoHanded: 0
-  health: 12
+  health: 0
   mana: 0
   movementSpeed: 0
-  armor: 5
-  resistance: 0.08
+  armor: 0
+  resistance: 0
   critChance: 0
   critDamage: 0
   spellPower: 0
   cooldownReduction: 0
   triggerEnergy: 0
   mutation: 0
-  setId: warden
+  setId: 
   grantedCoreId: 
   baseFamily: 
   implicitText: 
-  itemTags:
-  - armor
-  - ward
-  color: {r: 0.2, g: 0.55, b: 1, a: 1}
+  itemTags: []
+  color: {r: 1, g: 1, b: 1, a: 1}

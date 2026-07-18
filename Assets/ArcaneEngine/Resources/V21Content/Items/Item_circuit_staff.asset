@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: 
+  m_Name: Item_circuit_staff
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:ItemDefinition
-  id: circuit_staff
-  displayName: Circuit Staff
-  description: A two-handed trigger engine base.
-  slot: 8
+  id: 
+  displayName: 
+  description: 
+  slot: 0
   rarity: 0
-  twoHanded: 1
+  twoHanded: 0
   health: 0
   mana: 0
   movementSpeed: 0
@@ -27,14 +27,11 @@ MonoBehaviour:
   critDamage: 0
   spellPower: 0
   cooldownReduction: 0
-  triggerEnergy: 28
+  triggerEnergy: 0
   mutation: 0
   setId: 
   grantedCoreId: 
-  baseFamily: Two-Handed Circuit
-  implicitText: +28 Trigger Energy
-  itemTags:
-  - weapon
-  - trigger
-  - caster
-  color: {r: 0.78, g: 0.22, b: 0.72, a: 1}
+  baseFamily: 
+  implicitText: 
+  itemTags: []
+  color: {r: 1, g: 1, b: 1, a: 1}

@@ -10,17 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: 
+  m_Name: Item_void_codex
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:ItemDefinition
-  id: void_codex
-  displayName: Codex of the Rift
-  description: Offhand. Grants the item-exclusive Maw Between Worlds foundation to
-    Slot 2.
-  slot: 9
-  rarity: 3
+  id: 
+  displayName: 
+  description: 
+  slot: 0
+  rarity: 0
   twoHanded: 0
   health: 0
-  mana: 18
+  mana: 0
   movementSpeed: 0
   armor: 0
   resistance: 0
@@ -29,12 +28,10 @@ MonoBehaviour:
   spellPower: 0
   cooldownReduction: 0
   triggerEnergy: 0
-  mutation: 2
+  mutation: 0
   setId: 
-  grantedCoreId: void_maw
+  grantedCoreId: 
   baseFamily: 
   implicitText: 
-  itemTags:
-  - ward
-  - caster
-  color: {r: 0.65, g: 0.12, b: 1, a: 1}
+  itemTags: []
+  color: {r: 1, g: 1, b: 1, a: 1}

@@ -10,22 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: 
+  m_Name: Spell_arcane_wall
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:SpellCoreDefinition
-  id: arcane_wall
-  displayName: Arcane Wall
-  description: Creates a persistent damaging boundary.
-  delivery: 7
+  id: 
+  displayName: 
+  description: 
+  delivery: 0
   castMethod: 0
-  element: 5
-  color: {r: 0.18, g: 0.75, b: 1, a: 1}
-  baseDamage: 9
-  manaCost: 26
-  cooldown: 3.2
+  element: 0
+  color: {r: 1, g: 1, b: 1, a: 1}
+  baseDamage: 0
+  manaCost: 0
+  cooldown: 0
   speed: 0
-  lifetime: 4.5
-  size: 0.3
-  radius: 4
-  tags:
-  - zone
-  - persistent
+  lifetime: 0
+  size: 0
+  radius: 0
+  tags: []

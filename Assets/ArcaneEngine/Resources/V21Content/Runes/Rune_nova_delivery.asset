@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: 
+  m_Name: Rune_nova_delivery
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:SpellModifierDefinition
-  id: nova_delivery
-  displayName: Nova
-  flavorName: Radial Rewrite
-  shortDescription: Replaces delivery with an expanding nova.
-  advancedDescription: Delivery replacement removes projectile movement.
-  effect: 14
+  id: 
+  displayName: 
+  flavorName: 
+  shortDescription: 
+  advancedDescription: 
+  effect: 0
   category: 0
   connectorFamily: 0
   magnitude: 1
@@ -26,16 +26,10 @@ MonoBehaviour:
   shape:
   - q: 0
     r: 0
-  - q: 0
-    r: 1
-  - q: 0
-    r: -1
-  - q: 1
-    r: -1
-  uiColor: {r: 1, g: 0.8, b: 0.25, a: 1}
-  instability: 14
-  preparationCost: 5
-  capacityCost: 4
-  stackable: 0
+  uiColor: {r: 1, g: 1, b: 1, a: 1}
+  instability: 0
+  preparationCost: 1
+  capacityCost: 1
+  stackable: 1
   availableAsSupport: 1
   compatibleDeliveries: 

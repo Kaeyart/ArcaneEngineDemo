@@ -10,22 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: 
+  m_Name: Spell_spellblade
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:SpellCoreDefinition
-  id: spellblade
-  displayName: Spellblade
-  description: A chargeable close magical sweep that rewards aggressive positioning.
-  delivery: 8
-  castMethod: 1
-  element: 5
-  color: {r: 1, g: 0.32, b: 0.68, a: 1}
-  baseDamage: 34
-  manaCost: 14
-  cooldown: 0.65
+  id: 
+  displayName: 
+  description: 
+  delivery: 0
+  castMethod: 0
+  element: 0
+  color: {r: 1, g: 1, b: 1, a: 1}
+  baseDamage: 0
+  manaCost: 0
+  cooldown: 0
   speed: 0
-  lifetime: 0.25
-  size: 0.5
-  radius: 3
-  tags:
-  - melee
-  - critical
+  lifetime: 0
+  size: 0
+  radius: 0
+  tags: []

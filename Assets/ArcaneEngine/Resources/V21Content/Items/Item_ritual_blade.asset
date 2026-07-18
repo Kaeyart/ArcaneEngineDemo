@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: 
+  m_Name: Item_ritual_blade
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:ItemDefinition
-  id: ritual_blade
-  displayName: Ritual Blade
-  description: A one-handed melee-spell base.
-  slot: 8
+  id: 
+  displayName: 
+  description: 
+  slot: 0
   rarity: 0
   twoHanded: 0
   health: 0
@@ -24,15 +24,14 @@ MonoBehaviour:
   armor: 0
   resistance: 0
   critChance: 0
-  critDamage: 0.08
-  spellPower: 0.06
+  critDamage: 0
+  spellPower: 0
   cooldownReduction: 0
   triggerEnergy: 0
   mutation: 0
   setId: 
   grantedCoreId: 
-  baseFamily: One-Handed Spellblade
-  implicitText: +8% Critical Damage
-  itemTags:
-  - weapon
-  color: {r: 0.68, g: 0.32, b: 0.72, a: 1}
+  baseFamily: 
+  implicitText: 
+  itemTags: []
+  color: {r: 1, g: 1, b: 1, a: 1}

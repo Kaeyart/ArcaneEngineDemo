@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!83 &-6059196591960165698
+--- !u!83 &-5354436786809560643
 AudioClip:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -28,7 +28,7 @@ AudioClip:
     m_Offset: 0
     m_Size: 0
   m_EditorCompressionFormat: 0
---- !u!83 &-5528373572366857830
+--- !u!83 &-588272005114339739
 AudioClip:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -71,14 +71,14 @@ MonoBehaviour:
   stableId: ui_cancel
   category: Interface
   clips:
-  - {fileID: 5646212024625564012}
-  - {fileID: -5528373572366857830}
-  - {fileID: -6059196591960165698}
+  - {fileID: 5734223699635364403}
+  - {fileID: -588272005114339739}
+  - {fileID: -5354436786809560643}
   pitchRange: {x: 0.95, y: 1.05}
   volumeRange: {x: 0.82, y: 1}
   maxVoices: 8
   loop: 0
---- !u!83 &5646212024625564012
+--- !u!83 &5734223699635364403
 AudioClip:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

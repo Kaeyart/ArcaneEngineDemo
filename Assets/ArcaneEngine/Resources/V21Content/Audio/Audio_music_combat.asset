@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!83 &-8591927304876829001
+--- !u!83 &-4931901971675665634
 AudioClip:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -43,7 +43,7 @@ MonoBehaviour:
   stableId: music_combat
   category: Music
   clips:
-  - {fileID: -8591927304876829001}
+  - {fileID: -4931901971675665634}
   pitchRange: {x: 1, y: 1}
   volumeRange: {x: 0.82, y: 1}
   maxVoices: 1

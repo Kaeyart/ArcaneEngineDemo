@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: 
+  m_Name: Item_ritual_mask
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:ItemDefinition
-  id: ritual_mask
-  displayName: Ritual Mask
-  description: A trigger-attuned ceremonial mask.
+  id: 
+  displayName: 
+  description: 
   slot: 0
   rarity: 0
   twoHanded: 0
@@ -27,13 +27,11 @@ MonoBehaviour:
   critDamage: 0
   spellPower: 0
   cooldownReduction: 0
-  triggerEnergy: 9
+  triggerEnergy: 0
   mutation: 0
   setId: 
   grantedCoreId: 
-  baseFamily: Ritual Headgear
-  implicitText: +9 Trigger Energy
-  itemTags:
-  - trigger
-  - caster
-  color: {r: 0.62, g: 0.35, b: 0.82, a: 1}
+  baseFamily: 
+  implicitText: 
+  itemTags: []
+  color: {r: 1, g: 1, b: 1, a: 1}

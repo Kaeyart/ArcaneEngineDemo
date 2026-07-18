@@ -12,16 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: Affix_of_kings
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21AffixContentAsset
-  stableId: of_kings
-  displayName: of Kings
-  stat: boss_damage
-  kind: 2
-  group: boss_damage
-  tags:
-  - weapon
-  slots: 080000000000000009000000
-  baseMinimum: 0.05
-  baseMaximum: 0.12
-  percentage: 1
+  stableId: 
+  displayName: 
+  stat: 
+  kind: 0
+  group: 
+  tags: []
+  slots: 
+  baseMinimum: 0
+  baseMaximum: 0
+  percentage: 0
   local: 0
-  weight: 46
+  weight: 50

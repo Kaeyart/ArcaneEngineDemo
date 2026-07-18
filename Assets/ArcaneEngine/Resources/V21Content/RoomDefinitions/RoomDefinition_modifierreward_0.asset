@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: RoomDefinition_modifierreward_0
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21RoomDefinitionAsset
-  stableId: modifierreward_0
-  displayName: Rune Atelier I
-  biome: The Ossuary Catacombs
-  roomType: 2
-  difficulty: 1
+  stableId: 
+  displayName: 
+  biome: 
+  roomType: 0
+  difficulty: 0
   obstaclePattern: 0
   hasHazards: 0
-  floorColor: {r: 0.06, g: 0.09, b: 0.11, a: 1}
-  accentColor: {r: 0.15, g: 0.95, b: 0.85, a: 1}
+  floorColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  accentColor: {r: 0, g: 1, b: 1, a: 1}

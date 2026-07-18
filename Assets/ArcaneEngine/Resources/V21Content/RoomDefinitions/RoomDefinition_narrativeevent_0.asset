@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: RoomDefinition_narrativeevent_0
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21RoomDefinitionAsset
-  stableId: narrativeevent_0
-  displayName: Memory Vault I
-  biome: The Ossuary Catacombs
-  roomType: 11
-  difficulty: 1
+  stableId: 
+  displayName: 
+  biome: 
+  roomType: 0
+  difficulty: 0
   obstaclePattern: 0
   hasHazards: 0
-  floorColor: {r: 0.08, g: 0.06, b: 0.1, a: 1}
-  accentColor: {r: 0.8, g: 0.55, b: 1, a: 1}
+  floorColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  accentColor: {r: 0, g: 1, b: 1, a: 1}

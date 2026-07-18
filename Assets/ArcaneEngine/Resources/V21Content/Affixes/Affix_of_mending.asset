@@ -12,17 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: Affix_of_mending
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21AffixContentAsset
-  stableId: of_mending
-  displayName: of Mending
-  stat: healing_received
-  kind: 2
-  group: healing_received
-  tags:
-  - armor
-  - ward
-  slots: 000000000300000006000000
-  baseMinimum: 0.04
-  baseMaximum: 0.11
-  percentage: 1
+  stableId: 
+  displayName: 
+  stat: 
+  kind: 0
+  group: 
+  tags: []
+  slots: 
+  baseMinimum: 0
+  baseMaximum: 0
+  percentage: 0
   local: 0
-  weight: 58
+  weight: 50

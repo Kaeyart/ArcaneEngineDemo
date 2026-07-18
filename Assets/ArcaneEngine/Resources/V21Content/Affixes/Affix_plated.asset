@@ -12,16 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: Affix_plated
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21AffixContentAsset
-  stableId: plated
-  displayName: Plated
-  stat: armor
-  kind: 1
-  group: armor
-  tags:
-  - armor
+  stableId: 
+  displayName: 
+  stat: 
+  kind: 0
+  group: 
+  tags: []
   slots: 
-  baseMinimum: 4
-  baseMaximum: 11
+  baseMinimum: 0
+  baseMaximum: 0
   percentage: 0
-  local: 1
-  weight: 100
+  local: 0
+  weight: 50

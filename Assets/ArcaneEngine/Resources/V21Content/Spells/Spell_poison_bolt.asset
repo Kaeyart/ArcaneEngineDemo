@@ -10,22 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: 
+  m_Name: Spell_poison_bolt
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:SpellCoreDefinition
-  id: poison_bolt
-  displayName: Poison Bolt
-  description: A quick toxic projectile that poisons enemies on hit.
+  id: 
+  displayName: 
+  description: 
   delivery: 0
   castMethod: 0
-  element: 3
-  color: {r: 0.28, g: 0.95, b: 0.16, a: 1}
-  baseDamage: 17
-  manaCost: 9
-  cooldown: 0.24
-  speed: 16
-  lifetime: 2.1
-  size: 0.4
-  radius: 0.7
-  tags:
-  - projectile
-  - poison
+  element: 0
+  color: {r: 1, g: 1, b: 1, a: 1}
+  baseDamage: 0
+  manaCost: 0
+  cooldown: 0
+  speed: 0
+  lifetime: 0
+  size: 0
+  radius: 0
+  tags: []

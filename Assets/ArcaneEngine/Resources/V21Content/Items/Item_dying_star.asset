@@ -10,31 +10,28 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: 
+  m_Name: Item_dying_star
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:ItemDefinition
-  id: dying_star
-  displayName: Heart of the Dying Star
-  description: Two-handed. Slot 1 becomes a slow miniature sun while remaining fully
-    modifiable.
-  slot: 8
-  rarity: 3
-  twoHanded: 1
-  health: -15
+  id: 
+  displayName: 
+  description: 
+  slot: 0
+  rarity: 0
+  twoHanded: 0
+  health: 0
   mana: 0
   movementSpeed: 0
   armor: 0
   resistance: 0
   critChance: 0
   critDamage: 0
-  spellPower: 0.18
+  spellPower: 0
   cooldownReduction: 0
   triggerEnergy: 0
-  mutation: 1
+  mutation: 0
   setId: 
   grantedCoreId: 
   baseFamily: 
   implicitText: 
-  itemTags:
-  - weapon
-  - caster
-  color: {r: 1, g: 0.35, b: 0.05, a: 1}
+  itemTags: []
+  color: {r: 1, g: 1, b: 1, a: 1}

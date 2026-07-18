@@ -10,22 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: 
+  m_Name: Spell_frost_lance
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:SpellCoreDefinition
-  id: frost_lance
-  displayName: Frost Lance
-  description: A narrow piercing beam that freezes enemies.
-  delivery: 3
-  castMethod: 2
-  element: 1
-  color: {r: 0.3, g: 0.85, b: 1, a: 1}
-  baseDamage: 22
-  manaCost: 15
-  cooldown: 0.5
+  id: 
+  displayName: 
+  description: 
+  delivery: 0
+  castMethod: 0
+  element: 0
+  color: {r: 1, g: 1, b: 1, a: 1}
+  baseDamage: 0
+  manaCost: 0
+  cooldown: 0
   speed: 0
-  lifetime: 0.35
-  size: 0.22
-  radius: 11
-  tags:
-  - beam
-  - freeze
+  lifetime: 0
+  size: 0
+  radius: 0
+  tags: []

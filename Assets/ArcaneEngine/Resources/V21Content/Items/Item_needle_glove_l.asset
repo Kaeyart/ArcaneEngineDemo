@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: 
+  m_Name: Item_needle_glove_l
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:ItemDefinition
-  id: needle_glove_l
-  displayName: Needle Glove
-  description: A left glove tuned for projectiles.
-  slot: 4
+  id: 
+  displayName: 
+  description: 
+  slot: 0
   rarity: 0
   twoHanded: 0
   health: 0
@@ -23,7 +23,7 @@ MonoBehaviour:
   movementSpeed: 0
   armor: 0
   resistance: 0
-  critChance: 0.025
+  critChance: 0
   critDamage: 0
   spellPower: 0
   cooldownReduction: 0
@@ -31,9 +31,7 @@ MonoBehaviour:
   mutation: 0
   setId: 
   grantedCoreId: 
-  baseFamily: Projectile Glove
-  implicitText: +2.5% Critical Chance
-  itemTags:
-  - weapon
-  - caster
-  color: {r: 0.62, g: 0.66, b: 0.72, a: 1}
+  baseFamily: 
+  implicitText: 
+  itemTags: []
+  color: {r: 1, g: 1, b: 1, a: 1}

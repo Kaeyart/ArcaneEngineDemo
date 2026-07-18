@@ -10,23 +10,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: 
+  m_Name: Rune_efficient
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:SpellModifierDefinition
-  id: efficient
-  displayName: Efficient Casting
-  flavorName: Measured Casting
-  shortDescription: Costs less mana but deals slightly less damage.
-  advancedDescription: 'Resource: 68% mana and 90% damage.'
-  effect: 15
-  category: 8
+  id: 
+  displayName: 
+  flavorName: 
+  shortDescription: 
+  advancedDescription: 
+  effect: 0
+  category: 0
   connectorFamily: 0
-  magnitude: 0.68
+  magnitude: 1
   inputSide: 3
-  outputSides: 0000000001000000
+  outputSides: 00000000
   shape:
   - q: 0
     r: 0
-  uiColor: {r: 0.2, g: 1, b: 0.8, a: 1}
+  uiColor: {r: 1, g: 1, b: 1, a: 1}
   instability: 0
   preparationCost: 1
   capacityCost: 1

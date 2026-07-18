@@ -12,17 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: Affix_lucid
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21AffixContentAsset
-  stableId: lucid
-  displayName: Lucid
-  stat: mana
-  kind: 1
-  group: mana
-  tags:
-  - ward
-  - caster
+  stableId: 
+  displayName: 
+  stat: 
+  kind: 0
+  group: 
+  tags: []
   slots: 
-  baseMinimum: 7
-  baseMaximum: 16
+  baseMinimum: 0
+  baseMaximum: 0
   percentage: 0
-  local: 1
-  weight: 100
+  local: 0
+  weight: 50

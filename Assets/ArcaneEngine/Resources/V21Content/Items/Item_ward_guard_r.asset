@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: 
+  m_Name: Item_ward_guard_r
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:ItemDefinition
-  id: ward_guard_r
-  displayName: Ward Guard
-  description: A balanced right shoulder ward.
-  slot: 2
+  id: 
+  displayName: 
+  description: 
+  slot: 0
   rarity: 0
   twoHanded: 0
   health: 0
-  mana: 10
+  mana: 0
   movementSpeed: 0
   armor: 0
   resistance: 0
@@ -31,8 +31,7 @@ MonoBehaviour:
   mutation: 0
   setId: 
   grantedCoreId: 
-  baseFamily: Ward Shoulder
-  implicitText: +10 Maximum Mana
-  itemTags:
-  - ward
-  color: {r: 0.32, g: 0.58, b: 0.9, a: 1}
+  baseFamily: 
+  implicitText: 
+  itemTags: []
+  color: {r: 1, g: 1, b: 1, a: 1}

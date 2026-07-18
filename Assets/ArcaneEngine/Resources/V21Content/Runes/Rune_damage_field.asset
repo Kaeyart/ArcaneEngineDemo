@@ -10,30 +10,26 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: 
+  m_Name: Rune_damage_field
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:SpellModifierDefinition
-  id: damage_field
-  displayName: Damage Field
-  flavorName: Damage Field
-  shortDescription: 'Impacts leave a damaging area for a short time. Basic damage
-    field: a short-lived area for two Capacity.'
-  advancedDescription: 'Spawn: creates a 2.5-second ground area. Basic damage field:
-    a short-lived area for two Capacity.'
-  effect: 26
-  category: 6
+  id: 
+  displayName: 
+  flavorName: 
+  shortDescription: 
+  advancedDescription: 
+  effect: 0
+  category: 0
   connectorFamily: 0
-  magnitude: 2.5
+  magnitude: 1
   inputSide: 3
   outputSides: 00000000
   shape:
   - q: 0
     r: 0
-  - q: 0
-    r: 1
-  uiColor: {r: 0.58, g: 0.24, b: 1, a: 1}
-  instability: 7
-  preparationCost: 3
-  capacityCost: 2
+  uiColor: {r: 1, g: 1, b: 1, a: 1}
+  instability: 0
+  preparationCost: 1
+  capacityCost: 1
   stackable: 1
   availableAsSupport: 1
   compatibleDeliveries: 

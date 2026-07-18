@@ -12,16 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: Affix_executioner
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21AffixContentAsset
-  stableId: executioner
-  displayName: Executioner's
-  stat: cooldown_on_kill
-  kind: 1
-  group: kill_cooldown
-  tags:
-  - weapon
-  slots: 080000000400000005000000
-  baseMinimum: 0.02
-  baseMaximum: 0.06
-  percentage: 1
+  stableId: 
+  displayName: 
+  stat: 
+  kind: 0
+  group: 
+  tags: []
+  slots: 
+  baseMinimum: 0
+  baseMaximum: 0
+  percentage: 0
   local: 0
-  weight: 42
+  weight: 50

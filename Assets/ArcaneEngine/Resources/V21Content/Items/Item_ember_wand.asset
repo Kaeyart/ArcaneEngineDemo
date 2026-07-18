@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: 
+  m_Name: Item_ember_wand
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:ItemDefinition
-  id: ember_wand
-  displayName: Ember Wand
-  description: A one-handed Fire caster base.
-  slot: 8
+  id: 
+  displayName: 
+  description: 
+  slot: 0
   rarity: 0
   twoHanded: 0
   health: 0
@@ -25,15 +25,13 @@ MonoBehaviour:
   resistance: 0
   critChance: 0
   critDamage: 0
-  spellPower: 0.08
+  spellPower: 0
   cooldownReduction: 0
   triggerEnergy: 0
   mutation: 0
   setId: 
   grantedCoreId: 
-  baseFamily: One-Handed Wand
-  implicitText: +8% Spell Power
-  itemTags:
-  - weapon
-  - caster
-  color: {r: 0.9, g: 0.35, b: 0.12, a: 1}
+  baseFamily: 
+  implicitText: 
+  itemTags: []
+  color: {r: 1, g: 1, b: 1, a: 1}

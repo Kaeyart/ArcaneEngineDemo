@@ -12,16 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: Affix_steadfast
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21AffixContentAsset
-  stableId: steadfast
-  displayName: Steadfast
-  stat: armor
-  kind: 1
-  group: armor_casting
-  tags:
-  - armor
-  slots: 0300000006000000
-  baseMinimum: 5
-  baseMaximum: 12
+  stableId: 
+  displayName: 
+  stat: 
+  kind: 0
+  group: 
+  tags: []
+  slots: 
+  baseMinimum: 0
+  baseMaximum: 0
   percentage: 0
-  local: 1
-  weight: 66
+  local: 0
+  weight: 50

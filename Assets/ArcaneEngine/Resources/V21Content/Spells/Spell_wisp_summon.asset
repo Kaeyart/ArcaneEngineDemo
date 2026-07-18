@@ -10,22 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: 
+  m_Name: Spell_wisp_summon
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:SpellCoreDefinition
-  id: wisp_summon
-  displayName: Wisp Familiar
-  description: Summons a temporary familiar that attacks nearby enemies.
-  delivery: 5
+  id: 
+  displayName: 
+  description: 
+  delivery: 0
   castMethod: 0
-  element: 5
-  color: {r: 0.25, g: 1, b: 0.72, a: 1}
-  baseDamage: 12
-  manaCost: 28
-  cooldown: 4
-  speed: 8
-  lifetime: 8
-  size: 0.45
-  radius: 7
-  tags:
-  - summon
-  - projectile
+  element: 0
+  color: {r: 1, g: 1, b: 1, a: 1}
+  baseDamage: 0
+  manaCost: 0
+  cooldown: 0
+  speed: 0
+  lifetime: 0
+  size: 0
+  radius: 0
+  tags: []

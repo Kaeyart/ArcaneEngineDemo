@@ -10,18 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: 
+  m_Name: Item_iron_buckler
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:ItemDefinition
-  id: iron_buckler
-  displayName: Iron Buckler
-  description: A defensive Offhand shield.
-  slot: 9
+  id: 
+  displayName: 
+  description: 
+  slot: 0
   rarity: 0
   twoHanded: 0
-  health: 12
+  health: 0
   mana: 0
   movementSpeed: 0
-  armor: 8
+  armor: 0
   resistance: 0
   critChance: 0
   critDamage: 0
@@ -31,8 +31,7 @@ MonoBehaviour:
   mutation: 0
   setId: 
   grantedCoreId: 
-  baseFamily: Shield
-  implicitText: +8 Armor
-  itemTags:
-  - armor
-  color: {r: 0.56, g: 0.6, b: 0.66, a: 1}
+  baseFamily: 
+  implicitText: 
+  itemTags: []
+  color: {r: 1, g: 1, b: 1, a: 1}

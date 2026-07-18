@@ -10,14 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: 
+  m_Name: Item_paired_oath
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:ItemDefinition
-  id: paired_oath
-  displayName: Paired Oath
-  description: Links both glove slots; wearing both grants spell power and cooldown
-    recovery.
-  slot: 5
-  rarity: 3
+  id: 
+  displayName: 
+  description: 
+  slot: 0
+  rarity: 0
   twoHanded: 0
   health: 0
   mana: 0
@@ -29,12 +28,10 @@ MonoBehaviour:
   spellPower: 0
   cooldownReduction: 0
   triggerEnergy: 0
-  mutation: 18
+  mutation: 0
   setId: 
   grantedCoreId: 
   baseFamily: 
   implicitText: 
-  itemTags:
-  - caster
-  - weapon
-  color: {r: 1, g: 0.7, b: 0.25, a: 1}
+  itemTags: []
+  color: {r: 1, g: 1, b: 1, a: 1}

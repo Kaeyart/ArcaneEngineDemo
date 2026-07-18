@@ -1,12 +1,12 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!83 &-4608678725734861161
+--- !u!83 &-8206949012817883817
 AudioClip:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: reward_reveal_take_2
+  m_Name: reward_reveal_take_3
   m_LoadType: 0
   m_Channels: 1
   m_Frequency: 44100
@@ -43,20 +43,20 @@ MonoBehaviour:
   stableId: reward_reveal
   category: Effects
   clips:
-  - {fileID: 1760947583519791463}
-  - {fileID: -4608678725734861161}
-  - {fileID: 1700384970138049445}
+  - {fileID: 2434588364386276613}
+  - {fileID: 7595413497190894547}
+  - {fileID: -8206949012817883817}
   pitchRange: {x: 0.95, y: 1.05}
   volumeRange: {x: 0.82, y: 1}
   maxVoices: 8
   loop: 0
---- !u!83 &1700384970138049445
+--- !u!83 &2434588364386276613
 AudioClip:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: reward_reveal_take_3
+  m_Name: reward_reveal_take_1
   m_LoadType: 0
   m_Channels: 1
   m_Frequency: 44100
@@ -78,13 +78,13 @@ AudioClip:
     m_Offset: 0
     m_Size: 0
   m_EditorCompressionFormat: 0
---- !u!83 &1760947583519791463
+--- !u!83 &7595413497190894547
 AudioClip:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: reward_reveal_take_1
+  m_Name: reward_reveal_take_2
   m_LoadType: 0
   m_Channels: 1
   m_Frequency: 44100

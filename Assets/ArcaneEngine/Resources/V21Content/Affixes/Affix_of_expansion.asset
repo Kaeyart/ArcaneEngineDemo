@@ -12,16 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: Affix_of_expansion
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21AffixContentAsset
-  stableId: of_expansion
-  displayName: of Expansion
-  stat: area_size
-  kind: 2
-  group: area_size
-  tags:
-  - caster
-  slots: 08000000010000000200000003000000
-  baseMinimum: 0.12
-  baseMaximum: 0.32
+  stableId: 
+  displayName: 
+  stat: 
+  kind: 0
+  group: 
+  tags: []
+  slots: 
+  baseMinimum: 0
+  baseMaximum: 0
   percentage: 0
   local: 0
-  weight: 62
+  weight: 50

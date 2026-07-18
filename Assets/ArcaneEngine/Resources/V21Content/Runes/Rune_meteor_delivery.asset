@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: 
+  m_Name: Rune_meteor_delivery
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:SpellModifierDefinition
-  id: meteor_delivery
-  displayName: Meteor
-  flavorName: Falling Star
-  shortDescription: Changes a compatible spell into a delayed strike from above.
-  advancedDescription: 'Delivery replacement: delayed impact at the aimed position.'
-  effect: 42
+  id: 
+  displayName: 
+  flavorName: 
+  shortDescription: 
+  advancedDescription: 
+  effect: 0
   category: 0
   connectorFamily: 0
   magnitude: 1
@@ -26,16 +26,10 @@ MonoBehaviour:
   shape:
   - q: 0
     r: 0
-  - q: 0
-    r: 1
-  - q: 0
-    r: -1
-  - q: 1
-    r: -1
-  uiColor: {r: 1, g: 0.35, b: 0.12, a: 1}
-  instability: 10
-  preparationCost: 4
-  capacityCost: 4
-  stackable: 0
+  uiColor: {r: 1, g: 1, b: 1, a: 1}
+  instability: 0
+  preparationCost: 1
+  capacityCost: 1
+  stackable: 1
   availableAsSupport: 1
-  compatibleDeliveries: 00000000020000000300000001000000
+  compatibleDeliveries: 

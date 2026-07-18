@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: 
+  m_Name: Item_circuit_mantle_r
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:ItemDefinition
-  id: circuit_mantle_r
-  displayName: Circuit Mantle
-  description: A right shoulder mantle for triggered spells.
-  slot: 2
+  id: 
+  displayName: 
+  description: 
+  slot: 0
   rarity: 0
   twoHanded: 0
   health: 0
@@ -27,13 +27,11 @@ MonoBehaviour:
   critDamage: 0
   spellPower: 0
   cooldownReduction: 0
-  triggerEnergy: 12
+  triggerEnergy: 0
   mutation: 0
   setId: 
   grantedCoreId: 
-  baseFamily: Trigger Shoulder
-  implicitText: +12 Trigger Energy
-  itemTags:
-  - trigger
-  - caster
-  color: {r: 0.68, g: 0.28, b: 0.78, a: 1}
+  baseFamily: 
+  implicitText: 
+  itemTags: []
+  color: {r: 1, g: 1, b: 1, a: 1}

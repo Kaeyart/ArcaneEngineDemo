@@ -12,16 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: Affix_opening
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21AffixContentAsset
-  stableId: opening
-  displayName: Opening
-  stat: first_cast_power
-  kind: 1
-  group: first_cast
-  tags:
-  - caster
-  slots: 080000000400000005000000
-  baseMinimum: 0.07
-  baseMaximum: 0.16
-  percentage: 1
+  stableId: 
+  displayName: 
+  stat: 
+  kind: 0
+  group: 
+  tags: []
+  slots: 
+  baseMinimum: 0
+  baseMaximum: 0
+  percentage: 0
   local: 0
-  weight: 48
+  weight: 50

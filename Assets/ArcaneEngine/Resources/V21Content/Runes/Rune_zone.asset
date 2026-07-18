@@ -10,33 +10,26 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: 
+  m_Name: Rune_zone
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:SpellModifierDefinition
-  id: zone
-  displayName: Greater Damage Field
-  flavorName: Lingering Geometry
-  shortDescription: 'Impacts create a persistent damage zone. Advanced damage field:
-    a longer-lasting area with a larger shape and higher Capacity Cost.'
-  advancedDescription: 'Spawn: four-second zone dealing periodic payload damage.
-    Advanced damage field: a longer-lasting area with a larger shape and higher Capacity
-    Cost.'
-  effect: 26
-  category: 6
+  id: 
+  displayName: 
+  flavorName: 
+  shortDescription: 
+  advancedDescription: 
+  effect: 0
+  category: 0
   connectorFamily: 0
-  magnitude: 4
+  magnitude: 1
   inputSide: 3
   outputSides: 00000000
   shape:
   - q: 0
     r: 0
-  - q: 0
-    r: 1
-  - q: 0
-    r: -1
-  uiColor: {r: 0.65, g: 0.2, b: 1, a: 1}
-  instability: 10
-  preparationCost: 4
-  capacityCost: 3
+  uiColor: {r: 1, g: 1, b: 1, a: 1}
+  instability: 0
+  preparationCost: 1
+  capacityCost: 1
   stackable: 1
   availableAsSupport: 1
   compatibleDeliveries: 

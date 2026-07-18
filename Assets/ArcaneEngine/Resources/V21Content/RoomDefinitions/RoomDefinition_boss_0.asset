@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: RoomDefinition_boss_0
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21RoomDefinitionAsset
-  stableId: boss_0
-  displayName: Throne of the First Warden I
-  biome: The Ossuary Catacombs
-  roomType: 15
-  difficulty: 1
+  stableId: 
+  displayName: 
+  biome: 
+  roomType: 0
+  difficulty: 0
   obstaclePattern: 0
-  hasHazards: 1
-  floorColor: {r: 0.105, g: 0.035, b: 0.055, a: 1}
-  accentColor: {r: 1, g: 0.12, b: 0.25, a: 1}
+  hasHazards: 0
+  floorColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  accentColor: {r: 0, g: 1, b: 1, a: 1}

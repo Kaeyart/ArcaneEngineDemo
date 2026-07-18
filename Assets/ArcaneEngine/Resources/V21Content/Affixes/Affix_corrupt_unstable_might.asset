@@ -12,16 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: Affix_corrupt_unstable_might
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21AffixContentAsset
-  stableId: corrupt_unstable_might
-  displayName: Unstable Might
-  stat: spell_power
-  kind: 3
-  group: corruption
-  tags:
-  - corruption
+  stableId: 
+  displayName: 
+  stat: 
+  kind: 0
+  group: 
+  tags: []
   slots: 
-  baseMinimum: 0.12
-  baseMaximum: 0.12
-  percentage: 1
+  baseMinimum: 0
+  baseMaximum: 0
+  percentage: 0
   local: 0
-  weight: 1
+  weight: 50

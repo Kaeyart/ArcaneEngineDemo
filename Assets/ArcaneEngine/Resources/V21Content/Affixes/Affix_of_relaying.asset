@@ -12,16 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: Affix_of_relaying
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21AffixContentAsset
-  stableId: of_relaying
-  displayName: of Relaying
-  stat: trigger_recovery
-  kind: 2
-  group: trigger_recovery
-  tags:
-  - trigger
-  slots: 000000000200000009000000
-  baseMinimum: 4
-  baseMaximum: 11
+  stableId: 
+  displayName: 
+  stat: 
+  kind: 0
+  group: 
+  tags: []
+  slots: 
+  baseMinimum: 0
+  baseMaximum: 0
   percentage: 0
   local: 0
-  weight: 55
+  weight: 50

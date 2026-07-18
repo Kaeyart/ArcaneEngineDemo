@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: 
+  m_Name: Item_channel_glove_l
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:ItemDefinition
-  id: channel_glove_l
-  displayName: Channel Glove
-  description: A left glove tuned for spell channels.
-  slot: 4
+  id: 
+  displayName: 
+  description: 
+  slot: 0
   rarity: 0
   twoHanded: 0
   health: 0
@@ -25,14 +25,13 @@ MonoBehaviour:
   resistance: 0
   critChance: 0
   critDamage: 0
-  spellPower: 0.04
+  spellPower: 0
   cooldownReduction: 0
   triggerEnergy: 0
   mutation: 0
   setId: 
   grantedCoreId: 
-  baseFamily: Caster Glove
-  implicitText: +4% Spell Power
-  itemTags:
-  - caster
-  color: {r: 0.42, g: 0.58, b: 0.88, a: 1}
+  baseFamily: 
+  implicitText: 
+  itemTags: []
+  color: {r: 1, g: 1, b: 1, a: 1}

@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: 
+  m_Name: Rune_return
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:SpellModifierDefinition
-  id: return
-  displayName: Return
-  flavorName: Returning Arc
-  shortDescription: Projectiles return to the caster after travelling.
-  advancedDescription: 'Movement: reverses at mid-life and may hit new targets.'
-  effect: 18
-  category: 1
+  id: 
+  displayName: 
+  flavorName: 
+  shortDescription: 
+  advancedDescription: 
+  effect: 0
+  category: 0
   connectorFamily: 0
   magnitude: 1
   inputSide: 3
@@ -26,14 +26,10 @@ MonoBehaviour:
   shape:
   - q: 0
     r: 0
-  - q: 0
-    r: 1
-  - q: 1
-    r: -1
-  uiColor: {r: 0.35, g: 1, b: 0.8, a: 1}
-  instability: 5
-  preparationCost: 2
-  capacityCost: 2
-  stackable: 0
+  uiColor: {r: 1, g: 1, b: 1, a: 1}
+  instability: 0
+  preparationCost: 1
+  capacityCost: 1
+  stackable: 1
   availableAsSupport: 1
-  compatibleDeliveries: 00000000
+  compatibleDeliveries: 

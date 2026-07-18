@@ -10,30 +10,26 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: 
+  m_Name: Rune_trail
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:SpellModifierDefinition
-  id: trail
-  displayName: Damaging Trail
-  flavorName: Scorched Script
-  shortDescription: Moving spells leave a damaging trail.
-  advancedDescription: 'Spawn: persistent ground trail for three seconds.'
-  effect: 25
-  category: 6
+  id: 
+  displayName: 
+  flavorName: 
+  shortDescription: 
+  advancedDescription: 
+  effect: 0
+  category: 0
   connectorFamily: 0
-  magnitude: 3
+  magnitude: 1
   inputSide: 3
   outputSides: 00000000
   shape:
   - q: 0
     r: 0
-  - q: 0
-    r: 1
-  - q: 1
-    r: -1
-  uiColor: {r: 1, g: 0.3, b: 0.08, a: 1}
-  instability: 8
-  preparationCost: 4
-  capacityCost: 3
+  uiColor: {r: 1, g: 1, b: 1, a: 1}
+  instability: 0
+  preparationCost: 1
+  capacityCost: 1
   stackable: 1
   availableAsSupport: 1
-  compatibleDeliveries: 0000000006000000
+  compatibleDeliveries: 

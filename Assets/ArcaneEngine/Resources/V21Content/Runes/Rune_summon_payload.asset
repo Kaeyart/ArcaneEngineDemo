@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: 
+  m_Name: Rune_summon_payload
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:SpellModifierDefinition
-  id: summon_payload
-  displayName: Summon Familiar
-  flavorName: Familiar Clause
-  shortDescription: Impacts may create a temporary wisp.
-  advancedDescription: 'Spawn: summons one payload-inheriting familiar.'
-  effect: 29
-  category: 6
+  id: 
+  displayName: 
+  flavorName: 
+  shortDescription: 
+  advancedDescription: 
+  effect: 0
+  category: 0
   connectorFamily: 0
   magnitude: 1
   inputSide: 3
@@ -26,16 +26,10 @@ MonoBehaviour:
   shape:
   - q: 0
     r: 0
-  - q: 0
-    r: 1
-  - q: 0
-    r: -1
-  - q: 1
-    r: -1
-  uiColor: {r: 0.35, g: 1, b: 0.75, a: 1}
-  instability: 12
-  preparationCost: 5
-  capacityCost: 5
+  uiColor: {r: 1, g: 1, b: 1, a: 1}
+  instability: 0
+  preparationCost: 1
+  capacityCost: 1
   stackable: 1
   availableAsSupport: 1
   compatibleDeliveries: 

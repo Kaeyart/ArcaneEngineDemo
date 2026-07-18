@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: RoomDefinition_spellcorereward_1
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21RoomDefinitionAsset
-  stableId: spellcorereward_1
-  displayName: Silent Archive II
-  biome: The Ossuary Catacombs
-  roomType: 3
-  difficulty: 2
-  obstaclePattern: 1
+  stableId: 
+  displayName: 
+  biome: 
+  roomType: 0
+  difficulty: 0
+  obstaclePattern: 0
   hasHazards: 0
-  floorColor: {r: 0.07, g: 0.055, b: 0.12, a: 1}
-  accentColor: {r: 0.7, g: 0.35, b: 1, a: 1}
+  floorColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  accentColor: {r: 0, g: 1, b: 1, a: 1}

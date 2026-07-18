@@ -12,16 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: Affix_desperate
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21AffixContentAsset
-  stableId: desperate
-  displayName: Desperate
-  stat: damage_low_mana
-  kind: 1
-  group: low_mana_damage
-  tags:
-  - caster
+  stableId: 
+  displayName: 
+  stat: 
+  kind: 0
+  group: 
+  tags: []
   slots: 
-  baseMinimum: 0.06
-  baseMaximum: 0.14
-  percentage: 1
+  baseMinimum: 0
+  baseMaximum: 0
+  percentage: 0
   local: 0
-  weight: 52
+  weight: 50

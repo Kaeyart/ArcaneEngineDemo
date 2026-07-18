@@ -10,18 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: 
+  m_Name: Item_iron_pauldron_r
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:ItemDefinition
-  id: iron_pauldron_r
-  displayName: Iron Pauldron
-  description: A defensive right shoulder base.
-  slot: 2
+  id: 
+  displayName: 
+  description: 
+  slot: 0
   rarity: 0
   twoHanded: 0
   health: 0
   mana: 0
   movementSpeed: 0
-  armor: 5
+  armor: 0
   resistance: 0
   critChance: 0
   critDamage: 0
@@ -31,8 +31,7 @@ MonoBehaviour:
   mutation: 0
   setId: 
   grantedCoreId: 
-  baseFamily: Armored Shoulder
-  implicitText: +5 Armor
-  itemTags:
-  - armor
-  color: {r: 0.58, g: 0.62, b: 0.68, a: 1}
+  baseFamily: 
+  implicitText: 
+  itemTags: []
+  color: {r: 1, g: 1, b: 1, a: 1}

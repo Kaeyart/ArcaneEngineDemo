@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: 
+  m_Name: Item_starter_glove_l
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:ItemDefinition
-  id: starter_glove_l
-  displayName: Initiate Glove L
-  description: A minor casting aid.
-  slot: 4
+  id: 
+  displayName: 
+  description: 
+  slot: 0
   rarity: 0
   twoHanded: 0
   health: 0
@@ -25,7 +25,7 @@ MonoBehaviour:
   resistance: 0
   critChance: 0
   critDamage: 0
-  spellPower: 0.03
+  spellPower: 0
   cooldownReduction: 0
   triggerEnergy: 0
   mutation: 0
@@ -33,7 +33,5 @@ MonoBehaviour:
   grantedCoreId: 
   baseFamily: 
   implicitText: 
-  itemTags:
-  - caster
-  - weapon
-  color: {r: 0.72, g: 0.75, b: 0.8, a: 1}
+  itemTags: []
+  color: {r: 1, g: 1, b: 1, a: 1}

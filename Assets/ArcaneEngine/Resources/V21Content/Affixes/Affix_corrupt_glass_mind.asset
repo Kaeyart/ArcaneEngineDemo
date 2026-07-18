@@ -12,16 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: Affix_corrupt_glass_mind
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21AffixContentAsset
-  stableId: corrupt_glass_mind
-  displayName: Glass Mind
-  stat: mana
-  kind: 3
-  group: corruption
-  tags:
-  - corruption
+  stableId: 
+  displayName: 
+  stat: 
+  kind: 0
+  group: 
+  tags: []
   slots: 
-  baseMinimum: 38
-  baseMaximum: 38
+  baseMinimum: 0
+  baseMaximum: 0
   percentage: 0
   local: 0
-  weight: 1
+  weight: 50

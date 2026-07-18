@@ -12,17 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: Affix_of_reflexes
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21AffixContentAsset
-  stableId: of_reflexes
-  displayName: of Reflexes
-  stat: shield_power
-  kind: 2
-  group: dodge_shield
-  tags:
-  - mobile
-  - ward
-  slots: 070000000100000002000000
-  baseMinimum: 0.04
-  baseMaximum: 0.1
-  percentage: 1
+  stableId: 
+  displayName: 
+  stat: 
+  kind: 0
+  group: 
+  tags: []
+  slots: 
+  baseMinimum: 0
+  baseMaximum: 0
+  percentage: 0
   local: 0
-  weight: 54
+  weight: 50

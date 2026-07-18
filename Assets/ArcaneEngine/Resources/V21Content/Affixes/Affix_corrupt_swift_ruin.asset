@@ -12,16 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: Affix_corrupt_swift_ruin
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21AffixContentAsset
-  stableId: corrupt_swift_ruin
-  displayName: Swift Ruin
-  stat: move_speed
-  kind: 3
-  group: corruption
-  tags:
-  - corruption
+  stableId: 
+  displayName: 
+  stat: 
+  kind: 0
+  group: 
+  tags: []
   slots: 
-  baseMinimum: 0.55
-  baseMaximum: 0.55
-  percentage: 1
+  baseMinimum: 0
+  baseMaximum: 0
+  percentage: 0
   local: 0
-  weight: 1
+  weight: 50

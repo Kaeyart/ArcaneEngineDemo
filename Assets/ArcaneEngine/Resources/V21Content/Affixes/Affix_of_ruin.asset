@@ -12,17 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: Affix_of_ruin
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21AffixContentAsset
-  stableId: of_ruin
-  displayName: of Ruin
-  stat: crit_damage
-  kind: 2
-  group: crit_damage
-  tags:
-  - caster
-  - weapon
-  slots: 08000000040000000500000000000000
-  baseMinimum: 0.06
-  baseMaximum: 0.16
-  percentage: 1
+  stableId: 
+  displayName: 
+  stat: 
+  kind: 0
+  group: 
+  tags: []
+  slots: 
+  baseMinimum: 0
+  baseMaximum: 0
+  percentage: 0
   local: 0
-  weight: 68
+  weight: 50

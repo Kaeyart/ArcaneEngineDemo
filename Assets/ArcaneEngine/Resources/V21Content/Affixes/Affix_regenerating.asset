@@ -12,16 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: Affix_regenerating
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21AffixContentAsset
-  stableId: regenerating
-  displayName: Regenerating
-  stat: life_regen
-  kind: 1
-  group: life_regen
-  tags:
-  - armor
-  slots: 000000000300000006000000
-  baseMinimum: 2
-  baseMaximum: 5
+  stableId: 
+  displayName: 
+  stat: 
+  kind: 0
+  group: 
+  tags: []
+  slots: 
+  baseMinimum: 0
+  baseMaximum: 0
   percentage: 0
   local: 0
-  weight: 54
+  weight: 50

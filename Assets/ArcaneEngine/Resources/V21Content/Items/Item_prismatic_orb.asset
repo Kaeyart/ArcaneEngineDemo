@@ -10,30 +10,28 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: 
+  m_Name: Item_prismatic_orb
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:ItemDefinition
-  id: prismatic_orb
-  displayName: Prismatic Orb
-  description: A balanced elemental Offhand.
-  slot: 9
+  id: 
+  displayName: 
+  description: 
+  slot: 0
   rarity: 0
   twoHanded: 0
   health: 0
   mana: 0
   movementSpeed: 0
   armor: 0
-  resistance: 0.04
+  resistance: 0
   critChance: 0
   critDamage: 0
-  spellPower: 0.04
+  spellPower: 0
   cooldownReduction: 0
   triggerEnergy: 0
   mutation: 0
   setId: 
   grantedCoreId: 
-  baseFamily: Ritual Orb
-  implicitText: +4% Resistance
-  itemTags:
-  - ward
-  - caster
-  color: {r: 0.5, g: 0.72, b: 0.88, a: 1}
+  baseFamily: 
+  implicitText: 
+  itemTags: []
+  color: {r: 1, g: 1, b: 1, a: 1}

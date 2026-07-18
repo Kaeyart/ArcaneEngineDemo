@@ -12,16 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: Affix_archmage
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21AffixContentAsset
-  stableId: archmage
-  displayName: Archmage's
-  stat: spell_power
-  kind: 1
-  group: spell_power_high
-  tags:
-  - caster
-  slots: 080000000900000000000000
-  baseMinimum: 0.05
-  baseMaximum: 0.1
-  percentage: 1
+  stableId: 
+  displayName: 
+  stat: 
+  kind: 0
+  group: 
+  tags: []
+  slots: 
+  baseMinimum: 0
+  baseMaximum: 0
+  percentage: 0
   local: 0
-  weight: 48
+  weight: 50

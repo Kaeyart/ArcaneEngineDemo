@@ -12,15 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: Enemy_ember_foundry_embertitan
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21EnemyContentAsset
-  stableId: ember_foundry_embertitan
-  displayName: Ember Foundry EmberTitan
-  archetype: 10
-  biome: Ember Foundry
-  mechanicalFamily: EmberTitan
-  counterplay: Read anticipation, avoid the active shape, and punish recovery.
-  primary: {r: 0.40499997, g: 0.9, b: 0.65942997, a: 1}
-  telegraph: {r: 1, g: 0.25, b: 0.12, a: 1}
-  anticipationSeconds: 0.65
-  activeSeconds: 0.2
+  stableId: 
+  displayName: 
+  archetype: 0
+  biome: 
+  mechanicalFamily: 
+  counterplay: 
+  primary: {r: 1, g: 1, b: 1, a: 1}
+  telegraph: {r: 1, g: 0, b: 0, a: 1}
+  anticipationSeconds: 0.7
+  activeSeconds: 0.25
   recoverySeconds: 0.5
-  damageRadius: 1.2
+  damageRadius: 1

@@ -10,22 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: 
+  m_Name: Spell_fireball
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:SpellCoreDefinition
-  id: fireball
-  displayName: Fireball
-  description: A fast projectile that detonates on impact.
+  id: 
+  displayName: 
+  description: 
   delivery: 0
   castMethod: 0
   element: 0
-  color: {r: 1, g: 0.2, b: 0.04, a: 1}
-  baseDamage: 24
-  manaCost: 13
-  cooldown: 0.32
-  speed: 13
-  lifetime: 2.4
-  size: 0.55
-  radius: 1.4
-  tags:
-  - projectile
-  - impact
+  color: {r: 1, g: 1, b: 1, a: 1}
+  baseDamage: 0
+  manaCost: 0
+  cooldown: 0
+  speed: 0
+  lifetime: 0
+  size: 0
+  radius: 0
+  tags: []

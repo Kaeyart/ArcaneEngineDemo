@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: RoomDefinition_extraction_1
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21RoomDefinitionAsset
-  stableId: extraction_1
-  displayName: Return Gate II
-  biome: The Ossuary Catacombs
-  roomType: 16
-  difficulty: 2
-  obstaclePattern: 1
+  stableId: 
+  displayName: 
+  biome: 
+  roomType: 0
+  difficulty: 0
+  obstaclePattern: 0
   hasHazards: 0
-  floorColor: {r: 0.04, g: 0.085, b: 0.085, a: 1}
-  accentColor: {r: 0.15, g: 1, b: 0.8, a: 1}
+  floorColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  accentColor: {r: 0, g: 1, b: 1, a: 1}
