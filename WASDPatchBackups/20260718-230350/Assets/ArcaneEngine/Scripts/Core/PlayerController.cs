@@ -382,51 +382,33 @@ private void LateUpdate()
 {
     ControlSettings controls = ProfileManager.Current.controls;
 
-    // Read the physical WASD controls directly from Unity's Input System.
-    // This bypasses stale profile bindings and KeyCode conversion problems,
-    // while the configured bindings remain supported below.
-    UnityEngine.InputSystem.Keyboard keyboard =
-        UnityEngine.InputSystem.Keyboard.current;
+    KeyCode forwardKey =
+        controls.moveForward == KeyCode.None
+            ? KeyCode.W
+            : controls.moveForward;
 
-    bool physicalForward =
-        keyboard != null && keyboard.wKey.isPressed;
+    KeyCode backKey =
+        controls.moveBack == KeyCode.None
+            ? KeyCode.S
+            : controls.moveBack;
 
-    bool physicalBack =
-        keyboard != null && keyboard.sKey.isPressed;
+    KeyCode leftKey =
+        controls.moveLeft == KeyCode.None
+            ? KeyCode.A
+            : controls.moveLeft;
 
-    bool physicalLeft =
-        keyboard != null && keyboard.aKey.isPressed;
-
-    bool physicalRight =
-        keyboard != null && keyboard.dKey.isPressed;
-
-    bool forward =
-        physicalForward ||
-        ArcaneInput.GetKey(KeyCode.W) ||
-        ArcaneInput.GetKey(controls.moveForward);
-
-    bool back =
-        physicalBack ||
-        ArcaneInput.GetKey(KeyCode.S) ||
-        ArcaneInput.GetKey(controls.moveBack);
-
-    bool left =
-        physicalLeft ||
-        ArcaneInput.GetKey(KeyCode.A) ||
-        ArcaneInput.GetKey(controls.moveLeft);
-
-    bool right =
-        physicalRight ||
-        ArcaneInput.GetKey(KeyCode.D) ||
-        ArcaneInput.GetKey(controls.moveRight);
+    KeyCode rightKey =
+        controls.moveRight == KeyCode.None
+            ? KeyCode.D
+            : controls.moveRight;
 
     float x =
-        (right ? 1f : 0f) -
-        (left ? 1f : 0f);
+        (ArcaneInput.GetKey(rightKey) ? 1f : 0f) -
+        (ArcaneInput.GetKey(leftKey) ? 1f : 0f);
 
     float z =
-        (forward ? 1f : 0f) -
-        (back ? 1f : 0f);
+        (ArcaneInput.GetKey(forwardKey) ? 1f : 0f) -
+        (ArcaneInput.GetKey(backKey) ? 1f : 0f);
 
     Vector2 gamepadMove = ArcaneInput.GamepadMove;
 
@@ -440,9 +422,7 @@ private void LateUpdate()
 
     Camera camera = Camera.main;
     IsometricCamera rig =
-        camera == null
-            ? null
-            : camera.GetComponent<IsometricCamera>();
+        camera == null ? null : camera.GetComponent<IsometricCamera>();
 
     if (rig != null &&
         !ProfileManager.Current.accessibility.worldRelativeMovement)
@@ -475,9 +455,7 @@ private void LateUpdate()
         movement * _stats.moveSpeed * conditionMultiplier;
 
     float response =
-        movement.sqrMagnitude > 0.01f
-            ? 24f
-            : 32f;
+        movement.sqrMagnitude > 0.01f ? 24f : 32f;
 
     _moveVelocity = Vector3.MoveTowards(
         _moveVelocity,
