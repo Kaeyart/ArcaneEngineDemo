@@ -5,70 +5,101 @@ using UnityEngine;
 namespace ArcaneEngine
 {
     /// <summary>
-    /// Centralized service locator — replaces scattered .Instance singletons with a single
-    /// lookup point. Services register themselves in Awake() and unregister in OnDestroy().
-    /// Other components resolve dependencies via Get{T}().
+    /// Lightweight runtime service registry. Registration is explicit and all stale Unity
+    /// object references are discarded when resolved.
     /// </summary>
     public static class ServiceLocator
     {
-        private static readonly Dictionary<Type, object> _services = new Dictionary<Type, object>();
+        private static readonly Dictionary<Type, object> Services = new Dictionary<Type, object>();
 
-        /// <summary>Register a service instance. Call in Awake().</summary>
+        public static int Count => Services.Count;
+
         public static void Register<T>(T instance) where T : class
         {
+            if (instance == null)
+                throw new ArgumentNullException(nameof(instance));
+
             Type key = typeof(T);
-            if (_services.ContainsKey(key))
+            if (Services.TryGetValue(key, out object existing))
             {
-                Debug.LogWarning($"[ServiceLocator] {key.Name} already registered — replacing.");
-                _services.Remove(key);
+                if (ReferenceEquals(existing, instance))
+                    return;
+
+                Debug.LogWarning($"[ServiceLocator] Replacing registered service {key.Name}.");
             }
-            _services[key] = instance;
+
+            Services[key] = instance;
         }
 
-        /// <summary>Unregister a service. Call in OnDestroy().</summary>
         public static void Unregister<T>(T instance) where T : class
         {
             Type key = typeof(T);
-            if (_services.TryGetValue(key, out object existing) && existing == instance)
-                _services.Remove(key);
+            if (Services.TryGetValue(key, out object existing) && ReferenceEquals(existing, instance))
+                Services.Remove(key);
         }
 
-        /// <summary>Resolve a service. Returns null if not registered.</summary>
-        public static T Get<T>() where T : class
+        public static bool IsRegistered<T>() where T : class
+        {
+            return TryGet(out T _);
+        }
+
+        public static bool TryGet<T>(out T service) where T : class
         {
             Type key = typeof(T);
-            _services.TryGetValue(key, out object service);
-            return service as T;
+            if (!Services.TryGetValue(key, out object value))
+            {
+                service = null;
+                return false;
+            }
+
+            // Unity keeps a managed shell after a UnityEngine.Object is destroyed.
+            if (value is UnityEngine.Object unityObject && unityObject == null)
+            {
+                Services.Remove(key);
+                service = null;
+                return false;
+            }
+
+            service = value as T;
+            return service != null;
         }
 
-        /// <summary>Resolve a required service. Throws if not found.</summary>
-        public static T Require<T>() where T : class
+        public static T Get<T>() where T : class
         {
-            T service = Get<T>();
-            if (service == null)
-                throw new InvalidOperationException($"[ServiceLocator] Required service {typeof(T).Name} is not registered.");
+            TryGet(out T service);
             return service;
         }
 
-        /// <summary>Validate that all expected services are registered. Call after boot.</summary>
+        public static T Require<T>() where T : class
+        {
+            if (TryGet(out T service))
+                return service;
+
+            throw new InvalidOperationException(
+                $"[ServiceLocator] Required service {typeof(T).Name} is not registered.");
+        }
+
         public static bool Validate(params Type[] requiredTypes)
         {
+            if (requiredTypes == null)
+                throw new ArgumentNullException(nameof(requiredTypes));
+
             bool valid = true;
             foreach (Type type in requiredTypes)
             {
-                if (!_services.ContainsKey(type))
+                if (type == null || !Services.ContainsKey(type))
                 {
-                    Debug.LogError($"[ServiceLocator] Missing required service: {type.Name}");
+                    Debug.LogError($"[ServiceLocator] Missing required service: {type?.Name ?? "<null>"}");
                     valid = false;
                 }
             }
+
             return valid;
         }
 
-        /// <summary>Clear all registrations (for test teardown).</summary>
         public static void Reset()
         {
-            _services.Clear();
+            Services.Clear();
         }
     }
 }

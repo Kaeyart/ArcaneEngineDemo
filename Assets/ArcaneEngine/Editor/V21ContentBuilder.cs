@@ -101,8 +101,7 @@ namespace ArcaneEngine.Editor
             foreach (V11AffixDefinition source in V11Itemization.AllAffixes)
             {
                 string path = Root + "/Affixes/Affix_" + Safe(source.id) + ".asset";
-                V21AffixContentAsset asset = AssetDatabase.LoadAssetAtPath<V21AffixContentAsset>(path);
-                if (asset == null) { asset = ScriptableObject.CreateInstance<V21AffixContentAsset>(); AssetDatabase.CreateAsset(asset, path); }
+                V21AffixContentAsset asset = LoadOrCreateAsset<V21AffixContentAsset>(path);
                 asset.stableId = source.id; asset.displayName = source.displayName; asset.stat = source.stat; asset.kind = source.kind;
                 asset.group = source.group; asset.tags = source.tags; asset.slots = source.slots; asset.baseMinimum = source.baseMinimum;
                 asset.baseMaximum = source.baseMaximum; asset.percentage = source.percentage; asset.local = source.local; asset.weight = source.weight;
@@ -115,8 +114,7 @@ namespace ArcaneEngine.Editor
             foreach (RoomTemplate source in MegaCatalog.AllRooms.ToArray())
             {
                 string path = Root + "/RoomDefinitions/RoomDefinition_" + Safe(source.id) + ".asset";
-                V21RoomDefinitionAsset asset = AssetDatabase.LoadAssetAtPath<V21RoomDefinitionAsset>(path);
-                if (asset == null) { asset = ScriptableObject.CreateInstance<V21RoomDefinitionAsset>(); AssetDatabase.CreateAsset(asset, path); }
+                V21RoomDefinitionAsset asset = LoadOrCreateAsset<V21RoomDefinitionAsset>(path);
                 asset.stableId = source.id; asset.displayName = source.displayName; asset.biome = source.biome; asset.roomType = source.type;
                 asset.difficulty = source.difficulty; asset.obstaclePattern = source.obstaclePattern; asset.hasHazards = source.hasHazards;
                 asset.floorColor = source.floorColor; asset.accentColor = source.accentColor; EditorUtility.SetDirty(asset);
@@ -126,15 +124,13 @@ namespace ArcaneEngine.Editor
         private static void BuildExtensionAssets()
         {
             string shopPath = Root + "/Shops/ShopService_ReserveRecovery.asset";
-            V21ShopServiceAsset shop = AssetDatabase.LoadAssetAtPath<V21ShopServiceAsset>(shopPath);
-            if (shop == null) { shop = ScriptableObject.CreateInstance<V21ShopServiceAsset>(); AssetDatabase.CreateAsset(shop, shopPath); }
+            V21ShopServiceAsset shop = LoadOrCreateAsset<V21ShopServiceAsset>(shopPath);
             shop.stableId = "reserve_recovery"; shop.specialization = "Apothecary"; shop.title = "Apothecary · Reserve Tonic";
             shop.description = "Restore Health and Mana. This authored service is stocked only by the Apothecary.";
             shop.serviceContentId = "service:recovery"; shop.category = RewardCategory.Healing; shop.price = 27; EditorUtility.SetDirty(shop);
 
             string rewardPath = Root + "/Rewards/Reward_EssenceCache.asset";
-            V21RewardDefinitionAsset reward = AssetDatabase.LoadAssetAtPath<V21RewardDefinitionAsset>(rewardPath);
-            if (reward == null) { reward = ScriptableObject.CreateInstance<V21RewardDefinitionAsset>(); AssetDatabase.CreateAsset(reward, rewardPath); }
+            V21RewardDefinitionAsset reward = LoadOrCreateAsset<V21RewardDefinitionAsset>(rewardPath);
             reward.stableId = "essence_cache"; reward.category = RewardCategory.Essence; reward.title = "Secured Essence Cache";
             reward.description = "Gain permanent Essence immediately."; reward.amount = 4; reward.color = new Color(0.25f, 1f, 0.82f); EditorUtility.SetDirty(reward);
         }
@@ -143,12 +139,7 @@ namespace ArcaneEngine.Editor
         {
             string id = Safe(biome).ToLowerInvariant() + "_" + type.ToString().ToLowerInvariant() + "_" + variant;
             string path = Root + "/Rooms/Room_" + id + ".asset";
-            V21RoomLayoutAsset asset = AssetDatabase.LoadAssetAtPath<V21RoomLayoutAsset>(path);
-            if (asset == null)
-            {
-                asset = ScriptableObject.CreateInstance<V21RoomLayoutAsset>();
-                AssetDatabase.CreateAsset(asset, path);
-            }
+            V21RoomLayoutAsset asset = LoadOrCreateAsset<V21RoomLayoutAsset>(path);
             asset.stableId = id;
             asset.displayName = biome + " " + type + " " + (variant + 1);
             asset.biome = biome == "Shared" ? string.Empty : biome;
@@ -218,12 +209,7 @@ namespace ArcaneEngine.Editor
             {
                 string id = Safe(biome).ToLowerInvariant() + "_" + archetype.ToString().ToLowerInvariant();
                 string path = Root + "/Enemies/Enemy_" + id + ".asset";
-                V21EnemyContentAsset asset = AssetDatabase.LoadAssetAtPath<V21EnemyContentAsset>(path);
-                if (asset == null)
-                {
-                    asset = ScriptableObject.CreateInstance<V21EnemyContentAsset>();
-                    AssetDatabase.CreateAsset(asset, path);
-                }
+                V21EnemyContentAsset asset = LoadOrCreateAsset<V21EnemyContentAsset>(path);
                 asset.stableId = id;
                 asset.displayName = biome + " " + archetype;
                 asset.archetype = archetype;
@@ -253,12 +239,7 @@ namespace ArcaneEngine.Editor
             foreach (string id in events)
             {
                 string path = Root + "/Audio/Audio_" + id + ".asset";
-                V21AudioEventAsset asset = AssetDatabase.LoadAssetAtPath<V21AudioEventAsset>(path);
-                if (asset == null)
-                {
-                    asset = ScriptableObject.CreateInstance<V21AudioEventAsset>();
-                    AssetDatabase.CreateAsset(asset, path);
-                }
+                V21AudioEventAsset asset = LoadOrCreateAsset<V21AudioEventAsset>(path);
                 asset.stableId = id;
                 asset.category = id.StartsWith("music_") ? "Music"
                     : id.StartsWith("ui_") ? "Interface"
@@ -307,9 +288,30 @@ namespace ArcaneEngine.Editor
             clip.name = id + "_take_" + (variation + 1);
             return clip;
         }
+        // Arcane Refactor: recover invalid generated asset paths
+        private static T LoadOrCreateAsset<T>(string path) where T : ScriptableObject
+        {
+            T asset = AssetDatabase.LoadAssetAtPath<T>(path);
+            if (asset != null)
+                return asset;
+
+            bool pathIsOccupied = AssetDatabase.LoadMainAssetAtPath(path) != null || File.Exists(path);
+            if (pathIsOccupied && !AssetDatabase.DeleteAsset(path))
+            {
+                throw new InvalidOperationException(
+                    $"Unable to remove invalid generated asset at '{path}'.");
+            }
+
+            asset = ScriptableObject.CreateInstance<T>();
+            AssetDatabase.CreateAsset(asset, path);
+            return asset;
+        }
 
         private static void CopyAsset<T>(T source, string path) where T : ScriptableObject
         {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+
             T target = AssetDatabase.LoadAssetAtPath<T>(path);
             if (target == source)
             {
@@ -317,18 +319,14 @@ namespace ArcaneEngine.Editor
                 EditorUtility.SetDirty(target);
                 return;
             }
-            if (target == null)
-            {
-                target = ScriptableObject.CreateInstance<T>();
-                AssetDatabase.CreateAsset(target, path);
-            }
+
+            target = LoadOrCreateAsset<T>(path);
             EditorUtility.CopySerialized(source, target);
             target.hideFlags = HideFlags.None;
-            target.name = System.IO.Path.GetFileNameWithoutExtension(path);
+            target.name = Path.GetFileNameWithoutExtension(path);
             EditorUtility.SetDirty(target);
         }
-
-        private static string Counterplay(EnemyArchetype archetype)
+private static string Counterplay(EnemyArchetype archetype)
         {
             switch (archetype)
             {
@@ -359,3 +357,4 @@ namespace ArcaneEngine.Editor
     }
 }
 #endif
+

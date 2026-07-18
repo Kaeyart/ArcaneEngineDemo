@@ -1,0 +1,12 @@
+Assets/ArcaneEngine/Scripts/Core/PlayerController.cs	1
+Assets/ArcaneEngine/Scripts/UI/RuntimeUIFactory.cs	1
+Assets/ArcaneEngine/Editor/V21ContentBuilder.cs	1
+Assets/ArcaneEngine/Scripts/Core/GameBootstrap.cs	1
+Assets/ArcaneEngine/Scripts/Core/ServiceLocator.cs	1
+Assets/ArcaneEngine/Editor/ArcaneProjectHealthCheck.cs	0
+Assets/ArcaneEngine/Editor/ArcaneProjectHealthCheck.cs.meta	0
+Assets/ArcaneEngine/Editor/V21GeneratedContentGuard.cs	0
+Assets/ArcaneEngine/Editor/V21GeneratedContentGuard.cs.meta	0
+.editorconfig	0
+Tools/arcane-refactor-audit.sh	0
+docs/REFACTOR_PHASE1.md	0

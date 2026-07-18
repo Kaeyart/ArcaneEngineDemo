@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 173567507975018666}
-  - component: {fileID: 7364276046296491986}
+  - component: {fileID: 423735268898128212}
   m_Layer: 0
   m_Name: Enemy Spawn
   m_TagString: Untagged
@@ -32,7 +32,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 529666897278387513}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7364276046296491986
+--- !u!114 &423735268898128212
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -76,12 +76,12 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 173567507975018666}
-  - {fileID: 6314581518799773310}
-  - {fileID: 1446178876804583740}
-  - {fileID: 1675705459739343214}
+  - {fileID: 8872444107363372601}
+  - {fileID: 8430573261272104726}
+  - {fileID: 8948636606299806945}
   - {fileID: 331232985366809066}
-  - {fileID: 5758799665533154795}
-  - {fileID: 7255864572632640439}
+  - {fileID: 6216172758291588205}
+  - {fileID: 6905572300095716478}
   - {fileID: 7389070831321609952}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -98,7 +98,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: ArcaneEngine.Runtime::ArcaneEngine.V21RoomPrefabMarker
   layout: {fileID: 11400000, guid: f1b05af981ba239888d41ce1efe51492, type: 2}
---- !u!1 &2035983841466770305
+--- !u!1 &2440143255086642246
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -106,44 +106,44 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1675705459739343214}
-  - component: {fileID: 6161241984371180074}
+  - component: {fileID: 6905572300095716478}
+  - component: {fileID: 2694392124542960818}
   m_Layer: 0
-  m_Name: Enemy Spawn
+  m_Name: Objective Anchor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &1675705459739343214
+--- !u!4 &6905572300095716478
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2035983841466770305}
+  m_GameObject: {fileID: 2440143255086642246}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 10, y: 0, z: -9}
+  m_LocalPosition: {x: 0, y: 0, z: 7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 529666897278387513}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6161241984371180074
+--- !u!114 &2694392124542960818
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2035983841466770305}
+  m_GameObject: {fileID: 2440143255086642246}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
   m_Name: 
   m_EditorClassIdentifier: ArcaneEngine.Runtime::ArcaneEngine.V21AuthoringMarker
-  color: {r: 1, g: 0.2, b: 0.2, a: 1}
---- !u!1 &3878186786340918271
+  color: {r: 0.2, g: 0.8, b: 1, a: 1}
+--- !u!1 &4209089593502607069
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -151,8 +151,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1446178876804583740}
-  - component: {fileID: 2078860810279078315}
+  - component: {fileID: 8430573261272104726}
+  - component: {fileID: 4367508751881595281}
   m_Layer: 0
   m_Name: Enemy Spawn
   m_TagString: Untagged
@@ -160,13 +160,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &1446178876804583740
+--- !u!4 &8430573261272104726
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3878186786340918271}
+  m_GameObject: {fileID: 4209089593502607069}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -10, y: 0, z: -9}
@@ -175,13 +175,13 @@ Transform:
   m_Children: []
   m_Father: {fileID: 529666897278387513}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2078860810279078315
+--- !u!114 &4367508751881595281
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3878186786340918271}
+  m_GameObject: {fileID: 4209089593502607069}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
@@ -197,7 +197,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7389070831321609952}
-  - component: {fileID: 7840652768403085211}
+  - component: {fileID: 8066919570266254743}
   m_Layer: 0
   m_Name: Reward Anchor
   m_TagString: Untagged
@@ -220,7 +220,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 529666897278387513}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7840652768403085211
+--- !u!114 &8066919570266254743
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -233,7 +233,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: ArcaneEngine.Runtime::ArcaneEngine.V21AuthoringMarker
   color: {r: 1, g: 0.75, b: 0.1, a: 1}
---- !u!1 &7180038570169941051
+--- !u!1 &5913691777106704746
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -241,8 +241,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 7255864572632640439}
-  - component: {fileID: 8180708089815246917}
+  - component: {fileID: 6216172758291588205}
+  - component: {fileID: 4546968907179419137}
   m_Layer: 0
   m_Name: Objective Anchor
   m_TagString: Untagged
@@ -250,34 +250,79 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &7255864572632640439
+--- !u!4 &6216172758291588205
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7180038570169941051}
+  m_GameObject: {fileID: 5913691777106704746}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 7}
+  m_LocalPosition: {x: 7, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 529666897278387513}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8180708089815246917
+--- !u!114 &4546968907179419137
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7180038570169941051}
+  m_GameObject: {fileID: 5913691777106704746}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
   m_Name: 
   m_EditorClassIdentifier: ArcaneEngine.Runtime::ArcaneEngine.V21AuthoringMarker
   color: {r: 0.2, g: 0.8, b: 1, a: 1}
+--- !u!1 &5977008255035732752
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8948636606299806945}
+  - component: {fileID: 1797110276540865979}
+  m_Layer: 0
+  m_Name: Enemy Spawn
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8948636606299806945
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5977008255035732752}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 10, y: 0, z: -9}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 529666897278387513}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1797110276540865979
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5977008255035732752}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: 
+  m_EditorClassIdentifier: ArcaneEngine.Runtime::ArcaneEngine.V21AuthoringMarker
+  color: {r: 1, g: 0.2, b: 0.2, a: 1}
 --- !u!1 &7415358477188511764
 GameObject:
   m_ObjectHideFlags: 0
@@ -287,7 +332,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 331232985366809066}
-  - component: {fileID: 8115304072454878266}
+  - component: {fileID: 7263430522998559359}
   m_Layer: 0
   m_Name: Objective Anchor
   m_TagString: Untagged
@@ -310,7 +355,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 529666897278387513}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8115304072454878266
+--- !u!114 &7263430522998559359
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -323,7 +368,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: ArcaneEngine.Runtime::ArcaneEngine.V21AuthoringMarker
   color: {r: 0.2, g: 0.8, b: 1, a: 1}
---- !u!1 &7824298297123529217
+--- !u!1 &7771657798391781378
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -331,8 +376,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 6314581518799773310}
-  - component: {fileID: 3058601321769211671}
+  - component: {fileID: 8872444107363372601}
+  - component: {fileID: 8378965746004168496}
   m_Layer: 0
   m_Name: Enemy Spawn
   m_TagString: Untagged
@@ -340,13 +385,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &6314581518799773310
+--- !u!4 &8872444107363372601
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7824298297123529217}
+  m_GameObject: {fileID: 7771657798391781378}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 10, y: 0, z: 9}
@@ -355,61 +400,16 @@ Transform:
   m_Children: []
   m_Father: {fileID: 529666897278387513}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3058601321769211671
+--- !u!114 &8378965746004168496
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7824298297123529217}
+  m_GameObject: {fileID: 7771657798391781378}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
   m_Name: 
   m_EditorClassIdentifier: ArcaneEngine.Runtime::ArcaneEngine.V21AuthoringMarker
   color: {r: 1, g: 0.2, b: 0.2, a: 1}
---- !u!1 &9128240318451163225
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 5758799665533154795}
-  - component: {fileID: 4768421325640599834}
-  m_Layer: 0
-  m_Name: Objective Anchor
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &5758799665533154795
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9128240318451163225}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 529666897278387513}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4768421325640599834
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9128240318451163225}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
-  m_Name: 
-  m_EditorClassIdentifier: ArcaneEngine.Runtime::ArcaneEngine.V21AuthoringMarker
-  color: {r: 0.2, g: 0.8, b: 1, a: 1}

@@ -66,7 +66,7 @@ namespace ArcaneEngine
         {
             _hardwareAim = GetComponent<HardwareMouseAim>();
         }
-
+        // Arcane Refactor: sanctuary movement lifecycle
         private void Update()
 {
     GameWorld world = GameWorld.Instance;
@@ -76,7 +76,7 @@ namespace ArcaneEngine
 
     bool runActive = world.RunActive;
 
-    // Combat/run systems should only update during an active run.
+    // Combat resources and conditions update only during an active run.
     if (runActive)
     {
         for (int i = 0; i < _cooldowns.Length; i++)
@@ -88,11 +88,8 @@ namespace ArcaneEngine
             Ward = 0f;
 
         RunDirector director = world.GetComponent<RunDirector>();
-
         float manaRegen =
-            (director != null && director.Difficulty.manaDrought
-                ? 6f
-                : 14f)
+            (director != null && director.Difficulty.manaDrought ? 6f : 14f)
             + _stats.manaRegen;
 
         Mana = Mathf.Min(
@@ -106,15 +103,14 @@ namespace ArcaneEngine
                 Health + _stats.lifeRegen * Time.deltaTime);
         }
 
-        if (world.TrainingMode &&
-            ArcaneInput.GetKeyDown(KeyCode.Escape))
+        if (world.TrainingMode && ArcaneInput.GetKeyDown(KeyCode.Escape))
         {
             world.LeaveTraining();
             return;
         }
     }
 
-    // Do not move underneath menus or modal screens.
+    // Modal UI must not allow movement underneath it.
     if (world.ModalOpen || RunStartScreen.IsOpen)
     {
         _moveVelocity = Vector3.MoveTowards(
@@ -125,7 +121,7 @@ namespace ArcaneEngine
         return;
     }
 
-    // Combat conditions only prevent movement during an active run.
+    // Stun is a run-only combat condition.
     if (runActive && Time.time < _stunUntil)
     {
         _moveVelocity = Vector3.MoveTowards(
@@ -136,19 +132,47 @@ namespace ArcaneEngine
         return;
     }
 
-    // Movement is allowed both in Home Base and during runs.
+    // Movement is valid in Home Base, training, and active runs.
     Move();
 
-    // Dodge remains a combat/training action.
     if (runActive &&
-        (ArcaneInput.GetKeyDown(
-             ProfileManager.Current.controls.dodge) ||
+        (ArcaneInput.GetKeyDown(ProfileManager.Current.controls.dodge) ||
          ArcaneInput.GamepadDodgeDown))
     {
         Dodge();
     }
 }
-        private void LateUpdate()
+
+        private bool TickRunResources(GameWorld world)
+        {
+            for (int i = 0; i < _cooldowns.Length; i++)
+                _cooldowns[i] -= Time.deltaTime;
+
+            _dodgeCooldown -= Time.deltaTime;
+            if (Time.time > _wardUntil)
+                Ward = 0f;
+
+            RunDirector director = world.GetComponent<RunDirector>();
+            float baseManaRegen = director != null && director.Difficulty.manaDrought ? 6f : 14f;
+            Mana = Mathf.Min(_stats.maxMana, Mana + (baseManaRegen + _stats.manaRegen) * Time.deltaTime);
+
+            if (_stats.lifeRegen > 0f && Health > 0f)
+                Health = Mathf.Min(_stats.maxHealth, Health + _stats.lifeRegen * Time.deltaTime);
+
+            if (world.TrainingMode && ArcaneInput.GetKeyDown(KeyCode.Escape))
+            {
+                world.LeaveTraining();
+                return true;
+            }
+
+            return false;
+        }
+
+        private void DecelerateMovement(float deltaTime)
+        {
+            _moveVelocity = Vector3.MoveTowards(_moveVelocity, Vector3.zero, 40f * deltaTime);
+        }
+private void LateUpdate()
         {
             GameWorld world = GameWorld.Instance;
             if (world == null) { SetAimVisuals(false); return; }
@@ -354,41 +378,99 @@ namespace ArcaneEngine
                 GameWorld.Instance.GetComponent<RunDirector>().EndRun(false);
             }
         }
-
         private void Move()
-        {
-            ControlSettings controls = ProfileManager.Current.controls;
-            float x = (ArcaneInput.GetKey(controls.moveRight) ? 1f : 0f) - (ArcaneInput.GetKey(controls.moveLeft) ? 1f : 0f);
-            float z = (ArcaneInput.GetKey(controls.moveForward) ? 1f : 0f) - (ArcaneInput.GetKey(controls.moveBack) ? 1f : 0f);
-            Vector2 gamepadMove = ArcaneInput.GamepadMove;
-            if (gamepadMove.sqrMagnitude > 0.001f) { x = gamepadMove.x; z = gamepadMove.y; }
-            Vector3 movement = new Vector3(x, 0f, z);
-            Camera camera = Camera.main;
-            IsometricCamera rig = camera == null ? null : camera.GetComponent<IsometricCamera>();
-            if (rig != null && !ProfileManager.Current.accessibility.worldRelativeMovement) movement = rig.PlanarRight * x + rig.PlanarForward * z;
-            if (movement.sqrMagnitude > 1f) movement.Normalize();
-bool combatConditionsApply =
-    GameWorld.Instance != null &&
-    GameWorld.Instance.RunActive;
+{
+    ControlSettings controls = ProfileManager.Current.controls;
 
-float conditionMultiplier =
-    !combatConditionsApply
-        ? 1f
-        : Time.time < _rootUntil
-            ? 0f
-            : Time.time < _slowUntil
-                ? _slowMultiplier
-                : 1f;
+    KeyCode forwardKey =
+        controls.moveForward == KeyCode.None
+            ? KeyCode.W
+            : controls.moveForward;
 
-if (!combatConditionsApply || Time.time >= _slowUntil)
-    _slowMultiplier = 1f;
-            float response = movement.sqrMagnitude > 0.01f ? 24f : 32f;
-            _moveVelocity = Vector3.MoveTowards(_moveVelocity, desiredVelocity, response * Time.deltaTime);
-            if (_moveVelocity.sqrMagnitude > 0.04f) _lastMove = _moveVelocity.normalized;
-            transform.position = DungeonObstacle.Resolve(ClampToRoom(transform.position + _moveVelocity * Time.deltaTime));
-        }
+    KeyCode backKey =
+        controls.moveBack == KeyCode.None
+            ? KeyCode.S
+            : controls.moveBack;
 
-        private void ApplyHardwareAim()
+    KeyCode leftKey =
+        controls.moveLeft == KeyCode.None
+            ? KeyCode.A
+            : controls.moveLeft;
+
+    KeyCode rightKey =
+        controls.moveRight == KeyCode.None
+            ? KeyCode.D
+            : controls.moveRight;
+
+    float x =
+        (ArcaneInput.GetKey(rightKey) ? 1f : 0f) -
+        (ArcaneInput.GetKey(leftKey) ? 1f : 0f);
+
+    float z =
+        (ArcaneInput.GetKey(forwardKey) ? 1f : 0f) -
+        (ArcaneInput.GetKey(backKey) ? 1f : 0f);
+
+    Vector2 gamepadMove = ArcaneInput.GamepadMove;
+
+    if (gamepadMove.sqrMagnitude > 0.001f)
+    {
+        x = gamepadMove.x;
+        z = gamepadMove.y;
+    }
+
+    Vector3 movement = new Vector3(x, 0f, z);
+
+    Camera camera = Camera.main;
+    IsometricCamera rig =
+        camera == null ? null : camera.GetComponent<IsometricCamera>();
+
+    if (rig != null &&
+        !ProfileManager.Current.accessibility.worldRelativeMovement)
+    {
+        movement =
+            rig.PlanarRight * x +
+            rig.PlanarForward * z;
+    }
+
+    if (movement.sqrMagnitude > 1f)
+        movement.Normalize();
+
+    bool combatConditionsApply =
+        GameWorld.Instance != null &&
+        GameWorld.Instance.RunActive;
+
+    float conditionMultiplier =
+        !combatConditionsApply
+            ? 1f
+            : Time.time < _rootUntil
+                ? 0f
+                : Time.time < _slowUntil
+                    ? _slowMultiplier
+                    : 1f;
+
+    if (!combatConditionsApply || Time.time >= _slowUntil)
+        _slowMultiplier = 1f;
+
+    Vector3 desiredVelocity =
+        movement * _stats.moveSpeed * conditionMultiplier;
+
+    float response =
+        movement.sqrMagnitude > 0.01f ? 24f : 32f;
+
+    _moveVelocity = Vector3.MoveTowards(
+        _moveVelocity,
+        desiredVelocity,
+        response * Time.deltaTime);
+
+    if (_moveVelocity.sqrMagnitude > 0.04f)
+        _lastMove = _moveVelocity.normalized;
+
+    transform.position = DungeonObstacle.Resolve(
+        ClampToRoom(
+            transform.position +
+            _moveVelocity * Time.deltaTime));
+}
+private void ApplyHardwareAim()
         {
             UnityEngine.Cursor.lockState = CursorLockMode.None;
             if (_hardwareAim == null) _hardwareAim = GetComponent<HardwareMouseAim>();
@@ -582,3 +664,5 @@ if (!combatConditionsApply || Time.time >= _slowUntil)
         }
     }
 }
+
+
