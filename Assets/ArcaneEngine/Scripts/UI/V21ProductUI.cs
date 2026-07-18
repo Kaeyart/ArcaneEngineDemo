@@ -43,6 +43,8 @@ namespace ArcaneEngine
         private readonly List<VisualElement> _previewActors = new List<VisualElement>();
         private CompiledSpell _previewSpell;
         private int _ignoreHexClickFrame = -100;
+        private readonly Dictionary<HexCoord, Vector2> _boardCellCenters = new Dictionary<HexCoord, Vector2>();
+        private bool _isWorkshopDragging;
 
         private static readonly Color Panel = new Color(0.025f, 0.04f, 0.07f, 0.98f);
         private static readonly Color Card = new Color(0.055f, 0.085f, 0.13f, 0.98f);
@@ -259,37 +261,51 @@ namespace ArcaneEngine
             body.Add(details);
         }
 
+        private const float HexRadius = 33.333f;
+        private static readonly float HexWidth = Mathf.Sqrt(3f) * HexRadius;
+        private const float HexRowStep = HexRadius * 1.5f;
+
         private VisualElement CreateHexCell(GameWorld world, SpellBoard board, HexCoord cell)
         {
-            float size = 52f;
-            float x = 285f + (cell.q + cell.r * 0.5f) * 58f - size * 0.5f;
-            float y = 285f + cell.r * 50f - size * 0.5f;
+            float radius = HexRadius;
+            float originX = 285f;
+            float originY = 285f;
+            float centerX = originX + (cell.q + cell.r * 0.5f) * HexWidth;
+            float centerY = originY + cell.r * HexRowStep;
             PlacedModifier piece = board.PieceAt(cell);
             bool core = cell.Equals(new HexCoord(0, 0));
             SpellModifierDefinition definition = piece == null ? null : DemoCatalog.GetModifier(piece.modifierId);
             string text = core ? "CORE" : definition == null ? (board.IsCellUnlocked(cell) ? "·" : "×") : definition.displayName.Substring(0, Mathf.Min(4, definition.displayName.Length)).ToUpperInvariant();
-            VisualElement cellEl = new VisualElement();
+            Color cellColor = core ? DemoCatalog.GetCore(board.coreId).color :
+                definition != null ? definition.uiColor : board.IsCellUnlocked(cell) ? new Color(0.07f, 0.12f, 0.17f) : new Color(0.025f, 0.035f, 0.05f);
+            HexCellElement cellEl = new HexCellElement();
             cellEl.name = "SpellHex_" + cell.q + "_" + cell.r;
             cellEl.userData = cell;
             cellEl.style.position = Position.Absolute;
-            cellEl.style.left = x;
-            cellEl.style.top = y;
-            cellEl.style.width = cellEl.style.height = size;
+            cellEl.style.left = centerX - HexWidth * 0.5f;
+            cellEl.style.top = centerY - radius;
+            cellEl.style.width = HexWidth;
+            cellEl.style.height = radius * 2f;
+            cellEl.FillColor = cellColor;
+            cellEl.BorderColor = new Color(0.35f, 0.55f, 0.85f, 0.8f);
+            cellEl.BorderWidth = 2f;
             Label label = new Label(text);
             label.style.unityTextAlign = TextAnchor.MiddleCenter;
             label.style.color = Text;
             label.style.fontSize = 11;
             label.style.unityFontStyleAndWeight = FontStyle.Bold;
             label.style.whiteSpace = WhiteSpace.Normal;
+            label.pickingMode = PickingMode.Ignore;
             cellEl.Add(label);
-            cellEl.style.backgroundColor = core ? DemoCatalog.GetCore(board.coreId).color :
-                definition != null ? definition.uiColor : board.IsCellUnlocked(cell) ? new Color(0.07f, 0.12f, 0.17f) : new Color(0.025f, 0.035f, 0.05f);
-            cellEl.style.alignItems = Align.Center;
-            cellEl.style.justifyContent = Justify.Center;
+            _boardCellCenters[cell] = new Vector2(centerX, centerY);
             cellEl.RegisterCallback<PointerDownEvent>(evt =>
             {
                 _selectedCell = cell;
-                if (piece != null && evt.button == 0) _dragPiece = piece;
+                if (piece != null && evt.button == 0)
+                {
+                    _dragPiece = piece;
+                    _isWorkshopDragging = true;
+                }
                 if (evt.button == 1 && piece != null)
                 {
                     _ignoreHexClickFrame = Time.frameCount;
@@ -300,14 +316,25 @@ namespace ArcaneEngine
                     _dragRune = null;
                     _selectedRune = null;
                     _selectedCell = null;
+                    _isWorkshopDragging = false;
                 }
             });
             cellEl.RegisterCallback<PointerUpEvent>(_ =>
             {
-                if (_dragPiece != null && piece != _dragPiece) { _ignoreHexClickFrame = Time.frameCount; MovePiece(world, board, _dragPiece, cell); }
-                else if (!string.IsNullOrEmpty(_dragRune)) { _ignoreHexClickFrame = Time.frameCount; PlaceRune(world, board, _dragRune, cell); }
+                if (_isWorkshopDragging && _dragPiece != null && piece != _dragPiece)
+                {
+                    _ignoreHexClickFrame = Time.frameCount;
+                    string reason;
+                    if (board.TryMove(_dragPiece, cell, _rotation, out reason)) Changed(reason); else SetMessage(reason);
+                }
+                else if (!string.IsNullOrEmpty(_dragRune))
+                {
+                    _ignoreHexClickFrame = Time.frameCount; 
+                    PlaceRune(world, board, _dragRune, cell);
+                }
                 _dragPiece = null;
                 _dragRune = null;
+                _isWorkshopDragging = false;
             });
             return cellEl;
         }

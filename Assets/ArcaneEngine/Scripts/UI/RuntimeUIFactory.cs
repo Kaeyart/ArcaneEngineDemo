@@ -98,6 +98,10 @@ namespace ArcaneEngine
         private int _controllerIndex;
         private float _nextControllerMove;
         private ReliableButton _controllerFocus;
+        private ReliableButton _fallbackPressedButton;
+        private Vector2 _fallbackMouseDownPosition;
+        private bool _fallbackMouseDragged;
+        private const float FallbackDragThreshold = 6f;
 
         public void Initialize(UIDocument document) { _document = document; }
 
@@ -107,23 +111,6 @@ namespace ArcaneEngine
             VisualElement root = _document.rootVisualElement;
             if (root == null || root.resolvedStyle.display == DisplayStyle.None) return;
             HandleController(root);
-            if (!ArcaneInput.GetMouseButtonDown(0)) return;
-            float width = root.resolvedStyle.width;
-            float height = root.resolvedStyle.height;
-            if (float.IsNaN(width) || width <= 0f || float.IsNaN(height) || height <= 0f) return;
-
-            Vector3 mouse = ArcaneInput.MousePosition;
-            Vector2 panelPoint = new Vector2(mouse.x / Mathf.Max(1f, Screen.width) * width,
-                (Screen.height - mouse.y) / Mathf.Max(1f, Screen.height) * height);
-            List<ReliableButton> buttons = root.Query<ReliableButton>().ToList();
-            for (int i = buttons.Count - 1; i >= 0; i--)
-            {
-                ReliableButton button = buttons[i];
-                if (button == null || button.panel == null || !button.enabledInHierarchy ||
-                    button.resolvedStyle.display == DisplayStyle.None || !button.worldBound.Contains(panelPoint)) continue;
-                button.InvokeFromInputFallback();
-                return;
-            }
         }
 
         private void HandleController(VisualElement root)
@@ -180,27 +167,68 @@ namespace ArcaneEngine
             return true;
         }
 
-        private void OnGUI()
+        private ReliableButton FindReliableButtonAt(Vector2 screenPosition)
         {
-            Event current = Event.current;
-            if (_document == null || current == null || current.type != EventType.MouseUp || current.button != 0) return;
+            if (_document == null) return null;
             VisualElement root = _document.rootVisualElement;
-            if (root == null || root.resolvedStyle.display == DisplayStyle.None) return;
+            if (root == null || root.resolvedStyle.display == DisplayStyle.None) return null;
             float width = root.resolvedStyle.width;
             float height = root.resolvedStyle.height;
-            if (float.IsNaN(width) || width <= 0f || float.IsNaN(height) || height <= 0f) return;
-
-            Vector2 panelPoint = new Vector2(current.mousePosition.x / Mathf.Max(1f, Screen.width) * width,
-                current.mousePosition.y / Mathf.Max(1f, Screen.height) * height);
+            if (float.IsNaN(width) || width <= 0f || float.IsNaN(height) || height <= 0f) return null;
+            Vector2 panelPoint = new Vector2(screenPosition.x / Mathf.Max(1f, Screen.width) * width,
+                (Screen.height - screenPosition.y) / Mathf.Max(1f, Screen.height) * height);
             List<ReliableButton> buttons = root.Query<ReliableButton>().ToList();
             for (int i = buttons.Count - 1; i >= 0; i--)
             {
                 ReliableButton button = buttons[i];
                 if (button == null || button.panel == null || !button.enabledInHierarchy ||
                     button.resolvedStyle.display == DisplayStyle.None || !button.worldBound.Contains(panelPoint)) continue;
-                button.InvokeFromInputFallback();
-                current.Use();
-                return;
+                return button;
+            }
+            return null;
+        }
+
+        private void OnGUI()
+        {
+            Event evt = Event.current;
+            if (evt == null || evt.button != 0) return;
+
+            switch (evt.type)
+            {
+                case EventType.MouseDown:
+                {
+                    _fallbackPressedButton = FindReliableButtonAt(evt.mousePosition);
+                    _fallbackMouseDownPosition = evt.mousePosition;
+                    _fallbackMouseDragged = false;
+                    break;
+                }
+
+                case EventType.MouseDrag:
+                {
+                    if (_fallbackPressedButton != null)
+                    {
+                        float distanceSq = (evt.mousePosition - _fallbackMouseDownPosition).sqrMagnitude;
+                        if (distanceSq > FallbackDragThreshold * FallbackDragThreshold)
+                            _fallbackMouseDragged = true;
+                    }
+                    break;
+                }
+
+                case EventType.MouseUp:
+                {
+                    if (_fallbackPressedButton != null && !_fallbackMouseDragged)
+                    {
+                        ReliableButton released = FindReliableButtonAt(evt.mousePosition);
+                        if (released != null && ReferenceEquals(_fallbackPressedButton, released))
+                        {
+                            released.InvokeFromInputFallback();
+                            evt.Use();
+                        }
+                    }
+                    _fallbackPressedButton = null;
+                    _fallbackMouseDragged = false;
+                    break;
+                }
             }
         }
     }
