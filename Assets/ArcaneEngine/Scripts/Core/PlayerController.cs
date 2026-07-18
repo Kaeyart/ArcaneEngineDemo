@@ -68,26 +68,86 @@ namespace ArcaneEngine
         }
 
         private void Update()
+{
+    GameWorld world = GameWorld.Instance;
+
+    if (world == null || _stats == null)
+        return;
+
+    bool runActive = world.RunActive;
+
+    // Combat/run systems should only update during an active run.
+    if (runActive)
+    {
+        for (int i = 0; i < _cooldowns.Length; i++)
+            _cooldowns[i] -= Time.deltaTime;
+
+        _dodgeCooldown -= Time.deltaTime;
+
+        if (Time.time > _wardUntil)
+            Ward = 0f;
+
+        RunDirector director = world.GetComponent<RunDirector>();
+
+        float manaRegen =
+            (director != null && director.Difficulty.manaDrought
+                ? 6f
+                : 14f)
+            + _stats.manaRegen;
+
+        Mana = Mathf.Min(
+            _stats.maxMana,
+            Mana + manaRegen * Time.deltaTime);
+
+        if (_stats.lifeRegen > 0f && Health > 0f)
         {
-            GameWorld world = GameWorld.Instance;
-            if (world == null || !world.RunActive)
-            {
-                return;
-            }
-            for (int i = 0; i < _cooldowns.Length; i++) _cooldowns[i] -= Time.deltaTime;
-            _dodgeCooldown -= Time.deltaTime;
-            if (Time.time > _wardUntil) Ward = 0f;
-            RunDirector director = world.GetComponent<RunDirector>();
-            float manaRegen = (director != null && director.Difficulty.manaDrought ? 6f : 14f) + _stats.manaRegen;
-            Mana = Mathf.Min(_stats.maxMana, Mana + manaRegen * Time.deltaTime);
-            if (_stats.lifeRegen > 0f && Health > 0f) Health = Mathf.Min(_stats.maxHealth, Health + _stats.lifeRegen * Time.deltaTime);
-            if (world.ModalOpen) return;
-            if (world.TrainingMode && ArcaneInput.GetKeyDown(KeyCode.Escape)) { world.LeaveTraining(); return; }
-            if (Time.time < _stunUntil) { _moveVelocity = Vector3.MoveTowards(_moveVelocity, Vector3.zero, 40f * Time.deltaTime); return; }
-            Move();
-            if (ArcaneInput.GetKeyDown(ProfileManager.Current.controls.dodge) || ArcaneInput.GamepadDodgeDown) Dodge();
+            Health = Mathf.Min(
+                _stats.maxHealth,
+                Health + _stats.lifeRegen * Time.deltaTime);
         }
 
+        if (world.TrainingMode &&
+            ArcaneInput.GetKeyDown(KeyCode.Escape))
+        {
+            world.LeaveTraining();
+            return;
+        }
+    }
+
+    // Do not move underneath menus or modal screens.
+    if (world.ModalOpen || RunStartScreen.IsOpen)
+    {
+        _moveVelocity = Vector3.MoveTowards(
+            _moveVelocity,
+            Vector3.zero,
+            40f * Time.unscaledDeltaTime);
+
+        return;
+    }
+
+    // Combat conditions only prevent movement during an active run.
+    if (runActive && Time.time < _stunUntil)
+    {
+        _moveVelocity = Vector3.MoveTowards(
+            _moveVelocity,
+            Vector3.zero,
+            40f * Time.deltaTime);
+
+        return;
+    }
+
+    // Movement is allowed both in Home Base and during runs.
+    Move();
+
+    // Dodge remains a combat/training action.
+    if (runActive &&
+        (ArcaneInput.GetKeyDown(
+             ProfileManager.Current.controls.dodge) ||
+         ArcaneInput.GamepadDodgeDown))
+    {
+        Dodge();
+    }
+}
         private void LateUpdate()
         {
             GameWorld world = GameWorld.Instance;
@@ -307,9 +367,21 @@ namespace ArcaneEngine
             IsometricCamera rig = camera == null ? null : camera.GetComponent<IsometricCamera>();
             if (rig != null && !ProfileManager.Current.accessibility.worldRelativeMovement) movement = rig.PlanarRight * x + rig.PlanarForward * z;
             if (movement.sqrMagnitude > 1f) movement.Normalize();
-            float conditionMultiplier = Time.time < _rootUntil ? 0f : Time.time < _slowUntil ? _slowMultiplier : 1f;
-            if (Time.time >= _slowUntil) _slowMultiplier = 1f;
-            Vector3 desiredVelocity = movement * _stats.moveSpeed * conditionMultiplier;
+bool combatConditionsApply =
+    GameWorld.Instance != null &&
+    GameWorld.Instance.RunActive;
+
+float conditionMultiplier =
+    !combatConditionsApply
+        ? 1f
+        : Time.time < _rootUntil
+            ? 0f
+            : Time.time < _slowUntil
+                ? _slowMultiplier
+                : 1f;
+
+if (!combatConditionsApply || Time.time >= _slowUntil)
+    _slowMultiplier = 1f;
             float response = movement.sqrMagnitude > 0.01f ? 24f : 32f;
             _moveVelocity = Vector3.MoveTowards(_moveVelocity, desiredVelocity, response * Time.deltaTime);
             if (_moveVelocity.sqrMagnitude > 0.04f) _lastMove = _moveVelocity.normalized;

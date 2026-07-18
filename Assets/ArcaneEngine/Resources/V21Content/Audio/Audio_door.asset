@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!83 &-2086688927230373058
+--- !u!83 &-4082393566584694585
 AudioClip:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -43,20 +43,20 @@ MonoBehaviour:
   stableId: door
   category: Effects
   clips:
-  - {fileID: 6003511813625810249}
-  - {fileID: 7862726402183015289}
-  - {fileID: -2086688927230373058}
+  - {fileID: 8553683055811124930}
+  - {fileID: 7181931340180180678}
+  - {fileID: -4082393566584694585}
   pitchRange: {x: 0.95, y: 1.05}
   volumeRange: {x: 0.82, y: 1}
   maxVoices: 8
   loop: 0
---- !u!83 &6003511813625810249
+--- !u!83 &7181931340180180678
 AudioClip:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: door_take_1
+  m_Name: door_take_2
   m_LoadType: 0
   m_Channels: 1
   m_Frequency: 44100
@@ -78,13 +78,13 @@ AudioClip:
     m_Offset: 0
     m_Size: 0
   m_EditorCompressionFormat: 0
---- !u!83 &7862726402183015289
+--- !u!83 &8553683055811124930
 AudioClip:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: door_take_2
+  m_Name: door_take_1
   m_LoadType: 0
   m_Channels: 1
   m_Frequency: 44100

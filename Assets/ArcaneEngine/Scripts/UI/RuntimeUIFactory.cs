@@ -167,26 +167,53 @@ namespace ArcaneEngine
             return true;
         }
 
-        private ReliableButton FindReliableButtonAt(Vector2 screenPosition)
+private ReliableButton FindReliableButtonAt(Vector2 guiPosition)
+{
+    if (_document == null || !IsTopVisibleDocument())
+        return null;
+
+    VisualElement root = _document.rootVisualElement;
+
+    if (root == null ||
+        root.panel == null ||
+        root.resolvedStyle.display == DisplayStyle.None)
+    {
+        return null;
+    }
+
+    // Event.current.mousePosition already has a top-left origin.
+    // RuntimePanelUtils handles PanelSettings scaling correctly.
+    Vector2 panelPoint =
+        RuntimePanelUtils.ScreenToPanel(root.panel, guiPosition);
+
+    VisualElement picked = root.panel.Pick(panelPoint);
+
+    // Pick may return the button's text child rather than the button itself,
+    // so walk upward until a ReliableButton is found.
+    VisualElement current = picked;
+
+    while (current != null)
+    {
+        if (current is ReliableButton button)
         {
-            if (_document == null) return null;
-            VisualElement root = _document.rootVisualElement;
-            if (root == null || root.resolvedStyle.display == DisplayStyle.None) return null;
-            float width = root.resolvedStyle.width;
-            float height = root.resolvedStyle.height;
-            if (float.IsNaN(width) || width <= 0f || float.IsNaN(height) || height <= 0f) return null;
-            Vector2 panelPoint = new Vector2(screenPosition.x / Mathf.Max(1f, Screen.width) * width,
-                (Screen.height - screenPosition.y) / Mathf.Max(1f, Screen.height) * height);
-            List<ReliableButton> buttons = root.Query<ReliableButton>().ToList();
-            for (int i = buttons.Count - 1; i >= 0; i--)
+            if (button.enabledInHierarchy &&
+                button.resolvedStyle.display != DisplayStyle.None &&
+                button.resolvedStyle.visibility == Visibility.Visible)
             {
-                ReliableButton button = buttons[i];
-                if (button == null || button.panel == null || !button.enabledInHierarchy ||
-                    button.resolvedStyle.display == DisplayStyle.None || !button.worldBound.Contains(panelPoint)) continue;
                 return button;
             }
+
             return null;
         }
+
+        if (current == root)
+            break;
+
+        current = current.parent;
+    }
+
+    return null;
+}
 
         private void OnGUI()
         {
