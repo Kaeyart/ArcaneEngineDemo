@@ -40,13 +40,7 @@ namespace ArcaneEngine
             equipment.ApplyGlobalSpellStats(spell);
             spell.damage *= stats.spellPower;
             spell.manaCost = Mathf.Max(0f, spell.manaCost * stats.manaCostMultiplier);
-            float scaledCooldown =
-    spell.cooldown * stats.cooldownMultiplier;
-
-spell.cooldown =
-    spell.castMethod == SpellCastMethod.Channeled
-        ? Mathf.Max(0.08f, scaledCooldown)
-        : Mathf.Max(0f, scaledCooldown);
+            spell.cooldown = Mathf.Max(0.08f, spell.cooldown * stats.cooldownMultiplier);
             spell.instability = Mathf.Max(0f, spell.instability - stats.instabilityResistance);
             spell.projectileCount = Mathf.Clamp(spell.projectileCount, 1, 24);
             spell.repeatCount = Mathf.Clamp(spell.repeatCount, 1, 8);

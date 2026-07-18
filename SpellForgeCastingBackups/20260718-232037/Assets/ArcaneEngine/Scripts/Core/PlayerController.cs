@@ -3,7 +3,7 @@ using UnityEngine;
 namespace ArcaneEngine
 {
     [DefaultExecutionOrder(900)]
-    public sealed partial class PlayerController : MonoBehaviour, IDamageable, ITargetable
+    public sealed class PlayerController : MonoBehaviour, IDamageable, ITargetable
     {
         public float Health { get; private set; }
         public float Mana { get; private set; }
@@ -502,13 +502,30 @@ private void ApplyHardwareAim()
             transform.rotation = Quaternion.LookRotation(AimDirection, Vector3.up);
         }
 
-        private void HandleCastInput(
-    SpellSlot slot,
-    bool held,
-    bool released)
-{
-    HandleCastInputStable(slot, held, released);
-}
+        private void HandleCastInput(SpellSlot slot, bool held, bool released)
+        {
+            int index = (int)slot;
+            CompiledSpell spell = GameWorld.Instance.GetSpell(slot);
+            if (spell == null) return;
+            if (spell.castMethod == SpellCastMethod.Charged)
+            {
+                if (!ProfileManager.Current.controls.holdToCharge)
+                {
+                    if (held && _chargeTimes[index] <= 0f) { _chargeTimes[index] = 1f; TryManualCast(slot, 1.25f, 1f); }
+                    if (released) _chargeTimes[index] = 0f;
+                    return;
+                }
+                if (held && _cooldowns[index] <= 0f) _chargeTimes[index] = Mathf.Min(1.5f, _chargeTimes[index] + Time.deltaTime);
+                if (released && _chargeTimes[index] > 0.05f)
+                {
+                    float normalized = Mathf.Clamp01(_chargeTimes[index] / 1.5f);
+                    _chargeTimes[index] = 0f;
+                    TryManualCast(slot, Mathf.Lerp(0.75f, 2.1f, normalized), Mathf.Lerp(0.7f, 1.5f, normalized));
+                }
+                return;
+            }
+            if (held) TryManualCast(slot, 1f, 1f);
+        }
 
         private void TryManualCast(SpellSlot slot, float castPower, float costScale)
         {

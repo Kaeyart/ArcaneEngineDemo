@@ -7,7 +7,7 @@ using UnityEngine.UIElements;
 namespace ArcaneEngine
 {
     [DefaultExecutionOrder(-40)]
-    public sealed partial class V21ProductUI : MonoBehaviour
+    public sealed class V21ProductUI : MonoBehaviour
     {
         private enum ScreenKind { None, Workshop, Links, Inventory, Training }
         public static V21ProductUI Instance { get; private set; }
@@ -53,87 +53,38 @@ namespace ArcaneEngine
         private static readonly Color Muted = new Color(0.58f, 0.68f, 0.78f);
 
         private void Awake()
-{
-    Instance = this;
-
-    _document = RuntimeUIFactory.CreateDocument(
-        transform,
-        "Arcane Engine Product Screens",
-        80);
-
-    _root = _document.rootVisualElement;
-    _root.style.position = Position.Absolute;
-    _root.style.left =
-        _root.style.right =
-        _root.style.top =
-        _root.style.bottom = 0f;
-
-    _root.style.backgroundColor =
-        new Color(0f, 0.015f, 0.025f, 0.86f);
-
-    _root.style.paddingLeft =
-        _root.style.paddingRight = 42f;
-
-    _root.style.paddingTop =
-        _root.style.paddingBottom = 28f;
-
-    _root.style.display = DisplayStyle.None;
-
-    InstallWorkshopDragEvents();
-}
+        {
+            Instance = this;
+            _document = RuntimeUIFactory.CreateDocument(transform, "Arcane Engine Product Screens", 80);
+            _root = _document.rootVisualElement;
+            _root.style.position = Position.Absolute;
+            _root.style.left = _root.style.right = _root.style.top = _root.style.bottom = 0f;
+            _root.style.backgroundColor = new Color(0f, 0.015f, 0.025f, 0.86f);
+            _root.style.paddingLeft = _root.style.paddingRight = 42f;
+            _root.style.paddingTop = _root.style.paddingBottom = 28f;
+            _root.style.display = DisplayStyle.None;
+            _root.RegisterCallback<PointerUpEvent>(HandleWorkshopDrop, TrickleDown.TrickleDown);
+        }
 
         private void OnDestroy() { if (Instance == this) Instance = null; }
 
         private void Update()
-{
-    GameWorld world = GameWorld.Instance;
-
-    if (world == null)
-        return;
-
-    ControlSettings controls =
-        ProfileManager.Current.controls;
-
-    if (world.RunActive &&
-        ArcaneInput.GetKeyDown(controls.workshop))
-    {
-        Toggle(ScreenKind.Workshop);
-    }
-    else if (world.RunActive &&
-             ArcaneInput.GetKeyDown(controls.spellLinks))
-    {
-        Toggle(ScreenKind.Links);
-    }
-    else if (world.RunActive &&
-             ArcaneInput.GetKeyDown(controls.inventory))
-    {
-        Toggle(ScreenKind.Inventory);
-    }
-    else if (world.TrainingMode &&
-             ArcaneInput.GetKeyDown(KeyCode.F2))
-    {
-        Toggle(ScreenKind.Training);
-    }
-
-    if (IsOpen &&
-        (ArcaneInput.GetKeyDown(KeyCode.Escape) ||
-         ArcaneInput.GamepadCancelDown))
-    {
-        Close();
-    }
-
-    if (_screen == ScreenKind.Workshop &&
-        world.CanEditSpells)
-    {
-        if (ArcaneInput.GetKeyDown(KeyCode.Q))
-            RotateWorkshopDrag(5);
-
-        if (ArcaneInput.GetKeyDown(KeyCode.E))
-            RotateWorkshopDrag(1);
-    }
-
-    AnimateSpellPreview();
-}
+        {
+            GameWorld world = GameWorld.Instance;
+            if (world == null) return;
+            ControlSettings controls = ProfileManager.Current.controls;
+            if (world.RunActive && ArcaneInput.GetKeyDown(controls.workshop)) Toggle(ScreenKind.Workshop);
+            else if (world.RunActive && ArcaneInput.GetKeyDown(controls.spellLinks)) Toggle(ScreenKind.Links);
+            else if (world.RunActive && ArcaneInput.GetKeyDown(controls.inventory)) Toggle(ScreenKind.Inventory);
+            else if (world.TrainingMode && ArcaneInput.GetKeyDown(KeyCode.F2)) Toggle(ScreenKind.Training);
+            if (IsOpen && (ArcaneInput.GetKeyDown(KeyCode.Escape) || ArcaneInput.GamepadCancelDown)) Close();
+            if (_screen == ScreenKind.Workshop && world.CanEditSpells)
+            {
+                if (ArcaneInput.GetKeyDown(KeyCode.Q)) { _rotation = (_rotation + 5) % 6; Rebuild(); }
+                if (ArcaneInput.GetKeyDown(KeyCode.E)) { _rotation = (_rotation + 1) % 6; Rebuild(); }
+            }
+            AnimateSpellPreview();
+        }
 
         public void OpenWorkshop() { Open(ScreenKind.Workshop); }
         public void OpenLinks() { Open(ScreenKind.Links); }
@@ -141,23 +92,15 @@ namespace ArcaneEngine
         public void OpenTraining() { Open(ScreenKind.Training); }
 
         public void Close()
-{
-    CancelWorkshopDrag(false);
-
-    _screen = ScreenKind.None;
-    _root.style.display = DisplayStyle.None;
-    _dragRune = null;
-    _dragPiece = null;
-    _dragItem = null;
-
-    if (GameWorld.Instance != null &&
-        GameWorld.Instance.RunActive)
-    {
-        Time.timeScale = 1f;
-    }
-
-    ArcaneInput.SuppressPointerTransitions();
-}
+        {
+            _screen = ScreenKind.None;
+            _root.style.display = DisplayStyle.None;
+            _dragRune = null;
+            _dragPiece = null;
+            _dragItem = null;
+            if (GameWorld.Instance != null && GameWorld.Instance.RunActive) Time.timeScale = 1f;
+            ArcaneInput.SuppressPointerTransitions();
+        }
 
         private void Toggle(ScreenKind screen) { if (_screen == screen) Close(); else Open(screen); }
 
@@ -172,9 +115,6 @@ namespace ArcaneEngine
 
         private void Rebuild()
         {
-    CancelWorkshopDrag(false);
-    _boardCellCenters.Clear();
-
             _root.Clear();
             VisualElement frame = new VisualElement();
             frame.style.flexGrow = 1f;
@@ -263,19 +203,17 @@ namespace ArcaneEngine
             runeScroll.style.flexGrow = 1f;
             foreach (KeyValuePair<string, int> pair in world.ModifierInventory.Where(value => value.Value > 0).OrderBy(value => DemoCatalog.GetModifier(value.Key).displayName))
             {
-    SpellModifierDefinition rune =
-        DemoCatalog.GetModifier(pair.Key);
-
-    if (rune == null)
-        continue;
-
-    runeScroll.Add(
-        CreateWorkshopRuneItem(
-            world,
-            board,
-            rune,
-            pair.Value));
-}
+                SpellModifierDefinition rune = DemoCatalog.GetModifier(pair.Key);
+                if (rune == null) continue;
+                string id = rune.id;
+                Button button = ActionButton(rune.FullDisplayName.Replace("\n", " — ") + "  ×" + pair.Value + "\n" +
+                    "Capacity " + rune.capacityCost + " · " + rune.shortDescription, () => { _selectedRune = id; _dragRune = id; Rebuild(); });
+                button.style.height = 66f;
+                button.style.whiteSpace = WhiteSpace.Normal;
+                button.style.backgroundColor = _selectedRune == id ? rune.uiColor : Card;
+                button.RegisterCallback<PointerDownEvent>(_ => _dragRune = id);
+                runeScroll.Add(button);
+            }
             palette.Add(runeScroll);
             body.Add(palette);
 
@@ -327,13 +265,79 @@ namespace ArcaneEngine
         private static readonly float HexWidth = Mathf.Sqrt(3f) * HexRadius;
         private const float HexRowStep = HexRadius * 1.5f;
 
-        private VisualElement CreateHexCell(
-    GameWorld world,
-    SpellBoard board,
-    HexCoord cell)
-{
-    return CreateWorkshopHexCell(world, board, cell);
-}
+        private VisualElement CreateHexCell(GameWorld world, SpellBoard board, HexCoord cell)
+        {
+            float radius = HexRadius;
+            float originX = 285f;
+            float originY = 285f;
+            float centerX = originX + (cell.q + cell.r * 0.5f) * HexWidth;
+            float centerY = originY + cell.r * HexRowStep;
+            PlacedModifier piece = board.PieceAt(cell);
+            bool core = cell.Equals(new HexCoord(0, 0));
+            SpellModifierDefinition definition = piece == null ? null : DemoCatalog.GetModifier(piece.modifierId);
+            string text = core ? "CORE" : definition == null ? (board.IsCellUnlocked(cell) ? "·" : "×") : definition.displayName.Substring(0, Mathf.Min(4, definition.displayName.Length)).ToUpperInvariant();
+            Color cellColor = core ? DemoCatalog.GetCore(board.coreId).color :
+                definition != null ? definition.uiColor : board.IsCellUnlocked(cell) ? new Color(0.07f, 0.12f, 0.17f) : new Color(0.025f, 0.035f, 0.05f);
+            HexCellElement cellEl = new HexCellElement();
+            cellEl.name = "SpellHex_" + cell.q + "_" + cell.r;
+            cellEl.userData = cell;
+            cellEl.style.position = Position.Absolute;
+            cellEl.style.left = centerX - HexWidth * 0.5f;
+            cellEl.style.top = centerY - radius;
+            cellEl.style.width = HexWidth;
+            cellEl.style.height = radius * 2f;
+            cellEl.FillColor = cellColor;
+            cellEl.BorderColor = new Color(0.35f, 0.55f, 0.85f, 0.8f);
+            cellEl.BorderWidth = 2f;
+            Label label = new Label(text);
+            label.style.unityTextAlign = TextAnchor.MiddleCenter;
+            label.style.color = Text;
+            label.style.fontSize = 11;
+            label.style.unityFontStyleAndWeight = FontStyle.Bold;
+            label.style.whiteSpace = WhiteSpace.Normal;
+            label.pickingMode = PickingMode.Ignore;
+            cellEl.Add(label);
+            _boardCellCenters[cell] = new Vector2(centerX, centerY);
+            cellEl.RegisterCallback<PointerDownEvent>(evt =>
+            {
+                _selectedCell = cell;
+                if (piece != null && evt.button == 0)
+                {
+                    _dragPiece = piece;
+                    _isWorkshopDragging = true;
+                }
+                if (evt.button == 1 && piece != null)
+                {
+                    _ignoreHexClickFrame = Time.frameCount;
+                    evt.StopPropagation();
+                    if (!world.CanEditSpells) { SetMessage(world.SpellEditLockReason); return; }
+                    string removedId;
+                    if (board.RemoveAt(cell, out removedId)) { world.ReturnModifier(removedId); Changed("Support Rune returned to the Run inventory."); }
+                    _dragRune = null;
+                    _selectedRune = null;
+                    _selectedCell = null;
+                    _isWorkshopDragging = false;
+                }
+            });
+            cellEl.RegisterCallback<PointerUpEvent>(_ =>
+            {
+                if (_isWorkshopDragging && _dragPiece != null && piece != _dragPiece)
+                {
+                    _ignoreHexClickFrame = Time.frameCount;
+                    string reason;
+                    if (board.TryMove(_dragPiece, cell, _rotation, out reason)) Changed(reason); else SetMessage(reason);
+                }
+                else if (!string.IsNullOrEmpty(_dragRune))
+                {
+                    _ignoreHexClickFrame = Time.frameCount; 
+                    PlaceRune(world, board, _dragRune, cell);
+                }
+                _dragPiece = null;
+                _dragRune = null;
+                _isWorkshopDragging = false;
+            });
+            return cellEl;
+        }
 
         private void HandleWorkshopDrop(PointerUpEvent evt)
         {
