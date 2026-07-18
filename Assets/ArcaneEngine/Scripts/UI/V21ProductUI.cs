@@ -43,9 +43,6 @@ namespace ArcaneEngine
         private readonly List<VisualElement> _previewActors = new List<VisualElement>();
         private CompiledSpell _previewSpell;
         private int _ignoreHexClickFrame = -100;
-        private VisualElement _boardCanvas;
-        private HexCoord? _dragHoverCell;
-        private bool _dragging;
 
         private static readonly Color Panel = new Color(0.025f, 0.04f, 0.07f, 0.98f);
         private static readonly Color Card = new Color(0.055f, 0.085f, 0.13f, 0.98f);
@@ -65,7 +62,6 @@ namespace ArcaneEngine
             _root.style.paddingTop = _root.style.paddingBottom = 28f;
             _root.style.display = DisplayStyle.None;
             _root.RegisterCallback<PointerUpEvent>(HandleWorkshopDrop, TrickleDown.TrickleDown);
-            _root.RegisterCallback<PointerMoveEvent>(OnPointerMove, TrickleDown.TrickleDown);
         }
 
         private void OnDestroy() { if (Instance == this) Instance = null; }
@@ -80,20 +76,10 @@ namespace ArcaneEngine
             else if (world.RunActive && ArcaneInput.GetKeyDown(controls.inventory)) Toggle(ScreenKind.Inventory);
             else if (world.TrainingMode && ArcaneInput.GetKeyDown(KeyCode.F2)) Toggle(ScreenKind.Training);
             if (IsOpen && (ArcaneInput.GetKeyDown(KeyCode.Escape) || ArcaneInput.GamepadCancelDown)) Close();
-            if (_screen == ScreenKind.Workshop)
+            if (_screen == ScreenKind.Workshop && world.CanEditSpells)
             {
-                float scroll = ArcaneInput.MouseScrollY;
-                if (Mathf.Abs(scroll) > 0.01f && world.CanEditSpells)
-                {
-                    _rotation = (_rotation + (scroll > 0f ? 5 : 1)) % 6;
-                    if (!string.IsNullOrEmpty(_selectedRune) || _dragging) RefreshGhost();
-                    else Rebuild();
-                }
-                else if (world.CanEditSpells)
-                {
-                    if (ArcaneInput.GetKeyDown(KeyCode.Q)) { _rotation = (_rotation + 1) % 6; if (_dragging || !string.IsNullOrEmpty(_selectedRune)) RefreshGhost(); else Rebuild(); }
-                    if (ArcaneInput.GetKeyDown(KeyCode.E)) { _rotation = (_rotation + 5) % 6; if (_dragging || !string.IsNullOrEmpty(_selectedRune)) RefreshGhost(); else Rebuild(); }
-                }
+                if (ArcaneInput.GetKeyDown(KeyCode.Q)) { _rotation = (_rotation + 5) % 6; Rebuild(); }
+                if (ArcaneInput.GetKeyDown(KeyCode.E)) { _rotation = (_rotation + 1) % 6; Rebuild(); }
             }
             AnimateSpellPreview();
         }
@@ -103,61 +89,6 @@ namespace ArcaneEngine
         public void OpenInventory() { Open(ScreenKind.Inventory); }
         public void OpenTraining() { Open(ScreenKind.Training); }
 
-        private void RefreshGhost()
-        {
-            if (_boardCanvas == null) return;
-            GameWorld world = GameWorld.Instance;
-            SpellBoard board = world?.GetBoard(_slot);
-            if (board == null) return;
-            SpellModifierDefinition ghostDef = !string.IsNullOrEmpty(_selectedRune) ? DemoCatalog.GetModifier(_selectedRune) : null;
-            HexCoord? hover = _dragHoverCell ?? _selectedCell;
-            foreach (VisualElement child in _boardCanvas.Children())
-            {
-                if (!(child.userData is HexCoord cell)) continue;
-                PlacedModifier piece = board.PieceAt(cell);
-                bool core = cell.Equals(new HexCoord(0, 0));
-                SpellModifierDefinition def = piece == null ? null : DemoCatalog.GetModifier(piece.modifierId);
-                bool ghosted = false;
-                bool conflict = false;
-                if (ghostDef != null && hover.HasValue)
-                {
-                    HexCoord anchor = hover.Value;
-                    foreach (HexCoord local in ghostDef.shape)
-                    {
-                        HexCoord rotated = HexCoord.Rotate(local, _rotation);
-                        HexCoord ghostCell = new HexCoord(anchor.q + rotated.q, anchor.r + rotated.r);
-                        if (cell.Equals(ghostCell)) { ghosted = true; if (board.PieceAt(ghostCell) != null) conflict = true; }
-                    }
-                }
-                if (ghosted) { child.style.opacity = 0.45f; child.style.backgroundColor = conflict ? new Color(1f, 0.2f, 0.2f) : ghostDef.uiColor; }
-                else if (piece != null) { child.style.opacity = 1f; child.style.backgroundColor = def != null ? def.uiColor : new Color(0.07f, 0.12f, 0.17f); }
-                else if (core) { child.style.opacity = 1f; child.style.backgroundColor = DemoCatalog.GetCore(board.coreId).color; }
-                else { child.style.opacity = 1f; child.style.backgroundColor = board.IsCellUnlocked(cell) ? new Color(0.07f, 0.12f, 0.17f) : new Color(0.025f, 0.035f, 0.05f); }
-            }
-        }
-
-        private void OnPointerMove(PointerMoveEvent evt)
-        {
-            if (_screen != ScreenKind.Workshop || (string.IsNullOrEmpty(_dragRune) && _dragPiece == null)) return;
-            if (_boardCanvas == null) return;
-            Vector2 localPos = _boardCanvas.WorldToLocal(evt.position);
-            HexCoord? closest = null;
-            float closestDist = float.MaxValue;
-            foreach (VisualElement child in _boardCanvas.Children())
-            {
-                if (!(child.userData is HexCoord cell)) continue;
-                float cx = child.resolvedStyle.left + child.resolvedStyle.width * 0.5f;
-                float cy = child.resolvedStyle.top + child.resolvedStyle.height * 0.5f;
-                float dist = (new Vector2(localPos.x - cx, localPos.y - cy)).sqrMagnitude;
-                if (dist < closestDist) { closestDist = dist; closest = cell; }
-            }
-            if (closest.HasValue && (!_dragHoverCell.HasValue || !closest.Value.Equals(_dragHoverCell.Value)))
-            {
-                _dragHoverCell = closest;
-                RefreshGhost();
-            }
-        }
-
         public void Close()
         {
             _screen = ScreenKind.None;
@@ -165,8 +96,6 @@ namespace ArcaneEngine
             _dragRune = null;
             _dragPiece = null;
             _dragItem = null;
-            _dragHoverCell = null;
-            _dragging = false;
             if (GameWorld.Instance != null && GameWorld.Instance.RunActive) Time.timeScale = 1f;
             ArcaneInput.SuppressPointerTransitions();
         }
@@ -294,13 +223,13 @@ namespace ArcaneEngine
             boardHeader.Add(ActionButton("UNDO", () => { if (board.Undo()) Changed("Undo applied."); }));
             boardHeader.Add(ActionButton("REDO", () => { if (board.Redo()) Changed("Redo applied."); }));
             boardPanel.Add(boardHeader);
-            _boardCanvas = new VisualElement();
-            _boardCanvas.style.width = 570f;
-            _boardCanvas.style.height = 570f;
-            _boardCanvas.style.position = Position.Relative;
-            _boardCanvas.style.alignSelf = Align.Center;
-            foreach (HexCoord cell in board.AllCells()) _boardCanvas.Add(CreateHexCell(world, board, cell));
-            boardPanel.Add(_boardCanvas);
+            VisualElement boardCanvas = new VisualElement();
+            boardCanvas.style.width = 570f;
+            boardCanvas.style.height = 570f;
+            boardCanvas.style.position = Position.Relative;
+            boardCanvas.style.alignSelf = Align.Center;
+            foreach (HexCoord cell in board.AllCells()) boardCanvas.Add(CreateHexCell(world, board, cell));
+            boardPanel.Add(boardCanvas);
             body.Add(boardPanel);
 
             VisualElement details = CardPanel(390f);
@@ -355,14 +284,12 @@ namespace ArcaneEngine
                 if (piece != null && evt.button == 0) _dragPiece = piece;
                 if (evt.button == 1 && piece != null)
                 {
-                    _ignoreHexClickFrame = Time.frameCount;
-                    evt.StopPropagation();
-                    if (!world.CanEditSpells) { SetMessage(world.SpellEditLockReason); return; }
-                    string removedId;
-                    if (board.RemoveAt(cell, out removedId)) { world.ReturnModifier(removedId); Changed("Support Rune returned to the Run inventory."); }
-                    _dragRune = null;
-                    _selectedRune = null;
-                    _selectedCell = null;
+                    if (evt.shiftKey) RemoveAt(world, board, cell);
+                    else
+                    {
+                        string rotateMessage;
+                        if (board.RotateAt(cell, 1, out rotateMessage)) Changed(rotateMessage); else SetMessage(rotateMessage);
+                    }
                 }
             });
             button.RegisterCallback<PointerUpEvent>(_ =>
