@@ -8,4 +8,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/ArcaneEngine/Scenes/Main.unity
     guid: 9b1bf94917174cb59ef1dac35d2e458a
-  m_configObjects: {}
+  m_configObjects:
+    com.unity.adaptivePerformance.basic.provider_settings: {fileID: 11400000, guid: 0a238ddeb56ed682683877a2606cd62e, type: 2}
+    com.unity.adaptiveperformance.loader_settings: {fileID: 11400000, guid: 743be06be38cbc3678c0b56a6a6603d1, type: 2}
+    com.unity.adaptiveperformance.simulator.provider_settings: {fileID: 11400000, guid: 10e76d63d006f5da09fc521fd1d30b90, type: 2}
+    com.unity.dt.app-ui: {fileID: 11400000, guid: 1b1c20d82303e4b5781c3ef50ac1449f, type: 2}

@@ -31,8 +31,15 @@ namespace ArcaneEngine.Editor
             string[] required = { Root + "/Spells", Root + "/Runes", Root + "/Items", Root + "/Relics", Root + "/Rooms",
                 Root + "/Affixes", Root + "/RoomDefinitions", Root + "/Shops", Root + "/Rewards" };
             if (required.All(AssetDatabase.IsValidFolder) &&
+                AssetDatabase.FindAssets("t:SpellCoreDefinition", new[] { Root + "/Spells" }).Length > 0 &&
+                AssetDatabase.FindAssets("t:SpellModifierDefinition", new[] { Root + "/Runes" }).Length > 0 &&
+                AssetDatabase.FindAssets("t:ItemDefinition", new[] { Root + "/Items" }).Length > 0 &&
+                AssetDatabase.FindAssets("t:RelicDefinition", new[] { Root + "/Relics" }).Length > 0 &&
                 AssetDatabase.FindAssets("t:V21RoomLayoutAsset", new[] { Root + "/Rooms" }).Length >= 36 &&
-                AssetDatabase.FindAssets("t:V21AffixContentAsset", new[] { Root + "/Affixes" }).Length > 0) return;
+                AssetDatabase.FindAssets("t:V21AffixContentAsset", new[] { Root + "/Affixes" }).Length > 0 &&
+                AssetDatabase.FindAssets("t:V21RoomDefinitionAsset", new[] { Root + "/RoomDefinitions" }).Length > 0 &&
+                AssetDatabase.FindAssets("t:V21ShopServiceAsset", new[] { Root + "/Shops" }).Length > 0 &&
+                AssetDatabase.FindAssets("t:V21RewardDefinitionAsset", new[] { Root + "/Rewards" }).Length > 0) return;
             RebuildAll();
         }
 

@@ -1,12 +1,12 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!83 &-5629403494497111637
+--- !u!83 &-4719520429663057777
 AudioClip:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: boss_phase_take_1
+  m_Name: boss_phase_take_3
   m_LoadType: 0
   m_Channels: 1
   m_Frequency: 44100
@@ -28,7 +28,7 @@ AudioClip:
     m_Offset: 0
     m_Size: 0
   m_EditorCompressionFormat: 0
---- !u!83 &-5338035818742359915
+--- !u!83 &-4401421054279221487
 AudioClip:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -71,20 +71,20 @@ MonoBehaviour:
   stableId: boss_phase
   category: Effects
   clips:
-  - {fileID: -5629403494497111637}
-  - {fileID: -5338035818742359915}
-  - {fileID: 2084286129700937577}
+  - {fileID: 7983456523748219190}
+  - {fileID: -4401421054279221487}
+  - {fileID: -4719520429663057777}
   pitchRange: {x: 0.95, y: 1.05}
   volumeRange: {x: 0.82, y: 1}
   maxVoices: 8
   loop: 0
---- !u!83 &2084286129700937577
+--- !u!83 &7983456523748219190
 AudioClip:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: boss_phase_take_3
+  m_Name: boss_phase_take_1
   m_LoadType: 0
   m_Channels: 1
   m_Frequency: 44100

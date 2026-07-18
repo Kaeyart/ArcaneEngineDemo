@@ -15,12 +15,12 @@ MonoBehaviour:
   stableId: music_combat
   category: Music
   clips:
-  - {fileID: 2794327186126092951}
+  - {fileID: 6005958282956651305}
   pitchRange: {x: 1, y: 1}
   volumeRange: {x: 0.82, y: 1}
   maxVoices: 1
   loop: 1
---- !u!83 &2794327186126092951
+--- !u!83 &6005958282956651305
 AudioClip:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

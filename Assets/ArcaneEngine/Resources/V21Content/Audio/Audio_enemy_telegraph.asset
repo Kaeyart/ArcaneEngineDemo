@@ -1,12 +1,12 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!83 &-8558050274407986768
+--- !u!83 &-3636951966602136147
 AudioClip:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: enemy_telegraph_take_2
+  m_Name: enemy_telegraph_take_1
   m_LoadType: 0
   m_Channels: 1
   m_Frequency: 44100
@@ -43,14 +43,14 @@ MonoBehaviour:
   stableId: enemy_telegraph
   category: Enemy
   clips:
-  - {fileID: 8102442574721286319}
-  - {fileID: -8558050274407986768}
-  - {fileID: 7856631553837703395}
+  - {fileID: -3636951966602136147}
+  - {fileID: 7635854973065165749}
+  - {fileID: 6360174754487030567}
   pitchRange: {x: 0.95, y: 1.05}
   volumeRange: {x: 0.82, y: 1}
   maxVoices: 8
   loop: 0
---- !u!83 &7856631553837703395
+--- !u!83 &6360174754487030567
 AudioClip:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -78,13 +78,13 @@ AudioClip:
     m_Offset: 0
     m_Size: 0
   m_EditorCompressionFormat: 0
---- !u!83 &8102442574721286319
+--- !u!83 &7635854973065165749
 AudioClip:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: enemy_telegraph_take_1
+  m_Name: enemy_telegraph_take_2
   m_LoadType: 0
   m_Channels: 1
   m_Frequency: 44100

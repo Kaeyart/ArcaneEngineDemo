@@ -13,7 +13,7 @@ namespace ArcaneEngine.Tests
         {
             yield return null;
             Assert.That(GameWorld.Instance, Is.Not.Null);
-            Camera[] main = Object.FindObjectsByType<Camera>(FindObjectsSortMode.None)
+            Camera[] main = Object.FindObjectsByType<Camera>()
                 .Where(value => value != null && value.CompareTag("MainCamera")).ToArray();
             Assert.That(main.Length, Is.EqualTo(1));
             Assert.That(Camera.main, Is.SameAs(main[0]));

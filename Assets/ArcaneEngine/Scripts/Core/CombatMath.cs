@@ -22,6 +22,14 @@ namespace ArcaneEngine
             float t = Mathf.Clamp01(Vector3.Dot(point - start, segment) / lengthSquared);
             return (point - (start + segment * t)).sqrMagnitude;
         }
+
+        public static float CalculateDamage(float baseDamage, float resistance, float armor, float criticalMultiplier = 1.0f, float elementalMultiplier = 1.0f)
+        {
+            if (baseDamage <= 0f) return 0f;
+            float resistanceMitigation = Mathf.Max(0f, 1f - resistance / 100f);
+            float armorMitigation = BalanceTuning.ArmorMultiplier(armor);
+            return Mathf.Max(0f, baseDamage * resistanceMitigation * armorMitigation * criticalMultiplier * elementalMultiplier);
+        }
     }
 
     public static class RuntimeValidation

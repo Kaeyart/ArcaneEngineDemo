@@ -1,15 +1,21 @@
 {
   "dependencies": {
+    "com.coplaydev.unity-mcp": "https://github.com/justinpbarnett/unity-mcp.git?path=/MCPForUnity",
+    "com.unity.ai.assistant": "2.15.0-pre.1",
+    "com.unity.ai.inference": "2.6.1",
     "com.unity.inputsystem": "1.19.0",
-    "com.unity.test-framework": "1.4.6",
     "com.unity.sdk.linux-arm64": "1.1.0",
     "com.unity.sdk.linux-x86_64": "1.1.0",
+    "com.unity.test-framework": "1.4.6",
+    "com.unity.textmeshpro": "3.0.9",
     "com.unity.toolchain.linux-x86_64-linux": "1.1.0",
+    "com.unity.modules.adaptiveperformance": "1.0.0",
     "com.unity.modules.audio": "1.0.0",
     "com.unity.modules.imgui": "1.0.0",
     "com.unity.modules.jsonserialize": "1.0.0",
     "com.unity.modules.particlesystem": "1.0.0",
     "com.unity.modules.physics": "1.0.0",
-    "com.unity.modules.uielements": "1.0.0"
+    "com.unity.modules.uielements": "1.0.0",
+    "com.unity.modules.unitywebrequest": "1.0.0"
   }
 }

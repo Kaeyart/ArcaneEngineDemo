@@ -1,12 +1,12 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!83 &-2064583447404731721
+--- !u!83 &-7060775161759191379
 AudioClip:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: status_consume_take_1
+  m_Name: status_consume_take_2
   m_LoadType: 0
   m_Channels: 1
   m_Frequency: 44100
@@ -28,7 +28,7 @@ AudioClip:
     m_Offset: 0
     m_Size: 0
   m_EditorCompressionFormat: 0
---- !u!83 &-1280272980983857002
+--- !u!83 &-6286553915102379906
 AudioClip:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -71,20 +71,20 @@ MonoBehaviour:
   stableId: status_consume
   category: Effects
   clips:
-  - {fileID: -2064583447404731721}
-  - {fileID: 3056672807666309148}
-  - {fileID: -1280272980983857002}
+  - {fileID: 2059224374925952360}
+  - {fileID: -7060775161759191379}
+  - {fileID: -6286553915102379906}
   pitchRange: {x: 0.95, y: 1.05}
   volumeRange: {x: 0.82, y: 1}
   maxVoices: 8
   loop: 0
---- !u!83 &3056672807666309148
+--- !u!83 &2059224374925952360
 AudioClip:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: status_consume_take_2
+  m_Name: status_consume_take_1
   m_LoadType: 0
   m_Channels: 1
   m_Frequency: 44100

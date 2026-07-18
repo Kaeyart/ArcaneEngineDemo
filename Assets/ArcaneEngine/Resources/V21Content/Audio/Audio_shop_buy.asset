@@ -1,12 +1,12 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!83 &-6528070362071911865
+--- !u!83 &-8029001248462712413
 AudioClip:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: shop_buy_take_3
+  m_Name: shop_buy_take_2
   m_LoadType: 0
   m_Channels: 1
   m_Frequency: 44100
@@ -28,13 +28,13 @@ AudioClip:
     m_Offset: 0
     m_Size: 0
   m_EditorCompressionFormat: 0
---- !u!83 &-4746809185316216601
+--- !u!83 &-3578363214399928857
 AudioClip:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: shop_buy_take_2
+  m_Name: shop_buy_take_3
   m_LoadType: 0
   m_Channels: 1
   m_Frequency: 44100
@@ -71,14 +71,14 @@ MonoBehaviour:
   stableId: shop_buy
   category: Effects
   clips:
-  - {fileID: 1898547750115465340}
-  - {fileID: -4746809185316216601}
-  - {fileID: -6528070362071911865}
+  - {fileID: 2914725594219869676}
+  - {fileID: -8029001248462712413}
+  - {fileID: -3578363214399928857}
   pitchRange: {x: 0.95, y: 1.05}
   volumeRange: {x: 0.82, y: 1}
   maxVoices: 8
   loop: 0
---- !u!83 &1898547750115465340
+--- !u!83 &2914725594219869676
 AudioClip:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

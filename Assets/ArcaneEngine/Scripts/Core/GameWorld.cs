@@ -29,7 +29,7 @@ namespace ArcaneEngine
             get
             {
                 if (!RunActive || TrainingMode) return true;
-                RunDirector run = GetComponent<RunDirector>();
+                RunDirector run = _runDirectorResolved ? _cachedRunDirector : GetComponent<RunDirector>();
                 if (run == null) return Enemies.Count == 0;
                 if (run.EncounterActive || run.ReinforcementsPending || Enemies.Count > 0) return false;
                 return true;
@@ -41,7 +41,7 @@ namespace ArcaneEngine
             get
             {
                 if (CanEditSpells) return string.Empty;
-                RunDirector run = GetComponent<RunDirector>();
+                RunDirector run = _runDirectorResolved ? _cachedRunDirector : GetComponent<RunDirector>();
                 if (run != null && run.ReinforcementsPending) return "Reinforcements are still incoming.";
                 if (Enemies.Count > 0 || (run != null && run.EncounterActive)) return "Clear the room before changing spells.";
                 return "Wait for the current room state to become safe.";
@@ -56,6 +56,8 @@ namespace ArcaneEngine
         private readonly HashSet<string> _bankableCoreInstances = new HashSet<string>();
         private Transform _environment;
         private Transform _equipmentVisuals;
+        private RunDirector _cachedRunDirector;
+        private bool _runDirectorResolved;
 
         public bool ModalOpen
         {
@@ -86,6 +88,8 @@ namespace ArcaneEngine
 
         private void Start()
         {
+            _cachedRunDirector = GetComponent<RunDirector>();
+            _runDirectorResolved = true;
             CreatePlayerAndCamera();
             RecalculateStats(false);
             RunActive = false;
@@ -371,6 +375,7 @@ namespace ArcaneEngine
             bool hadPendingReward = SpellLinks.HasPendingReward;
             if (!SpellLinks.TryAdd(sourceSlot, destinationSlot, condition, out message)) return false;
             if (hadPendingReward && !SpellLinks.HasPendingReward) CompletePendingSpellSystemReward();
+            MarkSpellsDirty();
             return true;
         }
 
@@ -517,7 +522,7 @@ namespace ArcaneEngine
                 if (_activeCores[i] != null && _activeCoreBankable[i] && ProfileManager.Current.spellArchive.All(c => c.instanceId != _activeCores[i].instanceId))
                     ProfileManager.Current.spellArchive.Add(_activeCores[i]);
             Equipment.BankAllRunItems();
-            RunDirector run = GetComponent<RunDirector>();
+            RunDirector run = _runDirectorResolved ? _cachedRunDirector : GetComponent<RunDirector>();
             if (run != null) ProfileManager.SecureForgeMaterials(run.ForgeDust, run.BindingRunes, run.CorruptionCores);
             Equipment.SaveSanctuaryEquipment(false);
             ProfileManager.Save();
@@ -536,7 +541,7 @@ namespace ArcaneEngine
             for (int i = Enemies.Count - 1; i >= 0; i--)
             {
                 EnemyController enemy = Enemies[i];
-                if (enemy == null || enemy.IsDead) { Enemies.RemoveAt(i); continue; }
+                if (enemy == null || enemy.IsDead) continue;
                 if (excluded != null && excluded.Contains(enemy.GetEntityId())) continue;
                 float distance = (enemy.transform.position - position).sqrMagnitude;
                 if (distance < bestDistance) { bestDistance = distance; best = enemy; }
@@ -546,7 +551,7 @@ namespace ArcaneEngine
 
         public void SpawnLoot(Vector3 position, bool guaranteedUnique = false)
         {
-            RunDirector director = GetComponent<RunDirector>();
+            RunDirector director = _runDirectorResolved ? _cachedRunDirector : GetComponent<RunDirector>();
             if (director == null) return;
             if (!guaranteedUnique && LootPickup.ActiveCount >= 24) return;
             if (guaranteedUnique)
@@ -790,7 +795,7 @@ namespace ArcaneEngine
 
         private void CompletePendingSpellSystemReward()
         {
-            RunDirector run = GetComponent<RunDirector>();
+            RunDirector run = _runDirectorResolved ? _cachedRunDirector : GetComponent<RunDirector>();
             if (run != null)
             {
                 run.SaveRunCheckpoint();

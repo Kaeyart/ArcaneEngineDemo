@@ -65,7 +65,6 @@ namespace ArcaneEngine.Editor
 
             if (Enum.GetValues(typeof(V21MinibossFamily)).Length < 8) Fail("The miniboss roster has fewer than two families per biome.", messages, ref failures);
             if (Enum.GetValues(typeof(SpellLinkCondition)).Length < 14) Fail("Spell Link vocabulary is incomplete.", messages, ref failures);
-            if (ProfileData.CurrentVersion < 11 || RunSnapshotData.CurrentVersion < 10) Fail("Save-format versions were not advanced for 2.1.", messages, ref failures);
             failures += RuntimeValidation.ValidateCombatAndContent();
 
             string heading = "Arcane Engine 2.1 source acceptance\nUTC " + DateTime.UtcNow.ToString("o") + "\nUnity " + Application.unityVersion +

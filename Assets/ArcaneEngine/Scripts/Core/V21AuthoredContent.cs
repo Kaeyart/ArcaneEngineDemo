@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace ArcaneEngine
 {
@@ -159,6 +162,18 @@ namespace ArcaneEngine
         public static IReadOnlyList<string> ValidatePersistentAssets()
         {
             List<string> failures = new List<string>();
+#if UNITY_EDITOR
+            // Resources.LoadAll can return empty in EditMode test contexts — fall back to AssetDatabase.
+            ValidateIds(LoadRuntimeOrEditor<SpellCoreDefinition>("V21Content/Spells", "t:SpellCoreDefinition", value => value == null ? null : value.id), "Spell", failures);
+            ValidateIds(LoadRuntimeOrEditor<SpellModifierDefinition>("V21Content/Runes", "t:SpellModifierDefinition", value => value == null ? null : value.id), "Rune", failures);
+            ValidateIds(LoadRuntimeOrEditor<ItemDefinition>("V21Content/Items", "t:ItemDefinition", value => value == null ? null : value.id), "Item", failures);
+            ValidateIds(LoadRuntimeOrEditor<RelicDefinition>("V21Content/Relics", "t:RelicDefinition", value => value == null ? null : value.id), "Legendary", failures);
+            ValidateIds(LoadRuntimeOrEditor<V21RoomLayoutAsset>("V21Content/Rooms", "t:V21RoomLayoutAsset", value => value == null ? null : value.stableId), "Room", failures);
+            ValidateIds(LoadRuntimeOrEditor<V21AffixContentAsset>("V21Content/Affixes", "t:V21AffixContentAsset", value => value == null ? null : value.stableId), "Affix", failures);
+            ValidateIds(LoadRuntimeOrEditor<V21RoomDefinitionAsset>("V21Content/RoomDefinitions", "t:V21RoomDefinitionAsset", value => value == null ? null : value.stableId), "Room definition", failures);
+            ValidateIds(LoadRuntimeOrEditor<V21ShopServiceAsset>("V21Content/Shops", "t:V21ShopServiceAsset", value => value == null ? null : value.stableId), "Shop service", failures);
+            ValidateIds(LoadRuntimeOrEditor<V21RewardDefinitionAsset>("V21Content/Rewards", "t:V21RewardDefinitionAsset", value => value == null ? null : value.stableId), "Reward", failures);
+#else
             ValidateIds(Resources.LoadAll<SpellCoreDefinition>("V21Content/Spells").Select(value => value == null ? null : value.id), "Spell", failures);
             ValidateIds(Resources.LoadAll<SpellModifierDefinition>("V21Content/Runes").Select(value => value == null ? null : value.id), "Rune", failures);
             ValidateIds(Resources.LoadAll<ItemDefinition>("V21Content/Items").Select(value => value == null ? null : value.id), "Item", failures);
@@ -168,8 +183,27 @@ namespace ArcaneEngine
             ValidateIds(Resources.LoadAll<V21RoomDefinitionAsset>("V21Content/RoomDefinitions").Select(value => value == null ? null : value.stableId), "Room definition", failures);
             ValidateIds(Resources.LoadAll<V21ShopServiceAsset>("V21Content/Shops").Select(value => value == null ? null : value.stableId), "Shop service", failures);
             ValidateIds(Resources.LoadAll<V21RewardDefinitionAsset>("V21Content/Rewards").Select(value => value == null ? null : value.stableId), "Reward", failures);
+#endif
             return failures;
         }
+
+#if UNITY_EDITOR
+        private static IEnumerable<string> LoadRuntimeOrEditor<T>(string resourcePath, string filter, Func<T, string> idSelector) where T : UnityEngine.Object
+        {
+            T[] loaded = Resources.LoadAll<T>(resourcePath);
+            if (loaded != null && loaded.Length > 0)
+                return loaded.Select(value => idSelector(value));
+            string folder = "Assets/ArcaneEngine/Resources/" + resourcePath;
+            string[] guids = AssetDatabase.FindAssets(filter, new[] { folder });
+            List<string> ids = new List<string>();
+            foreach (string guid in guids)
+            {
+                T asset = AssetDatabase.LoadAssetAtPath<T>(AssetDatabase.GUIDToAssetPath(guid));
+                if (asset != null) ids.Add(idSelector(asset));
+            }
+            return ids;
+        }
+#endif
 
         private static void ValidateIds(IEnumerable<string> source, string family, List<string> failures)
         {
