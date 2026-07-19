@@ -34,7 +34,10 @@ namespace ArcaneEngine
                 ProceduralSpellVisualCompiler2.Compile(spell, board);
 
             if (recipe != null)
+            {
                 LastRecipe = recipe;
+                SpellMorphologyPresentation21.Compile(spell, board, recipe);
+            }
 
             return recipe;
         }
@@ -45,7 +48,10 @@ namespace ArcaneEngine
                 ProceduralSpellVisualCompiler2.Compile(spell, null);
 
             if (recipe != null)
+            {
                 LastRecipe = recipe;
+                SpellMorphologyPresentation21.Contract(spell);
+            }
 
             return recipe;
         }
@@ -80,7 +86,9 @@ namespace ArcaneEngine
                 duration = 0.3f,
                 intensity = 1f
             });
-        }
+        
+            SpellMorphologyPresentation21.EmitCast(spell, request);
+}
 
         public static void EmitImpact(
             CompiledSpell spell,
@@ -107,7 +115,9 @@ namespace ArcaneEngine
                 intensity = critical ? 1.45f : 1f,
                 critical = critical
             });
-        }
+        
+            SpellMorphologyPresentation21.EmitImpact(spell, request, position, critical);
+}
 
         public static void EmitExpire(
             CompiledSpell spell,
@@ -130,7 +140,9 @@ namespace ArcaneEngine
                 duration = 0.25f,
                 intensity = 0.65f
             });
-        }
+        
+            SpellMorphologyPresentation21.EmitExpire(spell, position);
+}
 
         public static void EmitDirectionChange(
             CompiledSpell spell,
@@ -154,7 +166,9 @@ namespace ArcaneEngine
                 duration = 0.22f,
                 intensity = 0.9f
             });
-        }
+        
+            SpellMorphologyPresentation21.EmitDirectionChange(spell, position, returning);
+}
 
         public static void EmitStatusSpread(
             CompiledSpell spell,
@@ -214,7 +228,9 @@ namespace ArcaneEngine
                 visual = host.AddComponent<GeneratedSpellHostVisual2>();
 
             visual.Initialize(Recipe(spell), spell, request, GeneratedSpellHostKind.Projectile);
-        }
+        
+            SpellMorphologyPresentation21.AttachHost(host, spell, request, GeneratedSpellHostKind.Projectile);
+}
 
         public static void AttachZone(
             GameObject zone,
@@ -249,7 +265,9 @@ namespace ArcaneEngine
                 duration = lifetime,
                 intensity = 1f
             });
-        }
+        
+            SpellMorphologyPresentation21.AttachHost(zone, spell, request, GeneratedSpellHostKind.Zone);
+}
 
         public static void AttachFamiliar(
             GameObject familiar,
@@ -283,7 +301,9 @@ namespace ArcaneEngine
                 duration = recipe == null ? 2f : recipe.duration,
                 intensity = 1f
             });
-        }
+        
+            SpellMorphologyPresentation21.AttachHost(familiar, spell, request, GeneratedSpellHostKind.Familiar);
+}
 
         public static void EmitMovement(
             CompiledSpell spell,
@@ -308,7 +328,9 @@ namespace ArcaneEngine
                 duration = 0.4f,
                 intensity = 1f
             });
-        }
+        
+            SpellMorphologyPresentation21.EmitMovement(spell, from, to);
+}
 
         public static void EmitBarrier(
             Transform player,

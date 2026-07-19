@@ -1,0 +1,8 @@
+Assets/ArcaneEngine/Scripts
+Assets/ArcaneEngine/Editor
+Assets/ArcaneEngine/Resources
+Assets/ArcaneEngine/PATCH_2_0_0.txt
+docs
+Tools
+.editorconfig
+.arcane-patch-2.0.0-last-backup

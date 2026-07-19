@@ -1,0 +1,12 @@
+Arcane Engine v1.2.2 Workshop Layout Hotfix
+Validation date: 2026-07-15
+
+PASS - Workshop execution inspector contains a fixed four-control detail block.
+PASS - Validation warning and error labels are unconditional controls.
+PASS - Dynamic graph-node, execution-layer, and trigger loops no longer emit variable GUILayout controls.
+PASS - Every BeginScrollView/EndScrollView and BeginArea/EndArea pair in the changed block is balanced.
+PASS - Profile schema-7 migration scope fix from v1.2.1 remains present.
+PASS - Raw C# brace totals match across all source files.
+PASS - Project, build, title-screen, and systems release versions agree on 1.2.2.
+
+Unity Editor runtime validation must be completed in Unity 6000.5.2f1 because the packaging environment does not include the Unity Editor.

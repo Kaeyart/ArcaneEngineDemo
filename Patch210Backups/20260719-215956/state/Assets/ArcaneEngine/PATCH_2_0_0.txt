@@ -1,0 +1,3 @@
+Arcane Engine Demo Patch 2.0.0
+Elemental Synthesis and Procedural Spell Presentation
+GeneratedVisualRecipe schema 20000

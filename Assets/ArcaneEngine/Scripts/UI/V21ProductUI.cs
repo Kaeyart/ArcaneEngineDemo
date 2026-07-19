@@ -304,7 +304,7 @@ namespace ArcaneEngine
                 " · ACTIVE RUNES " + board.GetActivePlacements().Count + " / " + board.placed.Count, 12, Cyan, true));
             if (compiled != null)
             {
-                details.Add(BuildSpellPreview(compiled));
+                details.Add(BuildSpellPreview(compiled)); details.Add(SpellForgeMorphologyPreview21.Build(compiled, board));
                 SpellCoreDefinition original = DemoCatalog.GetCore(compiled.coreId);
                 if (original != null)
                     details.Add(LabelFor("BEFORE → CURRENT\nDamage " + original.baseDamage.ToString("0.0") + " → " + compiled.damage.ToString("0.0") +

@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: Item_ward_shoulder_l
+  m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:ItemDefinition
+  id: ward_shoulder_l
+  displayName: Warden's Left Mantle
+  description: Life, armor and resistance.
+  slot: 1
+  rarity: 1
+  twoHanded: 0
+  health: 12
+  mana: 0
+  movementSpeed: 0
+  armor: 5
+  resistance: 0.08
+  critChance: 0
+  critDamage: 0
+  spellPower: 0
+  cooldownReduction: 0
+  triggerEnergy: 0
+  mutation: 0
+  setId: warden
+  grantedCoreId: 
+  baseFamily: 
+  implicitText: 
+  itemTags:
+  - armor
+  - ward
+  color: {r: 0.2, g: 0.55, b: 1, a: 1}

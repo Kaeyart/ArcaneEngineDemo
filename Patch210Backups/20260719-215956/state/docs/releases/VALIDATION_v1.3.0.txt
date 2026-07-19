@@ -1,0 +1,17 @@
+Arcane Engine v1.3.0 Hardware Mouse Aim Rewrite
+Validation date: 2026-07-15
+
+PASS - Dedicated HardwareMouseAim component exists and runs after camera tracking but before PlayerController.
+PASS - Combat aim samples Mouse.current.position directly.
+PASS - Combat aim has no IMGUI pointer cache, source switch, viewport clamp, dead zone, forced minimum distance, or rotation smoothing.
+PASS - PlayerController contains no old UpdateAim method or TryGetPointerRay call.
+PASS - ArcaneInput contains no combat pointer-ray helper.
+PASS - Hardware aim is added before PlayerController and is resolved by PlayerController.Awake().
+PASS - Manual spell direction uses PlayerController.AimDirection from the same hardware resolver.
+PASS - Home Base movement contains no player-rotation assignment.
+PASS - Tree-sitter C# parsing reports zero syntax failures across all source files.
+PASS - Previous profile and Workshop fixes remain present.
+PASS - Linux build helper and in-place installer pass Bash syntax checks.
+PASS - Project, build, title-screen, and systems release versions agree on 1.3.0.
+
+Unity Editor runtime validation must be completed in Unity 6000.5.2f1 because the packaging environment does not include the Unity Editor.

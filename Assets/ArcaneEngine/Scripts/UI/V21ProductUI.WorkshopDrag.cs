@@ -698,6 +698,15 @@ namespace ArcaneEngine
                 " · Cooldown " +
                 before.cooldown.ToString("0.00") + "s → " +
                 after.cooldown.ToString("0.00") + "s";
+
+            string morphologyDiff =
+                SpellForgeMorphologyPreview21.DiffSummary(
+                    before,
+                    after,
+                    previewBoard);
+
+            if (!string.IsNullOrEmpty(morphologyDiff))
+                _message.text += "\n" + morphologyDiff;
         }
 
         private VisualElement ResolveWorkshopBoardCanvas()

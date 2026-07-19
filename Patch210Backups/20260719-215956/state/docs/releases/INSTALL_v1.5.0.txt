@@ -1,0 +1,13 @@
+ARCANE ENGINE DEMO v1.5.0 PATCH INSTALLATION
+
+1. Close Unity and Unity Hub for this project.
+2. Put ArcaneEngineDemo_v1.5.0_LOADOUT_SPELLCRAFT_PATCH.zip in /home/kaey/Downloads.
+3. Run this complete command:
+
+unzip -o "/home/kaey/Downloads/ArcaneEngineDemo_v1.5.0_LOADOUT_SPELLCRAFT_PATCH.zip" -d "/home/kaey/Desktop/ArcaneEngineDemo_v1.0.0_DEMO_PATCH/ArcaneEngineDemo"
+
+4. Reopen the existing project with Unity 6000.5.2f1.
+5. Open Assets/ArcaneEngine/Scenes/Main.unity before entering Play Mode.
+6. If Unity retains stale compiler output, close Unity and rename only this project's Library folder, then reopen the project so Unity can rebuild its cache.
+
+The zip is an overlay patch. It contains Assets, Packages, ProjectSettings, patch notes, and this installation file at the correct project-relative paths.

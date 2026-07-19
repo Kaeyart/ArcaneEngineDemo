@@ -1,0 +1,3 @@
+Assets/ArcaneEngine/Shaders
+Assets/ArcaneEngine/PATCH_2_1_0.txt
+.arcane-patch-2.1.0-last-backup
