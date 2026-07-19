@@ -87,13 +87,7 @@ namespace ArcaneEngine
                 if (_shield > 0f) states.Add("SHIELD");
                 if (_sameElementHits >= (IsBoss ? 3 : 4)) states.Add("RESISTANT-" + _adaptedElement.ToString().ToUpperInvariant());
                 if (_affixes.Count > 0) states.AddRange(_affixes.Select(affix => affix.ToString().ToUpperInvariant()));
-                string elementalSummary =
-    ElementalReactionRuntime.GetStatusSummary(this);
-
-if (!string.IsNullOrEmpty(elementalSummary))
-    states.Add(elementalSummary);
-
-return string.Join(" · ", states);
+                return string.Join(" · ", states);
             }
         }
 
@@ -299,11 +293,6 @@ return string.Join(" · ", states);
             if (amount > 0.01f && final <= 0.01f) EnemyVisualEvents.ZeroDamage(this, element);
             float before = Health;
             Health -= final;
-ElementalReactionRuntime.RegisterDirectHit(
-    this,
-    element,
-    final,
-    critical);
             _stagger += final;
             if (_stagger >= MaxHealth * 0.22f)
             {
@@ -335,14 +324,6 @@ ElementalReactionRuntime.RegisterDirectHit(
 
         public void ApplyImpact(Vector3 direction, float force)
         {
-
-ElementalReactionRuntime.ApplyBuildup(
-    this,
-    ReactionElement.Physical,
-    Mathf.Clamp(force / 18f, 0.25f, 2.5f),
-    4f,
-    false);
-
             if (IsDead || IsBoss) return;
             direction.y = 0f;
             if (direction.sqrMagnitude < 0.01f) return;
@@ -376,20 +357,6 @@ ElementalReactionRuntime.ApplyBuildup(
         public void ApplyPoison(float damagePerSecond, float duration, CompiledSpell source, CastRequest context)
         {
             if (_trainingStatusImmune) return;
-
-ElementalReactionRuntime.ApplyBuildup(
-    this,
-    ReactionElement.Toxic,
-    Mathf.Clamp(
-        1f +
-        damagePerSecond /
-        Mathf.Max(1f, MaxHealth) *
-        35f,
-        0.5f,
-        3.5f),
-    duration,
-    false);
-
             _poisonDamage = Mathf.Max(_poisonDamage, damagePerSecond * context.powerScale);
             _poisonUntil = Mathf.Max(_poisonUntil, Time.time + duration);
             _poisonTick = Mathf.Min(_poisonTick, 0.25f);
@@ -407,20 +374,6 @@ ElementalReactionRuntime.ApplyBuildup(
         public void ApplyBurn(float damagePerSecond, float duration, CompiledSpell source, CastRequest context)
         {
             if (_trainingStatusImmune) return;
-
-ElementalReactionRuntime.ApplyBuildup(
-    this,
-    ReactionElement.Fire,
-    Mathf.Clamp(
-        1f +
-        damagePerSecond /
-        Mathf.Max(1f, MaxHealth) *
-        35f,
-        0.5f,
-        3.5f),
-    duration,
-    false);
-
             _burnDamage = Mathf.Max(_burnDamage, damagePerSecond * context.powerScale);
             _burnUntil = Mathf.Max(_burnUntil, Time.time + duration);
             _burnTick = Mathf.Min(_burnTick, 0.25f);
@@ -431,14 +384,6 @@ ElementalReactionRuntime.ApplyBuildup(
         public void ApplyShock(float magnitude, float duration)
         {
             if (_trainingStatusImmune) return;
-
-ElementalReactionRuntime.ApplyBuildup(
-    this,
-    ReactionElement.Lightning,
-    Mathf.Clamp(magnitude * 5f, 0.5f, 3f),
-    duration,
-    false);
-
             _shockMagnitude = Mathf.Max(_shockMagnitude, Mathf.Clamp(magnitude, 0.05f, 0.3f));
             _shockUntil = Mathf.Max(_shockUntil, Time.time + duration);
         }
@@ -446,14 +391,6 @@ ElementalReactionRuntime.ApplyBuildup(
         public void ApplyChill(float magnitude, float duration)
         {
             if (_trainingStatusImmune) return;
-
-ElementalReactionRuntime.ApplyBuildup(
-    this,
-    ReactionElement.Cold,
-    Mathf.Clamp(magnitude * 4.5f, 0.5f, 3f),
-    duration,
-    false);
-
             if (Time.time >= _chillUntil) _chillBuildup = 0f;
             float applied = Mathf.Clamp(magnitude, 0.1f, 0.6f);
             _chillMagnitude = Mathf.Max(_chillMagnitude, applied);
@@ -469,14 +406,6 @@ ElementalReactionRuntime.ApplyBuildup(
         public void ApplyBleed(float damagePerSecond, float duration, CompiledSpell source, CastRequest context)
         {
             if (_trainingStatusImmune) return;
-
-ElementalReactionRuntime.ApplyBuildup(
-    this,
-    ReactionElement.Blood,
-    1f,
-    duration,
-    false);
-
             _bleedStacks = Mathf.Clamp(Time.time < _bleedUntil ? _bleedStacks + 1 : 1, 1, 5);
             _bleedDamage = Mathf.Max(_bleedDamage, Mathf.Max(0f, damagePerSecond) * Mathf.Max(0.01f, context.powerScale));
             _bleedUntil = Mathf.Max(_bleedUntil, Time.time + Mathf.Max(0.25f, duration));
@@ -488,14 +417,6 @@ ElementalReactionRuntime.ApplyBuildup(
         public void ApplyCurse(float magnitude, float duration)
         {
             if (_trainingStatusImmune) return;
-
-ElementalReactionRuntime.ApplyBuildup(
-    this,
-    ReactionElement.Void,
-    Mathf.Clamp(magnitude * 4f, 0.5f, 3f),
-    duration,
-    false);
-
             _curseMagnitude = Mathf.Max(_curseMagnitude, Mathf.Clamp(magnitude, 0.05f, 0.5f));
             _curseUntil = Mathf.Max(_curseUntil, Time.time + Mathf.Max(0.25f, duration));
         }
@@ -884,9 +805,6 @@ ElementalReactionRuntime.ApplyBuildup(
 
         private void Die(float finalDamage)
         {
-
-ElementalReactionRuntime.NotifyDeath(this);
-
             if (IsDead) return;
             IsDead = true;
             BrainState = EnemyBrainState.Dead;
@@ -965,13 +883,7 @@ ElementalReactionRuntime.NotifyDeath(this);
             if (element == SpellElement.Lightning) return new Color(0.75f, 0.45f, 1f);
             if (element == SpellElement.Toxic) return new Color(0.3f, 1f, 0.25f);
             if (element == SpellElement.Void) return new Color(0.65f, 0.12f, 0.9f);
-            if (element == SpellElement.Physical)
-    return new Color(0.75f, 0.67f, 0.55f);
-
-if (element == SpellElement.Blood)
-    return new Color(0.75f, 0.03f, 0.08f);
-
-return new Color(0.4f, 0.75f, 1f);
+            return new Color(0.4f, 0.75f, 1f);
         }
 
         private static float BaseHealth(EnemyArchetype type)

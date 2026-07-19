@@ -16,7 +16,7 @@ namespace ArcaneEngine
 
     public enum SpellDelivery { Projectile, Nova, Hitscan, Beam, Meteor, Summon, Movement, Zone, Melee, Defensive }
     public enum SpellCastMethod { Instant, Charged, Channeled, Delayed, Movement }
-    public enum SpellElement { Fire, Frost, Lightning, Toxic, Void, Arcane, Physical, Blood }
+    public enum SpellElement { Fire, Frost, Lightning, Toxic, Void, Arcane }
     public enum ProjectilePattern { Standard, Cone, Converge, Ring }
     public enum ConnectorFamily { Flow, Payload, Trigger, Element, Power, Wild }
     public enum ModifierCategory { Pattern, Movement, Payload, Element, Collision, Trigger, Spawn, Targeting, Resource, Instability }

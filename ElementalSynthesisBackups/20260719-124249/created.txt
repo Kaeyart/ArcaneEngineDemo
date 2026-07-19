@@ -1,0 +1,8 @@
+Assets/ArcaneEngine/Scripts/Combat/ElementalReactionMechanicCodex.cs
+Assets/ArcaneEngine/Scripts/Combat/ElementalReactionMechanicCodex.Generated.cs
+Assets/ArcaneEngine/Scripts/Combat/ElementalReactionMechanicExecutor.cs
+Assets/ArcaneEngine/Scripts/Combat/ElementalReactionPulseEmitter.cs
+Assets/ArcaneEngine/Scripts/Combat/ElementalReactionShard.cs
+Assets/ArcaneEngine/Scripts/Combat/ElementalReactionOrbiters.cs
+docs/ElementalReactionMechanicalCodex.md
+docs/ElementalReactionMechanicalCodex.csv
