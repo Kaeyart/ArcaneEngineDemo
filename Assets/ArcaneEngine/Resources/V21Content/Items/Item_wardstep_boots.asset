@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: Item_wardstep_boots
+  m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:ItemDefinition
+  id: wardstep_boots
+  displayName: Wardstep Boots
+  description: Mana-lined boots for mobile casters.
+  slot: 7
+  rarity: 0
+  twoHanded: 0
+  health: 0
+  mana: 10
+  movementSpeed: 0.5
+  armor: 0
+  resistance: 0
+  critChance: 0
+  critDamage: 0
+  spellPower: 0
+  cooldownReduction: 0
+  triggerEnergy: 0
+  mutation: 0
+  setId: 
+  grantedCoreId: 
+  baseFamily: Ward Boots
+  implicitText: +10 Maximum Mana
+  itemTags:
+  - ward
+  - mobile
+  color: {r: 0.34, g: 0.55, b: 0.88, a: 1}

@@ -134,6 +134,8 @@ namespace ArcaneEngine
 
         public static void AttachZone(GameObject zone, CompiledSpell spell, CastRequest request, float radius, float lifetime)
         {
+            ProceduralSpellPresentation.AttachZone(zone, spell, request, radius, lifetime);
+
             if (zone == null) return;
             SpellVisualDescriptor descriptor = SpellVisualCompiler.Compile(spell, request);
             if (descriptor == null) return;
@@ -143,6 +145,8 @@ namespace ArcaneEngine
 
         public static void AttachFamiliar(GameObject familiar, CompiledSpell spell, CastRequest request, int index)
         {
+            ProceduralSpellPresentation.AttachFamiliar(familiar, spell, request, index);
+
             if (familiar == null) return;
             SpellVisualDescriptor descriptor = SpellVisualCompiler.Compile(spell, request);
             if (descriptor == null) return;
@@ -152,6 +156,8 @@ namespace ArcaneEngine
 
         public static void MovementArrived(CompiledSpell spell, CastRequest request, Vector3 from, Vector3 to)
         {
+            ProceduralSpellPresentation.EmitMovement(spell, request, from, to);
+
             SpellVisualDescriptor descriptor = SpellVisualCompiler.Compile(spell, request);
             if (descriptor == null) return;
             Glyph(from, descriptor.secondary, 0.78f, 0.25f, "Movement Departure");
@@ -163,6 +169,8 @@ namespace ArcaneEngine
 
         public static void BarrierEvent(Transform player, Color color, bool broke, float strength)
         {
+            ProceduralSpellPresentation.EmitBarrier(player, color, broke, strength);
+
             if (player == null) return;
             int layers = broke ? 4 : Mathf.Clamp(Mathf.CeilToInt(strength / 25f), 1, 3);
             for (int i = 0; i < layers; i++)
@@ -175,6 +183,8 @@ namespace ArcaneEngine
 
         public static void TriggerLink(CompiledSpell source, CompiledSpell destination, Vector3 position, TriggerMoment moment)
         {
+            ProceduralSpellPresentation.EmitLink(source, destination, position, moment);
+
             if (source == null || destination == null || GameWorld.Instance == null || GameWorld.Instance.Player == null) return;
             Transform player = GameWorld.Instance.Player.transform;
             Color color = Color.Lerp(source.accentColor, destination.primaryColor, 0.5f);

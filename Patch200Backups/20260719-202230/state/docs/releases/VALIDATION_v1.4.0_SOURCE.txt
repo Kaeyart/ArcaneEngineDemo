@@ -1,0 +1,22 @@
+ARCANE ENGINE v1.4.0 — SOURCE VALIDATION RECORD
+
+Environment limitation
+- Unity Editor was not installed in the packaging environment.
+- No Unity compilation, Unity Test Framework run, Play Mode session or standalone build is claimed here.
+
+Completed checks
+- Parsed 34 C# files under Assets/ArcaneEngine with the C# tree-sitter grammar.
+- Result: 34 parsed, 0 files containing syntax-error nodes.
+- Confirmed project, title, build helper and runtime release strings use 1.4.0.
+- Confirmed 49 available Support Runes after legacy filtering.
+- Confirmed shape distribution: 6 one-hex, 15 two-hex, 22 three-hex, 6 four-hex.
+- Confirmed the twelve new Support Rune IDs have catalog definitions, Capacity configuration and compiler cases.
+- Added Unity-side validation for compiled behavior of all twelve additions.
+- Added Unity-side validation for 25 named two-rune combinations.
+- Added Unity-side checks for spell-level Capacity values and Spell Link cycle rejection.
+
+Required next command inside Unity
+Arcane Engine > Validate 1.4.0 Demo
+
+Required next document
+TESTING_CHECKLIST_v1.4.0.md

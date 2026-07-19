@@ -29,6 +29,14 @@ namespace ArcaneEngine
 
             for (int i = 0; i < mechanics.Length; i++)
             {
+                ProceduralSpellPresentation.EmitReactionMechanic(
+                    mechanics[i],
+                    definition,
+                    owner,
+                    baseDamage,
+                    death,
+                    i);
+
                 ExecuteSpec(
                     mechanics[i],
                     definition,

@@ -774,6 +774,8 @@ namespace ArcaneEngine
 
         public static SpellVisualAttachment Attach(GameObject host, CompiledSpell spell, CastRequest request)
         {
+            ProceduralSpellPresentation.AttachHost(host, spell, request);
+
             if (host == null || spell == null) return null;
             SpellVisualAttachment attachment = host.AddComponent<SpellVisualAttachment>();
             attachment._counted = true;
@@ -881,6 +883,8 @@ namespace ArcaneEngine
     {
         public static void Cast(CompiledSpell spell, CastRequest request)
         {
+            ProceduralSpellPresentation.EmitCast(spell, request);
+
             SpellVisualDescriptor descriptor = SpellVisualCompiler.Compile(spell, request);
             if (descriptor == null) return;
             SpellDeliveryVisuals.BeginCast(spell, request);
@@ -890,6 +894,8 @@ namespace ArcaneEngine
 
         public static void Impact(CompiledSpell spell, CastRequest request, Vector3 position, bool critical)
         {
+            ProceduralSpellPresentation.EmitImpact(spell, request, position, critical);
+
             SpellVisualDescriptor descriptor = SpellVisualCompiler.Compile(spell, request);
             if (descriptor == null) return;
             SpellDeliveryVisuals.Impact(spell, request, position, critical);
@@ -902,6 +908,8 @@ namespace ArcaneEngine
 
         public static void Expire(CompiledSpell spell, CastRequest request, Vector3 position)
         {
+            ProceduralSpellPresentation.EmitExpire(spell, request, position);
+
             SpellVisualDescriptor descriptor = SpellVisualCompiler.Compile(spell, request);
             if (descriptor == null) return;
             SpellDeliveryVisuals.Resolve(spell, request, position);
@@ -909,6 +917,8 @@ namespace ArcaneEngine
 
         public static void DirectionChange(CompiledSpell spell, Vector3 position, bool returning)
         {
+            ProceduralSpellPresentation.EmitDirectionChange(spell, position, returning);
+
             if (spell == null) return;
             ProceduralVisualRuntime.Burst(returning ? "Return Turn" : "Bounce Turn", position, returning ? spell.accentColor : spell.primaryColor, 0.28f, 0.1f, PrimitiveType.Cube);
         }
@@ -921,12 +931,16 @@ namespace ArcaneEngine
 
         public static void StatusSpread(CompiledSpell spell, Vector3 from, Vector3 to)
         {
+            ProceduralSpellPresentation.EmitStatusSpread(spell, from, to);
+
             if (spell == null) return;
             ProceduralVisualRuntime.Beam("Status Spread", from, to, spell.accentColor, 0.055f, 0.14f, spell.element == SpellElement.Lightning);
         }
 
         public static void StatusConsume(CompiledSpell spell, Vector3 position)
         {
+            ProceduralSpellPresentation.EmitStatusConsume(spell, position);
+
             if (spell == null) return;
             ProceduralVisualRuntime.Ring("Status Consumed", position, Color.Lerp(spell.primaryColor, Color.white, 0.42f), Mathf.Max(0.6f, spell.size), 0.1f, 0.2f);
         }

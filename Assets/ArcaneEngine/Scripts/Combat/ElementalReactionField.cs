@@ -198,6 +198,14 @@ namespace ArcaneEngine
                     _radius * 2f);
 
             transform.localScale = _baseScale;
+
+            ProceduralSpellPresentation.EmitField(
+                SpellPresentationEventType.FieldCreated,
+                gameObject,
+                _signature,
+                _radius,
+                Mathf.Max(0.4f, duration),
+                1f);
         }
 
         private void Merge(
@@ -263,6 +271,14 @@ namespace ArcaneEngine
                 transform.position + Vector3.up * 0.08f,
                 ElementalReactionCodex.BlendColor(combined),
                 0.8f);
+
+            ProceduralSpellPresentation.EmitField(
+                SpellPresentationEventType.FieldMerged,
+                gameObject,
+                _signature,
+                _radius,
+                Mathf.Max(0.4f, duration),
+                1.25f);
         }
 
         private void Update()
@@ -292,6 +308,14 @@ namespace ArcaneEngine
 
         private void Pulse()
         {
+            ProceduralSpellPresentation.EmitField(
+                SpellPresentationEventType.FieldPulsed,
+                gameObject,
+                _signature,
+                _radius,
+                _pulseInterval,
+                0.8f);
+
             List<EnemyController> enemies =
                 ElementalReactionRuntime.EnemiesWithin(
                     transform.position,
@@ -365,6 +389,14 @@ namespace ArcaneEngine
 
         private void OnDestroy()
         {
+            ProceduralSpellPresentation.EmitField(
+                SpellPresentationEventType.FieldExpired,
+                gameObject,
+                _signature,
+                _radius,
+                0f,
+                0f);
+
             Active.Remove(this);
         }
 

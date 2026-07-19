@@ -53,6 +53,7 @@ spell.cooldown =
             spell.summonCount = Mathf.Clamp(spell.summonCount, 0, 8);
             CompiledSpell result = BalanceTuning.EnforceSpellCaps(spell);
             SpellVisualCompiler.Rebuild(result);
+            ProceduralSpellPresentation.Compile(result, board);
             return result;
         }
 

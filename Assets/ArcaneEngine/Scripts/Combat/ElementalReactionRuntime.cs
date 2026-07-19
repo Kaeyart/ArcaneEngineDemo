@@ -338,6 +338,14 @@ namespace ArcaneEngine
             _lastApplied = element;
             _reactionCharge += adjustedAmount;
 
+            ProceduralSpellPresentation.EmitAilment(
+                _owner,
+                element,
+                _buildup[index],
+                ElementalReactionCodex.Threshold(element),
+                duration,
+                propagated);
+
             if (_buildup[index] >=
                 ElementalReactionCodex.Threshold(element))
             {
@@ -530,6 +538,11 @@ namespace ArcaneEngine
 
             _majorUntil[index] = Time.time + duration;
 
+            ProceduralSpellPresentation.EmitMajorAilment(
+                _owner,
+                element,
+                duration);
+
             switch (element)
             {
                 case ReactionElement.Cold:
@@ -604,11 +617,21 @@ namespace ArcaneEngine
                 _reactionCharge >= 4f + count * 1.5f &&
                 Time.time >= _nextReactionAllowed;
 
+            ReactionElement previousPending = _pendingSignature;
+
             if (signatureChanged || recharged)
             {
                 _pendingSignature = signature;
                 _resolveAt =
                     Time.time + definition.assemblyWindow;
+
+                ProceduralSpellPresentation.EmitAssembly(
+                    _owner,
+                    signature,
+                    _lastApplied,
+                    definition.assemblyWindow,
+                    previousPending != ReactionElement.None &&
+                    previousPending != signature);
 
                 if (signatureChanged)
                     _resolvedSignature = ReactionElement.None;
@@ -664,6 +687,12 @@ namespace ArcaneEngine
         definition.catalyst,
         ElementalReactionCodex.BlendColor(definition.signature),
         definition.tier >= ReactionTier.Catastrophe);
+
+    ProceduralSpellPresentation.EmitReactionResolved(
+        _owner,
+        definition,
+        reactionDamage,
+        false);
 
     ElementalReactionMechanicExecutor.Execute(
         definition,
@@ -836,6 +865,12 @@ namespace ArcaneEngine
             1.2f,
             2.8f));
 
+    ProceduralSpellPresentation.EmitReactionResolved(
+        _owner,
+        definition,
+        damage,
+        true);
+
     ElementalReactionMechanicExecutor.Execute(
         definition,
         this,
@@ -861,6 +896,12 @@ namespace ArcaneEngine
         {
             float radius = 3.2f;
             float damage = _owner.MaxHealth * 0.065f;
+
+            ProceduralSpellPresentation.EmitSingleElementDeath(
+                _owner,
+                element,
+                radius,
+                4.5f);
             Color color = ElementalReactionCodex.ColorFor(element);
 
             GameFeelSystem.Burst(

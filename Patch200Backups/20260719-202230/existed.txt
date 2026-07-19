@@ -1,0 +1,5 @@
+Assets/ArcaneEngine/Scripts
+Assets/ArcaneEngine/Editor
+docs
+Tools
+.editorconfig

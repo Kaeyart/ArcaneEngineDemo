@@ -1,0 +1,3 @@
+Assets/ArcaneEngine/Resources/V21Content
+Assets/ArcaneEngine/Resources/V21Content.meta
+Assets/ArcaneEngine/PATCH_2_0_0.txt
