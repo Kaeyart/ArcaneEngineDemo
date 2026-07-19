@@ -6,7 +6,7 @@ using UnityEngine;
 namespace ArcaneEngine
 {
     public enum ArcaneVisualQuality { Low, Medium, High }
-    public enum SpellShapeFamily { Expanding, Crystalline, Branching, Organic, Hollow, Geometric }
+    public enum SpellShapeFamily { Expanding, Crystalline, Branching, Organic, Hollow, Geometric, PhysicalBlood, Bloodborne }
     public enum SpellMotionFamily { Surging, Faceted, Staccato, Drifting, Imploding, Orbiting }
     public enum SpellImpactFamily { Bloom, Shatter, Fork, Splash, Collapse, Glyph }
     public enum SpellOverloadTier { Stable, Charged, Volatile, Critical }

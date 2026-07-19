@@ -170,6 +170,9 @@ namespace ArcaneEngine
                 case SpellElement.Lightning: return "ϟ";
                 case SpellElement.Toxic: return "●";
                 case SpellElement.Void: return "○";
+                case SpellElement.Arcane: return "◈";
+                case SpellElement.Physical: return "■";
+                case SpellElement.Blood: return "♥";
                 default: return "✦";
             }
         }
