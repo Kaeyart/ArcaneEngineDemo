@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: 87d8a268e8bd1ef70ae6277cc508f518, type: 3}
   m_Name: Item_ritual_glove_l
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:ItemDefinition
   id: ritual_glove_l

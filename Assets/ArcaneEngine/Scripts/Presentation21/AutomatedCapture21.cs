@@ -28,7 +28,7 @@ namespace ArcaneEngine
         private IEnumerator CaptureRoutine()
         {
             _running = true;
-            Patch210ReferenceRuntime21 reference = UnityEngine.Object.FindObjectOfType<Patch210ReferenceRuntime21>();
+            Patch210ReferenceRuntime21 reference = UnityEngine.Object.FindAnyObjectByType<Patch210ReferenceRuntime21>();
             if (reference == null)
                 reference = MorphologyPresentationDirector21.Instance.gameObject.GetComponent<Patch210ReferenceRuntime21>();
             if (reference != null) reference.BuildReferencePreview();
@@ -63,7 +63,7 @@ namespace ArcaneEngine
             for (int phaseIndex = 0; phaseIndex < phases.Length; phaseIndex++)
             {
                 SpellPhase21 phase = phases[phaseIndex];
-                GeneratedSpellMorphologyHost21[] hosts = UnityEngine.Object.FindObjectsOfType<GeneratedSpellMorphologyHost21>();
+                GeneratedSpellMorphologyHost21[] hosts = UnityEngine.Object.FindObjectsByType<GeneratedSpellMorphologyHost21>();
                 for (int i = 0; i < hosts.Length; i++)
                     if (hosts[i] != null) hosts[i].SetDebugPhase(phase, PhaseProgress(phase));
 
@@ -78,7 +78,7 @@ namespace ArcaneEngine
                 yield return new WaitForSecondsRealtime(0.18f);
             }
 
-            GeneratedSpellMorphologyHost21[] finalHosts = UnityEngine.Object.FindObjectsOfType<GeneratedSpellMorphologyHost21>();
+            GeneratedSpellMorphologyHost21[] finalHosts = UnityEngine.Object.FindObjectsByType<GeneratedSpellMorphologyHost21>();
             for (int i = 0; i < finalHosts.Length; i++)
                 if (finalHosts[i] != null) finalHosts[i].ClearDebugPhase();
 

@@ -250,7 +250,7 @@ namespace ArcaneEngine.EditorTools
 
         private static void ApplyPhaseOverride()
         {
-            GeneratedSpellMorphologyHost21[] hosts = UnityEngine.Object.FindObjectsOfType<GeneratedSpellMorphologyHost21>();
+            GeneratedSpellMorphologyHost21[] hosts = UnityEngine.Object.FindObjectsByType<GeneratedSpellMorphologyHost21>();
             SpellVisualLab21 window = GetWindow<SpellVisualLab21>();
             for (int i = 0; i < hosts.Length; i++)
                 if (hosts[i] != null) hosts[i].SetDebugPhase(window._phase, window._phaseProgress);
@@ -260,7 +260,7 @@ namespace ArcaneEngine.EditorTools
         private static void ClearPhaseOverride()
         {
             if (!EditorApplication.isPlaying) return;
-            GeneratedSpellMorphologyHost21[] hosts = UnityEngine.Object.FindObjectsOfType<GeneratedSpellMorphologyHost21>();
+            GeneratedSpellMorphologyHost21[] hosts = UnityEngine.Object.FindObjectsByType<GeneratedSpellMorphologyHost21>();
             for (int i = 0; i < hosts.Length; i++) if (hosts[i] != null) hosts[i].ClearDebugPhase();
         }
 
@@ -271,7 +271,7 @@ namespace ArcaneEngine.EditorTools
                 EditorUtility.DisplayDialog("Spell Visual Lab", "Enter Play Mode before creating the in-game reference preview.", "OK");
                 return;
             }
-            Patch210ReferenceRuntime21 reference = UnityEngine.Object.FindObjectOfType<Patch210ReferenceRuntime21>();
+            Patch210ReferenceRuntime21 reference = UnityEngine.Object.FindAnyObjectByType<Patch210ReferenceRuntime21>();
             if (reference == null) reference = MorphologyPresentationDirector21.Instance.gameObject.GetComponent<Patch210ReferenceRuntime21>();
             if (reference != null) reference.BuildReferencePreview();
         }

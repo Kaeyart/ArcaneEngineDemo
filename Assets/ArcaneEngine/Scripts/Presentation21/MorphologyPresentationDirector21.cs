@@ -296,7 +296,7 @@ namespace ArcaneEngine
             Transform root = collider.transform;
             EnemyController enemy = collider.GetComponentInParent<EnemyController>();
             if (enemy != null) root = enemy.transform;
-            int id = root.GetInstanceID();
+            int id = root.GetEntityId().GetHashCode();
             TargetSurfaceResponse21 response;
             if (!_targetResponses.TryGetValue(id, out response) || response == null)
             {
@@ -312,7 +312,7 @@ namespace ArcaneEngine
             SpellVisualContract21 contract)
         {
             if (value.target == null) return;
-            int id = value.target.GetInstanceID();
+            int id = value.target.GetEntityId().GetHashCode();
             TargetSurfaceResponse21 response;
             if (!_targetResponses.TryGetValue(id, out response) || response == null)
             {
@@ -439,7 +439,7 @@ namespace ArcaneEngine
             gameObject.transform.position = position;
             SpellMorphologyOwner21 owner = gameObject.AddComponent<SpellMorphologyOwner21>();
             owner.ownerKind = kind;
-            owner.ownerId = gameObject.GetInstanceID();
+            owner.ownerId = gameObject.GetEntityId().GetHashCode();
             owner.contractId = contract == null ? string.Empty : contract.contractId;
             _sceneOwners.Add(owner);
             Destroy(gameObject, Mathf.Max(0.1f, lifetime));
@@ -719,7 +719,7 @@ namespace ArcaneEngine
             int needed = Mathf.Clamp(_statusIntensity - Count(element), 0, 4);
             for (int i = 0; i < needed; i++)
             {
-                int seed = StableSeed21.Combine(GetInstanceID(), i + _marks.Count * 17);
+                int seed = StableSeed21.Combine(GetEntityId().GetHashCode(), i + _marks.Count * 17);
                 Vector3 local = StableSeed21.UnitVector(seed) * 0.48f;
                 local.y = Mathf.Abs(local.y) * 0.8f;
                 Vector3 position = transform.TransformPoint(local);
@@ -734,7 +734,7 @@ namespace ArcaneEngine
             Vector3 normal,
             int intensity)
         {
-            int seed = StableSeed21.Combine(GetInstanceID(), _marks.Count + 1);
+            int seed = StableSeed21.Combine(GetEntityId().GetHashCode(), _marks.Count + 1);
             GameObject mark = new GameObject("AE21 Target Mark · " + element);
             mark.transform.SetParent(transform, true);
             mark.transform.position = worldPosition + normal.normalized * 0.015f;

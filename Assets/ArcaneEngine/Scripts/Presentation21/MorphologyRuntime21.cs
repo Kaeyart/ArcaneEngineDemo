@@ -50,6 +50,7 @@ namespace ArcaneEngine
     {
         public BodyPartSpec21 spec;
         public Renderer targetRenderer;
+        [System.NonSerialized]
         public MaterialPropertyBlock properties;
         public float phase;
         public float pulse;
@@ -303,7 +304,7 @@ namespace ArcaneEngine
                 : kind == GeneratedSpellHostKind.Familiar
                     ? PresentationOwnerKind21.Familiar
                     : PresentationOwnerKind21.Projectile;
-            _owner.ownerId = GetInstanceID();
+            _owner.ownerId = GetEntityId().GetHashCode();
             _owner.contractId = _contract.contractId;
             Rebuild();
             CreateElementEmitters();
@@ -587,8 +588,8 @@ namespace ArcaneEngine
         {
             SpellVisualContract21 contract = Contract(spell);
             if (contract == null) return;
-            Vector3 position = request == null ? PlayerPosition() : request.origin;
-            Vector3 direction = request == null ? Vector3.forward : request.direction;
+            Vector3 position = request.Equals(default) ? PlayerPosition() : request.origin;
+            Vector3 direction = request.Equals(default) ? Vector3.forward : request.direction;
             MorphologyPresentationDirector21.Instance.EmitCast(contract, position, direction);
         }
 
@@ -600,7 +601,7 @@ namespace ArcaneEngine
         {
             SpellVisualContract21 contract = Contract(spell);
             if (contract == null) return;
-            Vector3 direction = request == null ? Vector3.down : request.direction;
+            Vector3 direction = request.Equals(default) ? Vector3.down : request.direction;
             MorphologyPresentationDirector21.Instance.EmitImpact(contract, position, direction, critical);
             MarkNearbyHost(position, false, true);
         }

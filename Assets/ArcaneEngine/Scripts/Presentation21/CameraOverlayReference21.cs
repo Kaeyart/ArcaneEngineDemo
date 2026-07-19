@@ -263,7 +263,7 @@ namespace ArcaneEngine
                 host.transform.position = center + right * (i - 1) * 2.6f + Vector3.up * 1.2f;
                 SpellMorphologyOwner21 owner = host.AddComponent<SpellMorphologyOwner21>();
                 owner.ownerKind = PresentationOwnerKind21.SceneEvent;
-                owner.ownerId = host.GetInstanceID();
+                owner.ownerId = host.GetEntityId().GetHashCode();
                 owner.contractId = contract.contractId;
                 MorphologyBodyBuilder21.Build(host.transform, contract, GeneratedSpellHostKind.Projectile, owner, new List<MorphologyBodyPart21>());
                 PreviewOrbiter21 orbiter = host.AddComponent<PreviewOrbiter21>();

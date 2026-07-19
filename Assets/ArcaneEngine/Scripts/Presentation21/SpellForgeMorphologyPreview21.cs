@@ -53,7 +53,7 @@ namespace ArcaneEngine
             icon.style.height = 64f;
             icon.style.flexShrink = 0f;
             icon.style.backgroundImage = new StyleBackground(Icon(contract));
-            icon.style.unityBackgroundScaleMode = ScaleMode.ScaleToFit;
+            icon.style.backgroundSize = new BackgroundSize(BackgroundSizeType.Contain);
             SetBorder(icon, GeneratedAssetRuntime21.ElementColor(contract.catalyst, true), 1f);
             header.Add(icon);
 
@@ -339,7 +339,7 @@ namespace ArcaneEngine
             }
 
             float start = Time.unscaledTime;
-            arena.schedule.Execute(delegate
+            arena.schedule.Execute((Action)delegate
             {
                 if (arena.panel == null) return;
                 float age = Time.unscaledTime - start;

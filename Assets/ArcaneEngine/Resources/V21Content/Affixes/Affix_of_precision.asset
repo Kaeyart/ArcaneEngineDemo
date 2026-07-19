@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: 569dee05c001450db1a4490a74a82516, type: 3}
   m_Name: Affix_of_precision
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21AffixContentAsset
   stableId: of_precision
