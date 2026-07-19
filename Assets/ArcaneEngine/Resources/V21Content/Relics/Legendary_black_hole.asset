@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d282c998657c39d7d88c187704855d29, type: 3}
   m_Name: Legendary_black_hole
   m_EditorClassIdentifier: ArcaneEngine.Runtime::ArcaneEngine.RelicDefinition
-  id: black_hole
-  sourceCoreId: gravity_field
-  displayName: Black Hole
-  description: Gravity Field becomes a moving singularity with a final explosion.
-  signatureRule: 'Legendary Effect: moving black hole.'
-  signature: 1
-  shardCost: 2
-  requiredBossKills: 2
-  color: {r: 0.5, g: 0.05, b: 0.85, a: 1}
+  id: 
+  sourceCoreId: 
+  displayName: 
+  description: 
+  signatureRule: 
+  signature: 0
+  shardCost: 0
+  requiredBossKills: 0
+  color: {r: 0, g: 0, b: 0, a: 0}

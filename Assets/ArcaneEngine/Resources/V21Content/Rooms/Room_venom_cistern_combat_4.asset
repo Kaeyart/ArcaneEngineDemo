@@ -12,33 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 569dee05c001450db1a4490a74a82516, type: 3}
   m_Name: Room_venom_cistern_combat_4
   m_EditorClassIdentifier: ArcaneEngine.Runtime::ArcaneEngine.V21RoomLayoutAsset
-  stableId: venom_cistern_combat_4
-  displayName: Venom Cistern Combat 5
-  biome: Venom Cistern
+  stableId: 
+  displayName: 
+  biome: 
   roomType: 0
-  shell: 2
+  shell: 0
   floorSize: {x: 34, y: 34}
-  obstaclePositions:
-  - {x: 3.8596892, y: 0, z: 2.313612}
-  - {x: -3.5989525, y: 0, z: 6.0039606}
-  - {x: -3.8596888, y: 0, z: -2.313612}
-  - {x: 3.5989518, y: 0, z: -6.0039606}
-  obstacleScales:
-  - {x: 2.5, y: 1.2, z: 2.4}
-  - {x: 3.5, y: 2.2, z: 3.4}
-  - {x: 1.5, y: 1.2, z: 1.4}
-  - {x: 2.5, y: 2.2, z: 2.4}
-  hazardAnchors:
-  - {x: -8, y: 0.02, z: 6}
-  - {x: 8, y: 0.02, z: -6}
-  enemySpawnZones:
-  - {x: -10, y: 0, z: 9}
-  - {x: 10, y: 0, z: 9}
-  - {x: -10, y: 0, z: -9}
-  - {x: 10, y: 0, z: -9}
-  objectiveAnchors:
-  - {x: -7, y: 0, z: 0}
-  - {x: 7, y: 0, z: 0}
-  - {x: 0, y: 0, z: 7}
+  obstaclePositions: []
+  obstacleScales: []
+  hazardAnchors: []
+  enemySpawnZones: []
+  objectiveAnchors: []
   rewardAnchor: {x: 0, y: 0, z: 0}
   cameraSize: 16

@@ -9,20 +9,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 569dee05c001450db1a4490a74a82516, type: 3}
+  m_Script: {fileID: 0}
   m_Name: Affix_potent
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21AffixContentAsset
-  stableId: potent
-  displayName: Potent
-  stat: spell_power
-  kind: 1
-  group: spell_power
-  tags:
-  - caster
-  - weapon
+  stableId: 
+  displayName: 
+  stat: 
+  kind: 0
+  group: 
+  tags: []
   slots: 
-  baseMinimum: 0.03
-  baseMaximum: 0.075
-  percentage: 1
+  baseMinimum: 0
+  baseMaximum: 0
+  percentage: 0
   local: 0
-  weight: 88
+  weight: 50

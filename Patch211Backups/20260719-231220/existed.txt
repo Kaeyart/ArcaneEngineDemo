@@ -1,0 +1,5 @@
+Assets/ArcaneEngine/Scripts/Spells/SpellDefinitions.cs
+Assets/ArcaneEngine/Scripts/Items/ItemSystem.cs
+Assets/ArcaneEngine/Scripts/Presentation/PresentationParticles.cs
+Assets/ArcaneEngine/Resources/V21Content
+Assets/ArcaneEngine/Resources/V21Content.meta

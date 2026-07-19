@@ -9,15 +9,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 569dee05c001450db1a4490a74a82516, type: 3}
+  m_Script: {fileID: 0}
   m_Name: RoomDefinition_modifierreward_1
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21RoomDefinitionAsset
-  stableId: modifierreward_1
-  displayName: Rune Atelier II
-  biome: The Ossuary Catacombs
-  roomType: 2
-  difficulty: 2
-  obstaclePattern: 1
+  stableId: 
+  displayName: 
+  biome: 
+  roomType: 0
+  difficulty: 0
+  obstaclePattern: 0
   hasHazards: 0
-  floorColor: {r: 0.06, g: 0.09, b: 0.11, a: 1}
-  accentColor: {r: 0.15, g: 0.95, b: 0.85, a: 1}
+  floorColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  accentColor: {r: 0, g: 1, b: 1, a: 1}

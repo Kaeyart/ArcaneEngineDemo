@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d282c998657c39d7d88c187704855d29, type: 3}
   m_Name: Legendary_ball_lightning_engine
   m_EditorClassIdentifier: ArcaneEngine.Runtime::ArcaneEngine.RelicDefinition
-  id: ball_lightning_engine
-  sourceCoreId: storm_orb
-  displayName: Ball Lightning Engine
-  description: A slow orb repeatedly chains lightning while travelling.
-  signatureRule: 'Immutable: travelling chain engine.'
-  signature: 36
-  shardCost: 2
-  requiredBossKills: 3
-  color: {r: 0.65, g: 0.75, b: 1, a: 1}
+  id: 
+  sourceCoreId: 
+  displayName: 
+  description: 
+  signatureRule: 
+  signature: 0
+  shardCost: 0
+  requiredBossKills: 0
+  color: {r: 0, g: 0, b: 0, a: 0}

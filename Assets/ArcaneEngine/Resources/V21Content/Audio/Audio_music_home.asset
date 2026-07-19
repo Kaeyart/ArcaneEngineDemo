@@ -9,18 +9,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 569dee05c001450db1a4490a74a82516, type: 3}
+  m_Script: {fileID: 0}
   m_Name: Audio_music_home
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21AudioEventAsset
   stableId: music_home
   category: Music
   clips:
-  - {fileID: 5101863552395581990}
+  - {fileID: 6118098996021353039}
   pitchRange: {x: 1, y: 1}
   volumeRange: {x: 0.82, y: 1}
   maxVoices: 1
   loop: 1
---- !u!83 &5101863552395581990
+--- !u!83 &6118098996021353039
 AudioClip:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

@@ -1,0 +1,13 @@
+Assets/ArcaneEngine/Scripts/Spells/SpellCoreDefinition.cs
+Assets/ArcaneEngine/Scripts/Spells/SpellCoreDefinition.cs.meta
+Assets/ArcaneEngine/Scripts/Spells/SpellModifierDefinition.cs
+Assets/ArcaneEngine/Scripts/Spells/SpellModifierDefinition.cs.meta
+Assets/ArcaneEngine/Scripts/Items/ItemDefinition.cs
+Assets/ArcaneEngine/Scripts/Items/ItemDefinition.cs.meta
+Assets/ArcaneEngine/Editor/Patch211AuthoredContentRepair.cs
+Assets/ArcaneEngine/Editor/Patch211AuthoredContentRepair.cs.meta
+Assets/ArcaneEngine/PATCH_2_1_1_CONTENT_REBUILT.txt
+Assets/ArcaneEngine/PATCH_2_1_1_CONTENT_REBUILT.txt.meta
+Assets/ArcaneEngine/PATCH_2_1_1.txt
+Assets/ArcaneEngine/PATCH_2_1_1.txt.meta
+docs/PATCH_NOTES_2.1.1.md

@@ -12,33 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 569dee05c001450db1a4490a74a82516, type: 3}
   m_Name: Room_ember_foundry_combat_1
   m_EditorClassIdentifier: ArcaneEngine.Runtime::ArcaneEngine.V21RoomLayoutAsset
-  stableId: ember_foundry_combat_1
-  displayName: Ember Foundry Combat 2
-  biome: Ember Foundry
+  stableId: 
+  displayName: 
+  biome: 
   roomType: 0
-  shell: 3
+  shell: 0
   floorSize: {x: 34, y: 34}
-  obstaclePositions:
-  - {x: 3.1027427, y: 0, z: 3.2592924}
-  - {x: -5.070011, y: 0, z: 4.8264885}
-  - {x: -3.102743, y: 0, z: -3.2592924}
-  - {x: 5.07001, y: 0, z: -4.8264894}
-  obstacleScales:
-  - {x: 2.5, y: 1.2, z: 2.4}
-  - {x: 3.5, y: 2.2, z: 3.4}
-  - {x: 1.5, y: 1.2, z: 1.4}
-  - {x: 2.5, y: 2.2, z: 2.4}
-  hazardAnchors:
-  - {x: -8, y: 0.02, z: 6}
-  - {x: 8, y: 0.02, z: -6}
-  enemySpawnZones:
-  - {x: -10, y: 0, z: 9}
-  - {x: 10, y: 0, z: 9}
-  - {x: -10, y: 0, z: -9}
-  - {x: 10, y: 0, z: -9}
-  objectiveAnchors:
-  - {x: -7, y: 0, z: 0}
-  - {x: 7, y: 0, z: 0}
-  - {x: 0, y: 0, z: 7}
+  obstaclePositions: []
+  obstacleScales: []
+  hazardAnchors: []
+  enemySpawnZones: []
+  objectiveAnchors: []
   rewardAnchor: {x: 0, y: 0, z: 0}
   cameraSize: 16

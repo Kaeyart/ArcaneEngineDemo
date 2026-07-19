@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d282c998657c39d7d88c187704855d29, type: 3}
   m_Name: Legendary_phase_cascade
   m_EditorClassIdentifier: ArcaneEngine.Runtime::ArcaneEngine.RelicDefinition
-  id: phase_cascade
-  sourceCoreId: blink
-  displayName: Phase Cascade
-  description: Blink repeats twice along the chosen line and detonates at each step.
-  signatureRule: 'Immutable: chained movement detonations.'
-  signature: 27
-  shardCost: 2
-  requiredBossKills: 3
-  color: {r: 0.78, g: 0.28, b: 1, a: 1}
+  id: 
+  sourceCoreId: 
+  displayName: 
+  description: 
+  signatureRule: 
+  signature: 0
+  shardCost: 0
+  requiredBossKills: 0
+  color: {r: 0, g: 0, b: 0, a: 0}

@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d282c998657c39d7d88c187704855d29, type: 3}
   m_Name: Legendary_blood_moon_edge
   m_EditorClassIdentifier: ArcaneEngine.Runtime::ArcaneEngine.RelicDefinition
-  id: blood_moon_edge
-  sourceCoreId: spellblade
-  displayName: Blood Moon Edge
-  description: Spends a small amount of Health to create a returning execution sweep.
-  signatureRule: 'Immutable: blood-powered returning edge.'
-  signature: 29
-  shardCost: 2
-  requiredBossKills: 3
-  color: {r: 1, g: 0.08, b: 0.28, a: 1}
+  id: 
+  sourceCoreId: 
+  displayName: 
+  description: 
+  signatureRule: 
+  signature: 0
+  shardCost: 0
+  requiredBossKills: 0
+  color: {r: 0, g: 0, b: 0, a: 0}

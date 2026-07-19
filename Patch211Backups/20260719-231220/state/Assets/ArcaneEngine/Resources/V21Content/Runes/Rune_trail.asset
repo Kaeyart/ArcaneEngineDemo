@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31e2535f53020e3b1a198adcb053579b, type: 3}
+  m_Name: Rune_trail
+  m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:SpellModifierDefinition
+  id: trail
+  displayName: Damaging Trail
+  flavorName: Scorched Script
+  shortDescription: Moving spells leave a damaging trail.
+  advancedDescription: 'Spawn: persistent ground trail for three seconds.'
+  effect: 25
+  category: 6
+  connectorFamily: 0
+  magnitude: 3
+  inputSide: 3
+  outputSides: 00000000
+  shape:
+  - q: 0
+    r: 0
+  - q: 0
+    r: 1
+  - q: 1
+    r: -1
+  uiColor: {r: 1, g: 0.3, b: 0.08, a: 1}
+  instability: 8
+  preparationCost: 4
+  capacityCost: 3
+  stackable: 1
+  availableAsSupport: 1
+  compatibleDeliveries: 0000000006000000

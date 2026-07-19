@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d282c998657c39d7d88c187704855d29, type: 3}
   m_Name: Legendary_devouring_zone
   m_EditorClassIdentifier: ArcaneEngine.Runtime::ArcaneEngine.RelicDefinition
-  id: devouring_zone
-  sourceCoreId: arcane_wall
-  displayName: Devouring Boundary
-  description: The wall collapses into a zone that consumes enemy magic.
-  signatureRule: 'Immutable: spell-devouring zone.'
-  signature: 17
-  shardCost: 2
-  requiredBossKills: 2
-  color: {r: 0.55, g: 0.05, b: 0.75, a: 1}
+  id: 
+  sourceCoreId: 
+  displayName: 
+  description: 
+  signatureRule: 
+  signature: 0
+  shardCost: 0
+  requiredBossKills: 0
+  color: {r: 0, g: 0, b: 0, a: 0}

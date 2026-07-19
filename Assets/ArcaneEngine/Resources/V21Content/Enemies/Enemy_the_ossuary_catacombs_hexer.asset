@@ -9,18 +9,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 569dee05c001450db1a4490a74a82516, type: 3}
+  m_Script: {fileID: 0}
   m_Name: Enemy_the_ossuary_catacombs_hexer
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21EnemyContentAsset
-  stableId: the_ossuary_catacombs_hexer
-  displayName: The Ossuary Catacombs Hexer
-  archetype: 2
-  biome: The Ossuary Catacombs
-  mechanicalFamily: Hexer
-  counterplay: Leave the marked zone before the cast completes.
-  primary: {r: 0.9, g: 0.40499997, b: 0.71685004, a: 1}
-  telegraph: {r: 0.85, g: 0.25, b: 1, a: 1}
-  anticipationSeconds: 0.65
-  activeSeconds: 0.2
+  stableId: 
+  displayName: 
+  archetype: 0
+  biome: 
+  mechanicalFamily: 
+  counterplay: 
+  primary: {r: 1, g: 1, b: 1, a: 1}
+  telegraph: {r: 1, g: 0, b: 0, a: 1}
+  anticipationSeconds: 0.7
+  activeSeconds: 0.25
   recoverySeconds: 0.5
-  damageRadius: 1.2
+  damageRadius: 1

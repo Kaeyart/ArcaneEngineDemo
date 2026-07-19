@@ -1,28 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &11400000
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 569dee05c001450db1a4490a74a82516, type: 3}
-  m_Name: Audio_enemy_telegraph
-  m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21AudioEventAsset
-  stableId: enemy_telegraph
-  category: Enemy
-  clips:
-  - {fileID: 5887726317060395020}
-  - {fileID: 2508797317600259059}
-  - {fileID: 7487063129641829319}
-  pitchRange: {x: 0.95, y: 1.05}
-  volumeRange: {x: 0.82, y: 1}
-  maxVoices: 8
-  loop: 0
---- !u!83 &2508797317600259059
+--- !u!83 &-8950655430830883139
 AudioClip:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -50,7 +28,7 @@ AudioClip:
     m_Offset: 0
     m_Size: 0
   m_EditorCompressionFormat: 0
---- !u!83 &5887726317060395020
+--- !u!83 &-2792573258712705570
 AudioClip:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -78,7 +56,29 @@ AudioClip:
     m_Offset: 0
     m_Size: 0
   m_EditorCompressionFormat: 0
---- !u!83 &7487063129641829319
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: Audio_enemy_telegraph
+  m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21AudioEventAsset
+  stableId: enemy_telegraph
+  category: Enemy
+  clips:
+  - {fileID: -2792573258712705570}
+  - {fileID: -8950655430830883139}
+  - {fileID: 3449657464563571255}
+  pitchRange: {x: 0.95, y: 1.05}
+  volumeRange: {x: 0.82, y: 1}
+  maxVoices: 8
+  loop: 0
+--- !u!83 &3449657464563571255
 AudioClip:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

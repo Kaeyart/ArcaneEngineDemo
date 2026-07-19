@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d282c998657c39d7d88c187704855d29, type: 3}
   m_Name: Legendary_starfall
   m_EditorClassIdentifier: ArcaneEngine.Runtime::ArcaneEngine.RelicDefinition
-  id: starfall
-  sourceCoreId: meteor
-  displayName: Starfall Choir
-  description: Calls many smaller meteors across the target area.
-  signatureRule: 'Immutable: repeated scattered impacts.'
-  signature: 11
-  shardCost: 1
-  requiredBossKills: 1
-  color: {r: 1, g: 0.7, b: 0.2, a: 1}
+  id: 
+  sourceCoreId: 
+  displayName: 
+  description: 
+  signatureRule: 
+  signature: 0
+  shardCost: 0
+  requiredBossKills: 0
+  color: {r: 0, g: 0, b: 0, a: 0}

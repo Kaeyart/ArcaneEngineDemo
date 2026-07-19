@@ -12,35 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 569dee05c001450db1a4490a74a82516, type: 3}
   m_Name: Room_the_ossuary_catacombs_combat_5
   m_EditorClassIdentifier: ArcaneEngine.Runtime::ArcaneEngine.V21RoomLayoutAsset
-  stableId: the_ossuary_catacombs_combat_5
-  displayName: The Ossuary Catacombs Combat 6
-  biome: The Ossuary Catacombs
+  stableId: 
+  displayName: 
+  biome: 
   roomType: 0
-  shell: 5
-  floorSize: {x: 36, y: 30}
-  obstaclePositions:
-  - {x: 0.98552996, y: 0, z: 4.390755}
-  - {x: -6.0220394, y: 0, z: 3.5686188}
-  - {x: -3.378131, y: 0, z: -2.9729161}
-  - {x: 2.77435, y: 0, z: -6.4267397}
-  - {x: 4.480402, y: 0, z: 0.41952333}
-  obstacleScales:
-  - {x: 3.5, y: 1.2, z: 2.4}
-  - {x: 1.5, y: 2.2, z: 3.4}
-  - {x: 2.5, y: 1.2, z: 1.4}
-  - {x: 3.5, y: 2.2, z: 2.4}
-  - {x: 1.5, y: 1.2, z: 3.4}
-  hazardAnchors:
-  - {x: -8, y: 0.02, z: 6}
-  - {x: 8, y: 0.02, z: -6}
-  enemySpawnZones:
-  - {x: -10, y: 0, z: 9}
-  - {x: 10, y: 0, z: 9}
-  - {x: -10, y: 0, z: -9}
-  - {x: 10, y: 0, z: -9}
-  objectiveAnchors:
-  - {x: -7, y: 0, z: 0}
-  - {x: 7, y: 0, z: 0}
-  - {x: 0, y: 0, z: 7}
+  shell: 0
+  floorSize: {x: 34, y: 34}
+  obstaclePositions: []
+  obstacleScales: []
+  hazardAnchors: []
+  enemySpawnZones: []
+  objectiveAnchors: []
   rewardAnchor: {x: 0, y: 0, z: 0}
   cameraSize: 16

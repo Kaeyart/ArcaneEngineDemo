@@ -12,13 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d282c998657c39d7d88c187704855d29, type: 3}
   m_Name: Legendary_comet_wake
   m_EditorClassIdentifier: ArcaneEngine.Runtime::ArcaneEngine.RelicDefinition
-  id: comet_wake
-  sourceCoreId: meteor
-  displayName: Comet Wake
-  description: The meteor crosses the arena and leaves a chain of burning impact
-    zones.
-  signatureRule: 'Immutable: travelling impact wake.'
-  signature: 25
-  shardCost: 2
-  requiredBossKills: 3
-  color: {r: 1, g: 0.38, b: 0.08, a: 1}
+  id: 
+  sourceCoreId: 
+  displayName: 
+  description: 
+  signatureRule: 
+  signature: 0
+  shardCost: 0
+  requiredBossKills: 0
+  color: {r: 0, g: 0, b: 0, a: 0}

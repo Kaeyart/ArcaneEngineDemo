@@ -9,18 +9,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 569dee05c001450db1a4490a74a82516, type: 3}
+  m_Script: {fileID: 0}
   m_Name: Enemy_sunken_archive_controller
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21EnemyContentAsset
-  stableId: sunken_archive_controller
-  displayName: Sunken Archive Controller
-  archetype: 8
-  biome: Sunken Archive
-  mechanicalFamily: Controller
-  counterplay: Destroy control hazards and keep space to reposition.
-  primary: {r: 0.40499997, g: 0.9, b: 0.87624, a: 1}
-  telegraph: {r: 1, g: 0.25, b: 0.12, a: 1}
-  anticipationSeconds: 0.65
-  activeSeconds: 0.2
+  stableId: 
+  displayName: 
+  archetype: 0
+  biome: 
+  mechanicalFamily: 
+  counterplay: 
+  primary: {r: 1, g: 1, b: 1, a: 1}
+  telegraph: {r: 1, g: 0, b: 0, a: 1}
+  anticipationSeconds: 0.7
+  activeSeconds: 0.25
   recoverySeconds: 0.5
-  damageRadius: 3.5
+  damageRadius: 1

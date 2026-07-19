@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d282c998657c39d7d88c187704855d29, type: 3}
   m_Name: Legendary_phoenix_seed
   m_EditorClassIdentifier: ArcaneEngine.Runtime::ArcaneEngine.RelicDefinition
-  id: phoenix_seed
-  sourceCoreId: fireball
-  displayName: Phoenix Seed
-  description: Embeds in a victim. Death erupts into inherited Fireballs.
-  signatureRule: 'Immutable: marked deaths hatch new projectiles.'
-  signature: 2
-  shardCost: 2
-  requiredBossKills: 2
-  color: {r: 1, g: 0.58, b: 0.05, a: 1}
+  id: 
+  sourceCoreId: 
+  displayName: 
+  description: 
+  signatureRule: 
+  signature: 0
+  shardCost: 0
+  requiredBossKills: 0
+  color: {r: 0, g: 0, b: 0, a: 0}

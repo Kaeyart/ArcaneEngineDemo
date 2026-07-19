@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d282c998657c39d7d88c187704855d29, type: 3}
   m_Name: Legendary_spellblade_dance
   m_EditorClassIdentifier: ArcaneEngine.Runtime::ArcaneEngine.RelicDefinition
-  id: spellblade_dance
-  sourceCoreId: spellblade
-  displayName: Spellblade Dance
-  description: A rapid orbit of blades repeats on critical hits.
-  signatureRule: 'Immutable: orbiting blade sequence.'
-  signature: 18
-  shardCost: 1
-  requiredBossKills: 1
-  color: {r: 1, g: 0.3, b: 0.6, a: 1}
+  id: 
+  sourceCoreId: 
+  displayName: 
+  description: 
+  signatureRule: 
+  signature: 0
+  shardCost: 0
+  requiredBossKills: 0
+  color: {r: 0, g: 0, b: 0, a: 0}

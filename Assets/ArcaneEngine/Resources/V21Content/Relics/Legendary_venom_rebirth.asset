@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d282c998657c39d7d88c187704855d29, type: 3}
   m_Name: Legendary_venom_rebirth
   m_EditorClassIdentifier: ArcaneEngine.Runtime::ArcaneEngine.RelicDefinition
-  id: venom_rebirth
-  sourceCoreId: poison_bolt
-  displayName: Venom Rebirth
-  description: Poisoned kills split into seeking venom bolts.
-  signatureRule: 'Immutable: poisoned deaths hatch projectiles.'
-  signature: 32
-  shardCost: 2
-  requiredBossKills: 3
-  color: {r: 0.65, g: 1, b: 0.05, a: 1}
+  id: 
+  sourceCoreId: 
+  displayName: 
+  description: 
+  signatureRule: 
+  signature: 0
+  shardCost: 0
+  requiredBossKills: 0
+  color: {r: 0, g: 0, b: 0, a: 0}

@@ -332,6 +332,12 @@ namespace ArcaneEngine
             if (_system == null)
                 Awake();
 
+            // Patch 2.1.1: stop pooled particles before module reconfiguration.
+            // Unity rejects duration and random-seed changes while a system is playing.
+            _system.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            _system.Clear(true);
+            _system.useAutoRandomSeed = false;
+
             _releasing = false;
             Priority = request.priority;
             _follow = request.follow;
@@ -487,6 +493,18 @@ namespace ArcaneEngine
             ParticleSystem.VelocityOverLifetimeModule velocity =
                 _system.velocityOverLifetime;
             velocity.enabled = true;
+
+            // Patch 2.1.1: pooled systems retain curve modes from their previous use.
+            // Unity requires the X, Y and Z velocity curves to use the same mode.
+            ParticleSystem.MinMaxCurve zero =
+                new ParticleSystem.MinMaxCurve(0f, 0f);
+            velocity.x = zero;
+            velocity.y = zero;
+            velocity.z = zero;
+            velocity.radial = zero;
+            velocity.orbitalX = zero;
+            velocity.orbitalY = zero;
+            velocity.orbitalZ = zero;
 
             ReactionElement primary = request.primary;
 

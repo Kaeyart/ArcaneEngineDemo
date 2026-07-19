@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d282c998657c39d7d88c187704855d29, type: 3}
   m_Name: Legendary_venom_burst
   m_EditorClassIdentifier: ArcaneEngine.Runtime::ArcaneEngine.RelicDefinition
-  id: venom_burst
-  sourceCoreId: poison_bolt
-  displayName: Venom Burst
-  description: Poison Bolt becomes a lasting toxic field that pulls enemies inward.
-  signatureRule: 'Legendary Effect: pulling poison field.'
-  signature: 17
-  shardCost: 1
-  requiredBossKills: 1
-  color: {r: 0.25, g: 1, b: 0.12, a: 1}
+  id: 
+  sourceCoreId: 
+  displayName: 
+  description: 
+  signatureRule: 
+  signature: 0
+  shardCost: 0
+  requiredBossKills: 0
+  color: {r: 0, g: 0, b: 0, a: 0}

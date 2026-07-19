@@ -12,13 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d282c998657c39d7d88c187704855d29, type: 3}
   m_Name: Legendary_shatter_tide
   m_EditorClassIdentifier: ArcaneEngine.Runtime::ArcaneEngine.RelicDefinition
-  id: shatter_tide
-  sourceCoreId: ice_nova
-  displayName: Shatter Tide
-  description: The nova travels outward in three freezing waves and consumes Freeze
-    on the final wave.
-  signatureRule: 'Immutable: three-stage shatter wave.'
-  signature: 22
-  shardCost: 2
-  requiredBossKills: 3
-  color: {r: 0.55, g: 0.95, b: 1, a: 1}
+  id: 
+  sourceCoreId: 
+  displayName: 
+  description: 
+  signatureRule: 
+  signature: 0
+  shardCost: 0
+  requiredBossKills: 0
+  color: {r: 0, g: 0, b: 0, a: 0}

@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d282c998657c39d7d88c187704855d29, type: 3}
   m_Name: Legendary_absolute_zero
   m_EditorClassIdentifier: ArcaneEngine.Runtime::ArcaneEngine.RelicDefinition
-  id: absolute_zero
-  sourceCoreId: ice_nova
-  displayName: Absolute Zero
-  description: The final pulse shatters frozen targets for stored damage.
-  signatureRule: 'Immutable: freeze culminates in shatter.'
-  signature: 4
-  shardCost: 1
-  requiredBossKills: 1
-  color: {r: 0.2, g: 0.9, b: 1, a: 1}
+  id: 
+  sourceCoreId: 
+  displayName: 
+  description: 
+  signatureRule: 
+  signature: 0
+  shardCost: 0
+  requiredBossKills: 0
+  color: {r: 0, g: 0, b: 0, a: 0}

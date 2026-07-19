@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87d8a268e8bd1ef70ae6277cc508f518, type: 3}
+  m_Name: Item_ritual_glove_l
+  m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:ItemDefinition
+  id: ritual_glove_l
+  displayName: Ritual Glove
+  description: A left glove for ailment rituals.
+  slot: 4
+  rarity: 0
+  twoHanded: 0
+  health: 0
+  mana: 8
+  movementSpeed: 0
+  armor: 0
+  resistance: 0
+  critChance: 0
+  critDamage: 0
+  spellPower: 0
+  cooldownReduction: 0
+  triggerEnergy: 0
+  mutation: 0
+  setId: 
+  grantedCoreId: 
+  baseFamily: Ritual Glove
+  implicitText: +8 Maximum Mana
+  itemTags:
+  - caster
+  - ward
+  color: {r: 0.48, g: 0.72, b: 0.42, a: 1}

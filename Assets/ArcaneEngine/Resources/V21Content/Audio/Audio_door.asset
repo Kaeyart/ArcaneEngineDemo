@@ -1,12 +1,12 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!83 &-1064428075785950336
+--- !u!83 &-7575467536087074283
 AudioClip:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: door_take_3
+  m_Name: door_take_1
   m_LoadType: 0
   m_Channels: 1
   m_Frequency: 44100
@@ -37,26 +37,26 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 569dee05c001450db1a4490a74a82516, type: 3}
+  m_Script: {fileID: 0}
   m_Name: Audio_door
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21AudioEventAsset
   stableId: door
   category: Effects
   clips:
-  - {fileID: 8582268847293992712}
-  - {fileID: 4279857942000841897}
-  - {fileID: -1064428075785950336}
+  - {fileID: -7575467536087074283}
+  - {fileID: 1787965279491661985}
+  - {fileID: 820975933889000447}
   pitchRange: {x: 0.95, y: 1.05}
   volumeRange: {x: 0.82, y: 1}
   maxVoices: 8
   loop: 0
---- !u!83 &4279857942000841897
+--- !u!83 &820975933889000447
 AudioClip:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: door_take_2
+  m_Name: door_take_3
   m_LoadType: 0
   m_Channels: 1
   m_Frequency: 44100
@@ -78,13 +78,13 @@ AudioClip:
     m_Offset: 0
     m_Size: 0
   m_EditorCompressionFormat: 0
---- !u!83 &8582268847293992712
+--- !u!83 &1787965279491661985
 AudioClip:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: door_take_1
+  m_Name: door_take_2
   m_LoadType: 0
   m_Channels: 1
   m_Frequency: 44100

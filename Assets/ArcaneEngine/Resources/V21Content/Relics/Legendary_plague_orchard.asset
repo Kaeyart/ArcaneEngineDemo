@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d282c998657c39d7d88c187704855d29, type: 3}
   m_Name: Legendary_plague_orchard
   m_EditorClassIdentifier: ArcaneEngine.Runtime::ArcaneEngine.RelicDefinition
-  id: plague_orchard
-  sourceCoreId: poison_bolt
-  displayName: Plague Orchard
-  description: Impacts grow toxic zones that spread poison to nearby enemies.
-  signatureRule: 'Immutable: spreading toxic growths.'
-  signature: 31
-  shardCost: 2
-  requiredBossKills: 2
-  color: {r: 0.35, g: 1, b: 0.08, a: 1}
+  id: 
+  sourceCoreId: 
+  displayName: 
+  description: 
+  signatureRule: 
+  signature: 0
+  shardCost: 0
+  requiredBossKills: 0
+  color: {r: 0, g: 0, b: 0, a: 0}

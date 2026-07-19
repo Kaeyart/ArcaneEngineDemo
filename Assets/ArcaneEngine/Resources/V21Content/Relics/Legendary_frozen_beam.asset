@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d282c998657c39d7d88c187704855d29, type: 3}
   m_Name: Legendary_frozen_beam
   m_EditorClassIdentifier: ArcaneEngine.Runtime::ArcaneEngine.RelicDefinition
-  id: frozen_beam
-  sourceCoreId: frost_lance
-  displayName: Frozen Beam
-  description: Frost Lance repeats rapidly and strengthens its freeze.
-  signatureRule: 'Legendary Effect: repeating frost beam.'
-  signature: 8
-  shardCost: 1
-  requiredBossKills: 1
-  color: {r: 0.25, g: 0.85, b: 1, a: 1}
+  id: 
+  sourceCoreId: 
+  displayName: 
+  description: 
+  signatureRule: 
+  signature: 0
+  shardCost: 0
+  requiredBossKills: 0
+  color: {r: 0, g: 0, b: 0, a: 0}

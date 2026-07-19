@@ -1,12 +1,12 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!83 &-7114555130780828208
+--- !u!83 &-6791990210888718689
 AudioClip:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: enemy_attack_take_1
+  m_Name: enemy_attack_take_2
   m_LoadType: 0
   m_Channels: 1
   m_Frequency: 44100
@@ -28,7 +28,7 @@ AudioClip:
     m_Offset: 0
     m_Size: 0
   m_EditorCompressionFormat: 0
---- !u!83 &-506897363017343271
+--- !u!83 &-5378779957709806694
 AudioClip:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -65,26 +65,26 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 569dee05c001450db1a4490a74a82516, type: 3}
+  m_Script: {fileID: 0}
   m_Name: Audio_enemy_attack
   m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21AudioEventAsset
   stableId: enemy_attack
   category: Enemy
   clips:
-  - {fileID: -7114555130780828208}
-  - {fileID: 9142040180124281371}
-  - {fileID: -506897363017343271}
+  - {fileID: 543525506526963323}
+  - {fileID: -6791990210888718689}
+  - {fileID: -5378779957709806694}
   pitchRange: {x: 0.95, y: 1.05}
   volumeRange: {x: 0.82, y: 1}
   maxVoices: 8
   loop: 0
---- !u!83 &9142040180124281371
+--- !u!83 &543525506526963323
 AudioClip:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: enemy_attack_take_2
+  m_Name: enemy_attack_take_1
   m_LoadType: 0
   m_Channels: 1
   m_Frequency: 44100

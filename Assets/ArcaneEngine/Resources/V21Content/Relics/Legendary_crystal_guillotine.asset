@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d282c998657c39d7d88c187704855d29, type: 3}
   m_Name: Legendary_crystal_guillotine
   m_EditorClassIdentifier: ArcaneEngine.Runtime::ArcaneEngine.RelicDefinition
-  id: crystal_guillotine
-  sourceCoreId: frost_lance
-  displayName: Crystal Guillotine
-  description: A delayed piercing lance consumes Freeze for a heavy shatter strike.
-  signatureRule: 'Immutable: delayed frozen execution.'
-  signature: 33
-  shardCost: 2
-  requiredBossKills: 2
-  color: {r: 0.25, g: 0.85, b: 1, a: 1}
+  id: 
+  sourceCoreId: 
+  displayName: 
+  description: 
+  signatureRule: 
+  signature: 0
+  shardCost: 0
+  requiredBossKills: 0
+  color: {r: 0, g: 0, b: 0, a: 0}

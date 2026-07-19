@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d282c998657c39d7d88c187704855d29, type: 3}
   m_Name: Legendary_tempest_crown
   m_EditorClassIdentifier: ArcaneEngine.Runtime::ArcaneEngine.RelicDefinition
-  id: tempest_crown
-  sourceCoreId: storm_orb
-  displayName: Tempest Crown
-  description: Storm Orbs orbit the player before launching at separate targets.
-  signatureRule: 'Immutable: orbiting storm crown.'
-  signature: 35
-  shardCost: 2
-  requiredBossKills: 2
-  color: {r: 0.45, g: 0.6, b: 1, a: 1}
+  id: 
+  sourceCoreId: 
+  displayName: 
+  description: 
+  signatureRule: 
+  signature: 0
+  shardCost: 0
+  requiredBossKills: 0
+  color: {r: 0, g: 0, b: 0, a: 0}

@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d282c998657c39d7d88c187704855d29, type: 3}
   m_Name: Legendary_covenant_swarm
   m_EditorClassIdentifier: ArcaneEngine.Runtime::ArcaneEngine.RelicDefinition
-  id: covenant_swarm
-  sourceCoreId: wisp_summon
-  displayName: Covenant Swarm
-  description: Three bonded wisps focus the same target and intensify repeated hits.
-  signatureRule: 'Immutable: coordinated familiar focus.'
-  signature: 26
-  shardCost: 2
-  requiredBossKills: 3
-  color: {r: 0.3, g: 1, b: 0.72, a: 1}
+  id: 
+  sourceCoreId: 
+  displayName: 
+  description: 
+  signatureRule: 
+  signature: 0
+  shardCost: 0
+  requiredBossKills: 0
+  color: {r: 0, g: 0, b: 0, a: 0}
