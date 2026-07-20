@@ -9,18 +9,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: ae55d30f624c824bbaa70ae7f3ed57c7, type: 3}
   m_Name: Affix_of_reaching
-  m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21AffixContentAsset
-  stableId: 
-  displayName: 
-  stat: 
-  kind: 0
-  group: 
-  tags: []
-  slots: 
-  baseMinimum: 0
-  baseMaximum: 0
+  m_EditorClassIdentifier: ArcaneEngine.Runtime::ArcaneEngine.V21AffixContentAsset
+  stableId: of_reaching
+  displayName: of Reaching
+  stat: pickup_range
+  kind: 2
+  group: pickup_range
+  tags:
+  - mobile
+  slots: 070000000400000005000000
+  baseMinimum: 0.3
+  baseMaximum: 0.8
   percentage: 0
   local: 0
-  weight: 50
+  weight: 45

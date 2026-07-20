@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: RoomDefinition_modifierreward_1
+  m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21RoomDefinitionAsset
+  stableId: modifierreward_1
+  displayName: Rune Atelier II
+  biome: The Ossuary Catacombs
+  roomType: 2
+  difficulty: 2
+  obstaclePattern: 1
+  hasHazards: 0
+  floorColor: {r: 0.06, g: 0.09, b: 0.11, a: 1}
+  accentColor: {r: 0.15, g: 0.95, b: 0.85, a: 1}

@@ -260,6 +260,11 @@ namespace ArcaneEngine
         public float delay;
         public bool critical;
         public bool death;
+        public long originCastId;
+        public int propagationGeneration;
+        public ReactionSourceKind22 reactionSourceKind;
+        public ReactionFieldAuthority22 fieldAuthority;
+        public bool coalesced;
         public float time;
 
         public string Summary
@@ -291,6 +296,9 @@ namespace ArcaneEngine
 
         public static void Emit(SpellPresentationEvent presentationEvent)
         {
+            if (!ReactionPresentationCoalescer22.TryAccept(ref presentationEvent))
+                return;
+
             presentationEvent.time = Time.unscaledTime;
             LastEvent = presentationEvent;
             PublishedCount++;

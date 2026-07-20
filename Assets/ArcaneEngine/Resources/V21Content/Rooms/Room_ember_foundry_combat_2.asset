@@ -9,19 +9,38 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 569dee05c001450db1a4490a74a82516, type: 3}
+  m_Script: {fileID: 11500000, guid: 0965405982fb14bf4b24eda67f3ca11d, type: 3}
   m_Name: Room_ember_foundry_combat_2
   m_EditorClassIdentifier: ArcaneEngine.Runtime::ArcaneEngine.V21RoomLayoutAsset
-  stableId: 
-  displayName: 
-  biome: 
+  stableId: ember_foundry_combat_2
+  displayName: Ember Foundry Combat 3
+  biome: Ember Foundry
   roomType: 0
-  shell: 0
-  floorSize: {x: 34, y: 34}
-  obstaclePositions: []
-  obstacleScales: []
-  hazardAnchors: []
-  enemySpawnZones: []
-  objectiveAnchors: []
+  shell: 4
+  floorSize: {x: 36, y: 30}
+  obstaclePositions:
+  - {x: 2.1209774, y: 0, z: 3.9688103}
+  - {x: -4.852002, y: 0, z: 5.045599}
+  - {x: -4.048715, y: 0, z: -1.9641554}
+  - {x: 0.9596242, y: 0, z: -6.933911}
+  - {x: 4.4299808, y: 0, z: -0.79073954}
+  obstacleScales:
+  - {x: 3.5, y: 1.2, z: 2.4}
+  - {x: 1.5, y: 2.2, z: 3.4}
+  - {x: 2.5, y: 1.2, z: 1.4}
+  - {x: 3.5, y: 2.2, z: 2.4}
+  - {x: 1.5, y: 1.2, z: 3.4}
+  hazardAnchors:
+  - {x: -8, y: 0.02, z: 6}
+  - {x: 8, y: 0.02, z: -6}
+  enemySpawnZones:
+  - {x: -10, y: 0, z: 9}
+  - {x: 10, y: 0, z: 9}
+  - {x: -10, y: 0, z: -9}
+  - {x: 10, y: 0, z: -9}
+  objectiveAnchors:
+  - {x: -7, y: 0, z: 0}
+  - {x: 7, y: 0, z: 0}
+  - {x: 0, y: 0, z: 7}
   rewardAnchor: {x: 0, y: 0, z: 0}
   cameraSize: 16

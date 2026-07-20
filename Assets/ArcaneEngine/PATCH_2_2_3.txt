@@ -1,0 +1,5 @@
+Arcane Engine Demo Patch 2.2.3
+audio-reward-hotfix-22300
+
+Keeps pooled procedural audio voices under an always-active root and makes
+catalog reward lookups null-safe.

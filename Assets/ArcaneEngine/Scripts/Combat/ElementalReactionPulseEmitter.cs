@@ -16,6 +16,7 @@ namespace ArcaneEngine
         private ReactionElement _signature;
         private ReactionElement _element;
         private ReactionPulseMode _mode;
+        private ReactionContext22 _context;
         private float _damage;
         private float _startRadius;
         private float _endRadius;
@@ -37,6 +38,26 @@ namespace ArcaneEngine
             float delay,
             ReactionPulseMode mode)
         {
+            return Spawn(
+                position, source, signature, element, damage, startRadius,
+                endRadius, pulseCount, interval, delay, mode,
+                ReactionContext22.Legacy(true));
+        }
+
+        public static ElementalReactionPulseEmitter Spawn(
+            Vector3 position,
+            EnemyController source,
+            ReactionElement signature,
+            ReactionElement element,
+            float damage,
+            float startRadius,
+            float endRadius,
+            int pulseCount,
+            float interval,
+            float delay,
+            ReactionPulseMode mode,
+            ReactionContext22 context)
+        {
             GameObject gameObject = new GameObject(
                 "Reaction Pulses " +
                 ElementalReactionCodex.SignatureText(signature));
@@ -50,11 +71,14 @@ namespace ArcaneEngine
             emitter._signature = signature;
             emitter._element = element;
             emitter._mode = mode;
+            emitter._context = context.IsValid
+                ? context
+                : ReactionContext22.Legacy(true);
             emitter._damage = Mathf.Max(0f, damage);
             emitter._startRadius = Mathf.Max(0.25f, startRadius);
             emitter._endRadius = Mathf.Max(emitter._startRadius, endRadius);
-            emitter._pulseCount = Mathf.Clamp(pulseCount, 1, 24);
-            emitter._interval = Mathf.Clamp(interval, 0.08f, 1.2f);
+            emitter._pulseCount = Mathf.Clamp(pulseCount, 1, 5);
+            emitter._interval = Mathf.Clamp(interval, 0.18f, 1.2f);
             emitter._nextPulse = Time.time + Mathf.Max(0f, delay);
             return emitter;
         }
@@ -94,12 +118,17 @@ namespace ArcaneEngine
                 payload = element;
             }
 
-            Color color = ElementalReactionCodex.BlendColor(payload);
+            ReactionContext22 pulseContext = _pulseIndex == 0
+                ? _context.AsSource(ReactionSourceKind22.Echo)
+                : _context.Derive(ReactionSourceKind22.Echo);
 
-            GameFeelSystem.Burst(
+            Color color = ElementalReactionCodex.BlendColor(payload);
+            ReactionPresentation22.TryBurst(
                 transform.position + Vector3.up * 0.12f,
                 color,
-                Mathf.Clamp(0.45f + radius * 0.12f, 0.5f, 1.6f));
+                Mathf.Clamp(0.35f + radius * 0.08f, 0.38f, 1.05f),
+                pulseContext,
+                false);
 
             ElementalReactionMechanicExecutor.DamageArea(
                 transform.position,
@@ -109,7 +138,9 @@ namespace ArcaneEngine
                 element,
                 payload,
                 0.32f,
-                false);
+                false,
+                pulseContext,
+                6);
 
             if (_mode == ReactionPulseMode.Pull)
             {
@@ -117,7 +148,9 @@ namespace ArcaneEngine
                     transform.position,
                     _source,
                     radius,
-                    5.5f + radius);
+                    5.5f + radius,
+                    pulseContext,
+                    4);
             }
             else if (_mode == ReactionPulseMode.Push)
             {
@@ -125,7 +158,9 @@ namespace ArcaneEngine
                     transform.position,
                     _source,
                     radius,
-                    16f + radius * 2f);
+                    16f + radius * 2f,
+                    pulseContext,
+                    4);
             }
             else if (_mode == ReactionPulseMode.Thermal &&
                      element == ReactionElement.Cold)
@@ -134,7 +169,9 @@ namespace ArcaneEngine
                     transform.position,
                     _source,
                     radius,
-                    0.35f + t * 0.4f);
+                    0.35f + t * 0.4f,
+                    pulseContext,
+                    4);
             }
         }
     }

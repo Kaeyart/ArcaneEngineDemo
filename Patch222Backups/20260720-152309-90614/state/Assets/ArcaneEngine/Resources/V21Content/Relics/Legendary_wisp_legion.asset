@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d282c998657c39d7d88c187704855d29, type: 3}
+  m_Name: Legendary_wisp_legion
+  m_EditorClassIdentifier: ArcaneEngine.Runtime::ArcaneEngine.RelicDefinition
+  id: wisp_legion
+  sourceCoreId: wisp_summon
+  displayName: Wisp Legion
+  description: Summons several fragile wisps that inherit projectile payloads.
+  signatureRule: 'Immutable: multiple inherited familiars.'
+  signature: 12
+  shardCost: 1
+  requiredBossKills: 1
+  color: {r: 0.2, g: 1, b: 0.65, a: 1}

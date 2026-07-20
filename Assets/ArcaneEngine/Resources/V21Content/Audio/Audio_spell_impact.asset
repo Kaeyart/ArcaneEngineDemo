@@ -1,28 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &11400000
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
-  m_Name: Audio_spell_impact
-  m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21AudioEventAsset
-  stableId: spell_impact
-  category: Effects
-  clips:
-  - {fileID: 2372160420986407307}
-  - {fileID: 1684852284172406629}
-  - {fileID: 8111325613399737968}
-  pitchRange: {x: 0.95, y: 1.05}
-  volumeRange: {x: 0.82, y: 1}
-  maxVoices: 8
-  loop: 0
---- !u!83 &1684852284172406629
+--- !u!83 &-5872248691556644519
 AudioClip:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -50,7 +28,7 @@ AudioClip:
     m_Offset: 0
     m_Size: 0
   m_EditorCompressionFormat: 0
---- !u!83 &2372160420986407307
+--- !u!83 &-4156114127208871786
 AudioClip:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -78,7 +56,7 @@ AudioClip:
     m_Offset: 0
     m_Size: 0
   m_EditorCompressionFormat: 0
---- !u!83 &8111325613399737968
+--- !u!83 &-1539160291031345990
 AudioClip:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -106,3 +84,25 @@ AudioClip:
     m_Offset: 0
     m_Size: 0
   m_EditorCompressionFormat: 0
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e564df66357b6049a90fc09e22f4a5b3, type: 3}
+  m_Name: Audio_spell_impact
+  m_EditorClassIdentifier: ArcaneEngine.Runtime::ArcaneEngine.V21AudioEventAsset
+  stableId: spell_impact
+  category: Effects
+  clips:
+  - {fileID: -4156114127208871786}
+  - {fileID: -5872248691556644519}
+  - {fileID: -1539160291031345990}
+  pitchRange: {x: 0.95, y: 1.05}
+  volumeRange: {x: 0.82, y: 1}
+  maxVoices: 8
+  loop: 0

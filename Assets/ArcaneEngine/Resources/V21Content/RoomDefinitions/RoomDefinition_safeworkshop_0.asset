@@ -9,15 +9,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: aa5841fb8c09da2089c2860db2ba62e8, type: 3}
   m_Name: RoomDefinition_safeworkshop_0
-  m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21RoomDefinitionAsset
-  stableId: 
-  displayName: 
-  biome: 
-  roomType: 0
-  difficulty: 0
+  m_EditorClassIdentifier: ArcaneEngine.Runtime::ArcaneEngine.V21RoomDefinitionAsset
+  stableId: safeworkshop_0
+  displayName: Quiet Forge I
+  biome: The Ossuary Catacombs
+  roomType: 7
+  difficulty: 1
   obstaclePattern: 0
   hasHazards: 0
-  floorColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-  accentColor: {r: 0, g: 1, b: 1, a: 1}
+  floorColor: {r: 0.055, g: 0.07, b: 0.1, a: 1}
+  accentColor: {r: 0.3, g: 0.75, b: 1, a: 1}

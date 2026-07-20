@@ -1,6 +1,28 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!83 &-8972400667444808898
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e564df66357b6049a90fc09e22f4a5b3, type: 3}
+  m_Name: Audio_summon
+  m_EditorClassIdentifier: ArcaneEngine.Runtime::ArcaneEngine.V21AudioEventAsset
+  stableId: summon
+  category: Effects
+  clips:
+  - {fileID: 4219268078465141788}
+  - {fileID: 5253031600520160332}
+  - {fileID: 2392266413974756892}
+  pitchRange: {x: 0.95, y: 1.05}
+  volumeRange: {x: 0.82, y: 1}
+  maxVoices: 8
+  loop: 0
+--- !u!83 &2392266413974756892
 AudioClip:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -28,7 +50,7 @@ AudioClip:
     m_Offset: 0
     m_Size: 0
   m_EditorCompressionFormat: 0
---- !u!83 &-5474386241681970084
+--- !u!83 &4219268078465141788
 AudioClip:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -56,29 +78,7 @@ AudioClip:
     m_Offset: 0
     m_Size: 0
   m_EditorCompressionFormat: 0
---- !u!114 &11400000
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
-  m_Name: Audio_summon
-  m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21AudioEventAsset
-  stableId: summon
-  category: Effects
-  clips:
-  - {fileID: -5474386241681970084}
-  - {fileID: 1884170341725248792}
-  - {fileID: -8972400667444808898}
-  pitchRange: {x: 0.95, y: 1.05}
-  volumeRange: {x: 0.82, y: 1}
-  maxVoices: 8
-  loop: 0
---- !u!83 &1884170341725248792
+--- !u!83 &5253031600520160332
 AudioClip:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

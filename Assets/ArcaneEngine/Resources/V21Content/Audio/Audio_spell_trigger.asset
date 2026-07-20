@@ -1,28 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &11400000
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
-  m_Name: Audio_spell_trigger
-  m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21AudioEventAsset
-  stableId: spell_trigger
-  category: Effects
-  clips:
-  - {fileID: 3429575359293614441}
-  - {fileID: 4039074320389767909}
-  - {fileID: 6809451581328493012}
-  pitchRange: {x: 0.95, y: 1.05}
-  volumeRange: {x: 0.82, y: 1}
-  maxVoices: 8
-  loop: 0
---- !u!83 &3429575359293614441
+--- !u!83 &-6165003298097285379
 AudioClip:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -50,13 +28,13 @@ AudioClip:
     m_Offset: 0
     m_Size: 0
   m_EditorCompressionFormat: 0
---- !u!83 &4039074320389767909
+--- !u!83 &-4695492411554607872
 AudioClip:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: spell_trigger_take_2
+  m_Name: spell_trigger_take_3
   m_LoadType: 0
   m_Channels: 1
   m_Frequency: 44100
@@ -78,13 +56,35 @@ AudioClip:
     m_Offset: 0
     m_Size: 0
   m_EditorCompressionFormat: 0
---- !u!83 &6809451581328493012
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e564df66357b6049a90fc09e22f4a5b3, type: 3}
+  m_Name: Audio_spell_trigger
+  m_EditorClassIdentifier: ArcaneEngine.Runtime::ArcaneEngine.V21AudioEventAsset
+  stableId: spell_trigger
+  category: Effects
+  clips:
+  - {fileID: -6165003298097285379}
+  - {fileID: 1484951034858566667}
+  - {fileID: -4695492411554607872}
+  pitchRange: {x: 0.95, y: 1.05}
+  volumeRange: {x: 0.82, y: 1}
+  maxVoices: 8
+  loop: 0
+--- !u!83 &1484951034858566667
 AudioClip:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: spell_trigger_take_3
+  m_Name: spell_trigger_take_2
   m_LoadType: 0
   m_Channels: 1
   m_Frequency: 44100

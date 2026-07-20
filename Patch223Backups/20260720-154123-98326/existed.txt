@@ -1,0 +1,3 @@
+Assets/ArcaneEngine/Scripts/Presentation21/ProceduralAudioHaptics21.cs
+Assets/ArcaneEngine/Scripts/Presentation21/ProceduralAudioHaptics21.cs.meta
+Assets/ArcaneEngine/Scripts/Core/DemoCatalog.cs

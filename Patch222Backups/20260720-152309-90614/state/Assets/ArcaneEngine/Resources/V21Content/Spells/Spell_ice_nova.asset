@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 135d00415d8af8a858d5da7af31479ee, type: 3}
+  m_Name: Spell_ice_nova
+  m_EditorClassIdentifier: ArcaneEngine.Runtime::ArcaneEngine.SpellCoreDefinition
+  id: ice_nova
+  displayName: Ice Nova
+  description: An expanding frost pulse centered at the cast position.
+  delivery: 1
+  castMethod: 0
+  element: 1
+  color: {r: 0.2, g: 0.8, b: 1, a: 1}
+  baseDamage: 18
+  manaCost: 22
+  cooldown: 1.3
+  speed: 0
+  lifetime: 0.45
+  size: 0.35
+  radius: 5
+  tags:
+  - nova
+  - freeze

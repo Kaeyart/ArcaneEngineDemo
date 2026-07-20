@@ -7,6 +7,7 @@ namespace ArcaneEngine
         private EnemyController _source;
         private ReactionElement _signature;
         private ReactionElement _element;
+        private ReactionContext22 _context;
         private Vector3 _velocity;
         private float _damage;
         private float _expiresAt;
@@ -22,10 +23,28 @@ namespace ArcaneEngine
             float duration,
             int count)
         {
-            int shardCount = Mathf.Clamp(count, 3, 36);
-            float life = Mathf.Clamp(duration, 0.5f, 4f);
+            SpawnNova(
+                position, source, signature, element, damage, radius, duration,
+                count, ReactionContext22.Legacy(true));
+        }
+
+        public static void SpawnNova(
+            Vector3 position,
+            EnemyController source,
+            ReactionElement signature,
+            ReactionElement element,
+            float damage,
+            float radius,
+            float duration,
+            int count,
+            ReactionContext22 context)
+        {
+            int shardCount = Mathf.Clamp(count, 3, 14);
+            float life = Mathf.Clamp(duration, 0.5f, 3f);
             float speed = Mathf.Max(3f, radius / life);
             Color color = ElementalReactionCodex.BlendColor(signature);
+            ReactionContext22 shardContext =
+                context.Derive(ReactionSourceKind22.Echo);
 
             for (int i = 0; i < shardCount; i++)
             {
@@ -41,7 +60,7 @@ namespace ArcaneEngine
                 gameObject.name = "Reaction Shard";
                 gameObject.transform.position = position;
                 gameObject.transform.localScale =
-                    new Vector3(0.1f, 0.1f, 0.38f);
+                    new Vector3(0.08f, 0.08f, 0.28f);
                 gameObject.transform.rotation =
                     Quaternion.LookRotation(direction, Vector3.up);
 
@@ -51,7 +70,7 @@ namespace ArcaneEngine
 
                 Renderer renderer = gameObject.GetComponent<Renderer>();
                 if (renderer != null)
-                    renderer.sharedMaterial = RuntimeVisuals.Material(color, 0.78f);
+                    renderer.sharedMaterial = RuntimeVisuals.Material(color, 0.68f);
 
                 ElementalReactionShard shard =
                     gameObject.AddComponent<ElementalReactionShard>();
@@ -59,10 +78,11 @@ namespace ArcaneEngine
                 shard._source = source;
                 shard._signature = signature;
                 shard._element = element;
+                shard._context = shardContext;
                 shard._velocity = direction * speed;
-                shard._damage = damage;
+                shard._damage = Mathf.Max(0f, damage);
                 shard._expiresAt = Time.time + life;
-                shard._hitRadius = 0.42f;
+                shard._hitRadius = 0.38f;
             }
         }
 
@@ -75,24 +95,30 @@ namespace ArcaneEngine
 
             if (target != null)
             {
-                ElementalReactionRuntime.DealReactionDamage(
-                    target,
-                    _damage,
-                    _element,
-                    ElementalReactionCodex.BlendColor(_signature),
-                    false);
+                if (ReactionLineageRegistry22.TryMarkTarget(_context, target, 0.20f))
+                {
+                    ElementalReactionRuntime.DealReactionDamage(
+                        target,
+                        _damage,
+                        _element,
+                        ElementalReactionCodex.BlendColor(_signature),
+                        false,
+                        _context);
 
-                ElementalReactionMechanicExecutor.ApplyPayload(
-                    target,
-                    _signature,
-                    0.65f,
-                    4f,
-                    true);
+                    ElementalReactionMechanicExecutor.ApplyPayload(
+                        target,
+                        _signature,
+                        0.45f,
+                        4f,
+                        _context);
 
-                GameFeelSystem.Burst(
-                    transform.position,
-                    ElementalReactionCodex.BlendColor(_signature),
-                    0.38f);
+                    ReactionPresentation22.TryBurst(
+                        transform.position,
+                        ElementalReactionCodex.BlendColor(_signature),
+                        0.28f,
+                        _context,
+                        false);
+                }
 
                 Destroy(gameObject);
                 return;

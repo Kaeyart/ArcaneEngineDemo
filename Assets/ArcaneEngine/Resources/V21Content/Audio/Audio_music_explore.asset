@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!83 &-4015386471294270249
+--- !u!83 &-8821676721031509582
 AudioClip:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -37,13 +37,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: e564df66357b6049a90fc09e22f4a5b3, type: 3}
   m_Name: Audio_music_explore
-  m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21AudioEventAsset
+  m_EditorClassIdentifier: ArcaneEngine.Runtime::ArcaneEngine.V21AudioEventAsset
   stableId: music_explore
   category: Music
   clips:
-  - {fileID: -4015386471294270249}
+  - {fileID: -8821676721031509582}
   pitchRange: {x: 1, y: 1}
   volumeRange: {x: 0.82, y: 1}
   maxVoices: 1

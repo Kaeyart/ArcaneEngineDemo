@@ -1,0 +1,4 @@
+Assets/ArcaneEngine/Scripts/Core/V21AuthoredContent.cs
+Assets/ArcaneEngine/Scripts/Combat/ReactionDiagnosticsOverlay22.cs
+Assets/ArcaneEngine/Resources/V21Content
+Assets/ArcaneEngine/Resources/V21Content.meta

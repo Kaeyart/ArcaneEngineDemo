@@ -9,18 +9,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: 1a13917be34b406148a160899b57cc17, type: 3}
   m_Name: Enemy_sunken_archive_leech
-  m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21EnemyContentAsset
-  stableId: 
-  displayName: 
-  archetype: 0
-  biome: 
-  mechanicalFamily: 
-  counterplay: 
-  primary: {r: 1, g: 1, b: 1, a: 1}
-  telegraph: {r: 1, g: 0, b: 0, a: 1}
-  anticipationSeconds: 0.7
-  activeSeconds: 0.25
+  m_EditorClassIdentifier: ArcaneEngine.Runtime::ArcaneEngine.V21EnemyContentAsset
+  stableId: sunken_archive_leech
+  displayName: Sunken Archive Leech
+  archetype: 5
+  biome: Sunken Archive
+  mechanicalFamily: Leech
+  counterplay: Interrupt the support channel or eliminate the linked target.
+  primary: {r: 0.67923, g: 0.9, b: 0.40499997, a: 1}
+  telegraph: {r: 1, g: 0.25, b: 0.12, a: 1}
+  anticipationSeconds: 0.65
+  activeSeconds: 0.2
   recoverySeconds: 0.5
-  damageRadius: 1
+  damageRadius: 1.2

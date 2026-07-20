@@ -36,6 +36,7 @@ namespace ArcaneEngine
         }
     }
 
+    // ARCANE_PATCH_223_AUDIO_POOL
     public sealed class ProceduralAudioVoice21 : MonoBehaviour
     {
         public AudioSource source;
@@ -43,6 +44,9 @@ namespace ArcaneEngine
         public float created;
         public float baseVolume;
         public bool loop;
+        public Transform followTarget;
+
+        private Vector3 _followLocalPosition;
 
         public bool Available
         {
@@ -58,10 +62,20 @@ namespace ArcaneEngine
             ProceduralAudioPriority21 voicePriority,
             bool shouldLoop)
         {
+            if (!gameObject.activeSelf)
+                gameObject.SetActive(true);
             if (source == null)
                 source = gameObject.GetComponent<AudioSource>() ?? gameObject.AddComponent<AudioSource>();
-            transform.SetParent(follow, true);
+
+            source.enabled = true;
+            source.Stop();
+
+            followTarget = follow;
+            _followLocalPosition = follow == null
+                ? Vector3.zero
+                : follow.InverseTransformPoint(position);
             transform.position = position;
+
             priority = voicePriority;
             created = Time.unscaledTime;
             baseVolume = volume;
@@ -76,13 +90,48 @@ namespace ArcaneEngine
             source.volume = volume;
             source.pitch = pitch;
             source.loop = shouldLoop;
-            source.Play();
+
+            if (gameObject.activeInHierarchy && source.enabled)
+                source.Play();
+        }
+
+        public bool IsOwnedBy(Transform owner)
+        {
+            return owner != null && followTarget == owner;
+        }
+
+        public void StopAndReset()
+        {
+            if (source != null)
+                source.Stop();
+            followTarget = null;
+            loop = false;
         }
 
         private void Update()
         {
+            if (followTarget != null)
+            {
+                if (followTarget.gameObject.activeInHierarchy)
+                {
+                    transform.position = followTarget.TransformPoint(_followLocalPosition);
+                }
+                else
+                {
+                    if (loop && source != null)
+                        source.Stop();
+                    followTarget = null;
+                    loop = false;
+                }
+            }
+
             if (source == null || !source.isPlaying)
+            {
+                if (!loop)
+                    followTarget = null;
                 return;
+            }
+
             source.volume = baseVolume * ProceduralSpellAudio21.GlobalDuck;
         }
     }
@@ -117,6 +166,17 @@ namespace ArcaneEngine
                 for (int i = 0; i < Voices.Count; i++)
                     if (Voices[i] != null && !Voices[i].Available) count++;
                 return count;
+            }
+        }
+
+        public static bool Hotfix223Ready
+        {
+            get
+            {
+                if (!Application.isPlaying)
+                    return true;
+                EnsureRoot();
+                return _root != null && _root.activeInHierarchy;
             }
         }
 
@@ -177,8 +237,8 @@ namespace ArcaneEngine
             for (int i = 0; i < Voices.Count; i++)
             {
                 ProceduralAudioVoice21 voice = Voices[i];
-                if (voice != null && voice.transform.parent == owner && voice.source != null)
-                    voice.source.Stop();
+                if (voice != null && voice.IsOwnedBy(owner))
+                    voice.StopAndReset();
             }
         }
 
@@ -201,6 +261,8 @@ namespace ArcaneEngine
 
         private static ProceduralAudioVoice21 Acquire(ProceduralAudioPriority21 priority)
         {
+            PruneVoices();
+
             int limit = Patch200PresentationSettings.Quality == PresentationQuality.Low
                 ? VoiceLimitLow
                 : Patch200PresentationSettings.Quality == PresentationQuality.Medium
@@ -208,8 +270,14 @@ namespace ArcaneEngine
                     : VoiceLimitHigh;
 
             for (int i = 0; i < Voices.Count; i++)
-                if (Voices[i] != null && Voices[i].Available)
-                    return Voices[i];
+            {
+                ProceduralAudioVoice21 available = Voices[i];
+                if (available != null && available.Available)
+                {
+                    PrepareVoice(available);
+                    return available;
+                }
+            }
 
             if (Voices.Count < limit)
             {
@@ -218,6 +286,7 @@ namespace ArcaneEngine
                 ProceduralAudioVoice21 voice = item.AddComponent<ProceduralAudioVoice21>();
                 voice.source = item.AddComponent<AudioSource>();
                 Voices.Add(voice);
+                PrepareVoice(voice);
                 return voice;
             }
 
@@ -233,11 +302,28 @@ namespace ArcaneEngine
 
             if (weakest != null && (int)weakest.priority <= (int)priority)
             {
-                if (weakest.source != null) weakest.source.Stop();
-                weakest.transform.SetParent(_root.transform, false);
+                weakest.StopAndReset();
+                PrepareVoice(weakest);
                 return weakest;
             }
             return null;
+        }
+
+        private static void PrepareVoice(ProceduralAudioVoice21 voice)
+        {
+            if (voice == null) return;
+            voice.transform.SetParent(_root.transform, false);
+            if (!voice.gameObject.activeSelf)
+                voice.gameObject.SetActive(true);
+            if (voice.source != null)
+                voice.source.enabled = true;
+        }
+
+        private static void PruneVoices()
+        {
+            for (int i = Voices.Count - 1; i >= 0; i--)
+                if (Voices[i] == null)
+                    Voices.RemoveAt(i);
         }
 
         private static AudioClip Clip(
@@ -379,7 +465,13 @@ namespace ArcaneEngine
 
         private static void EnsureRoot()
         {
-            if (_root != null) return;
+            if (_root != null)
+            {
+                if (!_root.activeSelf)
+                    _root.SetActive(true);
+                return;
+            }
+
             _root = new GameObject("Arcane Engine 2.1 Procedural Audio");
             UnityEngine.Object.DontDestroyOnLoad(_root);
         }

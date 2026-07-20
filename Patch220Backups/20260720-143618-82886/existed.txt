@@ -1,0 +1,5 @@
+Assets/ArcaneEngine
+docs
+.arcane-patch-2.0.0-last-backup
+.arcane-patch-2.1.0-last-backup
+.arcane-patch-2.1.1-last-backup

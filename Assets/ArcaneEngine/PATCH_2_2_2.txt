@@ -1,0 +1,5 @@
+Arcane Engine Demo Patch 2.2.2
+authored-content-hotfix-22200
+
+Repairs persistent V21 ScriptableObject MonoScript identities and migrates the
+Patch 2.2 F5 diagnostics overlay to the active Input System.

@@ -9,19 +9,34 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 569dee05c001450db1a4490a74a82516, type: 3}
+  m_Script: {fileID: 11500000, guid: 0965405982fb14bf4b24eda67f3ca11d, type: 3}
   m_Name: Room_the_ossuary_catacombs_combat_0
   m_EditorClassIdentifier: ArcaneEngine.Runtime::ArcaneEngine.V21RoomLayoutAsset
-  stableId: 
-  displayName: 
-  biome: 
+  stableId: the_ossuary_catacombs_combat_0
+  displayName: The Ossuary Catacombs Combat 1
+  biome: The Ossuary Catacombs
   roomType: 0
   shell: 0
-  floorSize: {x: 34, y: 34}
-  obstaclePositions: []
-  obstacleScales: []
-  hazardAnchors: []
-  enemySpawnZones: []
-  objectiveAnchors: []
+  floorSize: {x: 32, y: 32}
+  obstaclePositions:
+  - {x: 4.5, y: 0, z: 0}
+  - {x: -3.5000005, y: 0, z: 6.0621777}
+  - {x: -2.2499995, y: 0, z: -3.8971145}
+  obstacleScales:
+  - {x: 1.5, y: 1.2, z: 2.4}
+  - {x: 2.5, y: 2.2, z: 3.4}
+  - {x: 3.5, y: 1.2, z: 1.4}
+  hazardAnchors:
+  - {x: -8, y: 0.02, z: 6}
+  - {x: 8, y: 0.02, z: -6}
+  enemySpawnZones:
+  - {x: -10, y: 0, z: 9}
+  - {x: 10, y: 0, z: 9}
+  - {x: -10, y: 0, z: -9}
+  - {x: 10, y: 0, z: -9}
+  objectiveAnchors:
+  - {x: -7, y: 0, z: 0}
+  - {x: 7, y: 0, z: 0}
+  - {x: 0, y: 0, z: 7}
   rewardAnchor: {x: 0, y: 0, z: 0}
   cameraSize: 16

@@ -1,0 +1,5 @@
+Arcane Engine Demo Patch 2.2.1
+entity-id-hotfix-22100
+
+Unity 6000.5 compatibility maintenance release.
+Replaces obsolete GetInstanceID-based reaction identity with EntityId keys.

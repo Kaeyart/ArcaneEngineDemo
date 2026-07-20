@@ -9,18 +9,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: ae55d30f624c824bbaa70ae7f3ed57c7, type: 3}
   m_Name: Affix_of_evasion
-  m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21AffixContentAsset
-  stableId: 
-  displayName: 
-  stat: 
-  kind: 0
-  group: 
-  tags: []
-  slots: 
-  baseMinimum: 0
-  baseMaximum: 0
-  percentage: 0
+  m_EditorClassIdentifier: ArcaneEngine.Runtime::ArcaneEngine.V21AffixContentAsset
+  stableId: of_evasion
+  displayName: of Evasion
+  stat: dodge_recovery
+  kind: 2
+  group: dodge_recovery
+  tags:
+  - mobile
+  slots: 0700000006000000
+  baseMinimum: 0.035
+  baseMaximum: 0.085
+  percentage: 1
   local: 0
-  weight: 50
+  weight: 76

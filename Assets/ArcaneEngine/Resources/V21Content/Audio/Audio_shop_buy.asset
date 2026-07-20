@@ -1,12 +1,12 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!83 &-4507609213674537543
+--- !u!83 &-6989331113402096581
 AudioClip:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: shop_buy_take_2
+  m_Name: shop_buy_take_1
   m_LoadType: 0
   m_Channels: 1
   m_Frequency: 44100
@@ -28,13 +28,13 @@ AudioClip:
     m_Offset: 0
     m_Size: 0
   m_EditorCompressionFormat: 0
---- !u!83 &-2363072546523231493
+--- !u!83 &-1044275044989991866
 AudioClip:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: shop_buy_take_1
+  m_Name: shop_buy_take_3
   m_LoadType: 0
   m_Channels: 1
   m_Frequency: 44100
@@ -65,26 +65,26 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: e564df66357b6049a90fc09e22f4a5b3, type: 3}
   m_Name: Audio_shop_buy
-  m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21AudioEventAsset
+  m_EditorClassIdentifier: ArcaneEngine.Runtime::ArcaneEngine.V21AudioEventAsset
   stableId: shop_buy
   category: Effects
   clips:
-  - {fileID: -2363072546523231493}
-  - {fileID: -4507609213674537543}
-  - {fileID: 9156217290563989909}
+  - {fileID: -6989331113402096581}
+  - {fileID: 6355181665158383570}
+  - {fileID: -1044275044989991866}
   pitchRange: {x: 0.95, y: 1.05}
   volumeRange: {x: 0.82, y: 1}
   maxVoices: 8
   loop: 0
---- !u!83 &9156217290563989909
+--- !u!83 &6355181665158383570
 AudioClip:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: shop_buy_take_3
+  m_Name: shop_buy_take_2
   m_LoadType: 0
   m_Channels: 1
   m_Frequency: 44100

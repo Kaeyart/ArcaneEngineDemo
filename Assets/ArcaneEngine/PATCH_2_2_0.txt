@@ -1,0 +1,18 @@
+Arcane Engine Demo Patch 2.2.0
+Reaction Propagation and Battlefield Clarity
+
+Schema: reaction-propagation-22000
+
+Installed systems:
+- reaction lineage and propagation generations
+- direct/propagated buildup separation
+- major-state threshold consumption and recovery
+- reaction participation thresholds and signature lockouts
+- staged reaction mechanic budgets
+- bounded elemental death propagation
+- conserved Chain and Split/Chain energy
+- gameplay-field authority, caps, merging and surge limits
+- recursive helper-object attenuation
+- presentation-event coalescing and flash consolidation
+- gameplay-field versus cosmetic-residue separation
+- runtime and Editor propagation diagnostics

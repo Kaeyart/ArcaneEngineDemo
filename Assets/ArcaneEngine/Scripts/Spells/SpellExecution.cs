@@ -16,6 +16,22 @@ namespace ArcaneEngine
         public float remainingEnergy;
         public float storedExcessDamage;
 
+        // ARCANE_PATCH_220_REACTION_CLARITY
+        private float _chainEnergy22 = 1.35f;
+        private int _chainNetworks22;
+
+        public float ReserveChainNetwork(int structuralCopies)
+        {
+            structuralCopies = Mathf.Max(1, structuralCopies);
+            float desired = Mathf.Clamp(1f / Mathf.Sqrt(structuralCopies), 0.28f, 1f);
+            float remainingNetworks = Mathf.Max(1f, structuralCopies - _chainNetworks22);
+            float fairShare = _chainEnergy22 / remainingNetworks;
+            float granted = Mathf.Clamp(Mathf.Min(desired, fairShare), 0f, 1f);
+            _chainEnergy22 = Mathf.Max(0f, _chainEnergy22 - granted);
+            _chainNetworks22++;
+            return granted;
+        }
+
         public SpellCastBudget(float energy)
         {
             eventId = ++_nextEventId;
@@ -132,7 +148,14 @@ namespace ArcaneEngine
             bool critical = Random.value < GameWorld.Instance.Stats.critChance;
             if (critical) damage *= GameWorld.Instance.Stats.critDamage;
             float healthBefore = enemy.Health;
-            bool killed = enemy.TakeDamage(damage, spell.primaryColor, spell.element, critical);
+            ReactionContext22 impactContext22 = SpellReactionBridge22.ContextFor(
+            request,
+            request.generation <= 0
+                ? ReactionSourceKind22.DirectCast
+                : ReactionSourceKind22.RuneDerived);
+        bool killed;
+        using (ElementalReactionRuntime.UseContext(impactContext22))
+            killed = enemy.TakeDamage(damage, spell.primaryColor, spell.element, critical);
             SpellVisualEvents.Impact(spell, request, position, critical);
             V12CombatEventBus.Publish(critical ? V12CombatEventType.CriticalHit : V12CombatEventType.Hit,
                 spell.coreId, enemy.GetEntityId().ToString(), damage, position, spell.element + " · " + spell.delivery, request.generation);
@@ -354,32 +377,105 @@ namespace ArcaneEngine
             foreach (EnemyController target in GameWorld.Instance.Enemies.ToArray())
             {
                 if (target == null || target.IsDead || target == directTarget || CombatMath.PlanarDistanceSquared(target.transform.position, position) > radius * radius) continue;
-                bool killed = target.TakeDamage(spell.damage * request.powerScale * 0.55f * RangePowerMultiplier(spell, request, target.transform.position), spell.primaryColor, spell.element);
-                ApplyStatuses(spell, request, target);
+                ReactionContext22 explosionContext22 = SpellReactionBridge22.ContextFor(
+                request,
+                request.generation <= 0
+                    ? ReactionSourceKind22.DirectCast
+                    : ReactionSourceKind22.RuneDerived)
+                .Derive(ReactionSourceKind22.Echo)
+                .WithoutFieldCreation();
+            bool wasAlive22 = !target.IsDead;
+            ElementalReactionRuntime.DealReactionDamage(
+                target,
+                spell.damage * request.powerScale * 0.55f *
+                    RangePowerMultiplier(spell, request, target.transform.position),
+                ElementalReactionCodex.FromSpellElement(spell.element),
+                spell.primaryColor,
+                false,
+                explosionContext22);
+            ElementalReactionRuntime.ApplyBuildup(
+                target,
+                ElementalReactionCodex.FromSpellElement(spell.element),
+                0.35f,
+                4f,
+                explosionContext22);
+            bool killed = wasAlive22 && target.IsDead;
                 if (killed) NotifyKill(spell, request, target.transform.position);
             }
         }
 
         private static void Chain(CompiledSpell spell, CastRequest request, EnemyController source)
-        {
-            HashSet<EntityId> excluded = new HashSet<EntityId> { source.GetEntityId() };
-            Vector3 from = source.transform.position;
-            float power = 0.62f;
-            for (int i = 0; i < spell.chainTargets; i++)
-            {
-                EnemyController next = GameWorld.Instance.NearestEnemy(from, 6.5f, excluded);
-                if (next == null) break;
-                excluded.Add(next.GetEntityId());
-                ProceduralVisualRuntime.Beam("Chain Event", from, next.transform.position, spell.accentColor, 0.095f, 0.12f, true);
-                bool killed = next.TakeDamage(spell.damage * request.powerScale * power * RangePowerMultiplier(spell, request, next.transform.position), spell.accentColor, spell.element);
-                ApplyStatuses(spell, request, next);
-                if (killed) NotifyKill(spell, request, next.transform.position);
-                from = next.transform.position;
-                power *= 0.72f;
-            }
-        }
+    {
+        if (spell == null || source == null || request.budget == null)
+            return;
 
-        private static bool ApplyStatuses(CompiledSpell spell, CastRequest request, EnemyController enemy)
+        float networkScale22 = SpellReactionBridge22.ChainNetworkScale(request.budget, spell);
+        if (networkScale22 <= 0.05f)
+            return;
+
+        HashSet<EntityId> excluded = new HashSet<EntityId> { source.GetEntityId() };
+        Vector3 from = source.transform.position;
+        int targetLimit = SpellReactionBridge22.ChainTargetLimit(spell);
+        ReactionContext22 chainContext22 = SpellReactionBridge22.ChainContext(request);
+        ReactionElement reactionElement22 = ElementalReactionCodex.FromSpellElement(spell.element);
+
+        for (int i = 0; i < targetLimit; i++)
+        {
+            EnemyController next = GameWorld.Instance.NearestEnemy(from, 6.5f, excluded);
+            if (next == null)
+                break;
+
+            excluded.Add(next.GetEntityId());
+            if (!ReactionLineageRegistry22.TryMarkTarget(chainContext22, next, 0.35f))
+                continue;
+
+            float visualScale22 = ReactionBalance22.ChainVisualIntensity(i);
+            ProceduralVisualRuntime.Beam(
+                "Chain Event",
+                from,
+                next.transform.position,
+                spell.accentColor,
+                0.095f * visualScale22,
+                0.12f,
+                true);
+
+            ReactionContext22 jumpContext22 = chainContext22.WithCoefficients(
+                ReactionBalance22.ChainDamageCoefficient(i) * networkScale22,
+                networkScale22,
+                1f);
+
+            bool wasAlive22 = !next.IsDead;
+            ElementalReactionRuntime.DealReactionDamage(
+                next,
+                spell.damage * request.powerScale *
+                    RangePowerMultiplier(spell, request, next.transform.position),
+                reactionElement22,
+                spell.accentColor,
+                false,
+                jumpContext22);
+
+            ElementalReactionRuntime.ApplyBuildup(
+                next,
+                reactionElement22,
+                ReactionBalance22.ChainBuildupAmount(i) * networkScale22,
+                4f,
+                jumpContext22);
+
+            ReactionPresentation22.EmitChainContact(
+                from,
+                next.transform.position,
+                reactionElement22,
+                i,
+                jumpContext22);
+
+            if (wasAlive22 && next.IsDead)
+                NotifyKill(spell, request, next.transform.position);
+
+            from = next.transform.position;
+        }
+    }
+
+    private static bool ApplyStatuses(CompiledSpell spell, CastRequest request, EnemyController enemy)
         {
             bool applied = false;
             if (spell.poisonDamage > 0f && spell.poisonDuration > 0f) { enemy.ApplyPoison(spell.poisonDamage, spell.poisonDuration, spell, request); applied = true; }
@@ -403,15 +499,44 @@ namespace ArcaneEngine
         }
 
         private static void SpreadStatus(CompiledSpell spell, CastRequest request, EnemyController source)
-        {
-            foreach (EnemyController target in GameWorld.Instance.Enemies.Where(e => e != null && e != source && !e.IsDead && CombatMath.PlanarDistanceSquared(e.transform.position, source.transform.position) < 16f).Take(3))
-            {
-                ApplyStatuses(spell, request, target);
-                SpellVisualEvents.StatusSpread(spell, source.transform.position, target.transform.position);
-            }
-        }
+    {
+        ReactionElement element22 = ElementalReactionCodex.FromSpellElement(spell.element);
+        if (element22 == ReactionElement.None)
+            return;
 
-        private static void InvokeTriggers(CompiledSpell spell, TriggerMoment moment, CastRequest parent, Vector3 position)
+        ReactionContext22 spreadContext22 = SpellReactionBridge22.ContextFor(
+            request,
+            request.generation <= 0
+                ? ReactionSourceKind22.DirectCast
+                : ReactionSourceKind22.RuneDerived)
+            .Derive(ReactionSourceKind22.Echo)
+            .WithoutFieldCreation();
+
+        EnemyController[] targets22 = GameWorld.Instance.Enemies
+            .Where(e => e != null && e != source && !e.IsDead &&
+                CombatMath.PlanarDistanceSquared(e.transform.position, source.transform.position) < 16f)
+            .Take(3)
+            .ToArray();
+
+        float totalBudget22 = 1.05f;
+        float perTarget22 = targets22.Length <= 0 ? 0f : totalBudget22 / targets22.Length;
+        for (int i = 0; i < targets22.Length; i++)
+        {
+            EnemyController target22 = targets22[i];
+            if (!ReactionLineageRegistry22.TryMarkTarget(spreadContext22, target22, 0.35f))
+                continue;
+
+            ElementalReactionRuntime.ApplyBuildup(
+                target22,
+                element22,
+                Mathf.Min(0.45f, perTarget22),
+                4f,
+                spreadContext22);
+            SpellVisualEvents.StatusSpread(spell, source.transform.position, target22.transform.position);
+        }
+    }
+
+    private static void InvokeTriggers(CompiledSpell spell, TriggerMoment moment, CastRequest parent, Vector3 position)
         {
             if (spell == null || parent.generation >= MaxGeneration || parent.budget == null) return;
             if (GameWorld.Instance != null && GameWorld.Instance.SpellLinks != null)
@@ -767,67 +892,504 @@ namespace ArcaneEngine
     }
 
     public sealed class PersistentSpellZone : MonoBehaviour
+{
+    private static readonly List<PersistentSpellZone> ActiveZones =
+        new List<PersistentSpellZone>();
+
+    public static IReadOnlyList<PersistentSpellZone> Active
     {
-        private static readonly List<PersistentSpellZone> ActiveZones = new List<PersistentSpellZone>();
-        public static IReadOnlyList<PersistentSpellZone> Active { get { return ActiveZones; } }
-        public bool ReflectsProjectiles { get; private set; }
-        public float Radius { get; private set; }
-        private CompiledSpell _spell;
-        private CastRequest _request;
-        private float _life;
-        private float _tick;
-
-        private void OnEnable()
+        get
         {
-            if (!ActiveZones.Contains(this)) ActiveZones.Add(this);
-            VisualRuntimeRegistry.Register(VisualRuntimeKind.PersistentZone);
-        }
-
-        private void OnDisable()
-        {
-            ActiveZones.Remove(this);
-            VisualRuntimeRegistry.Unregister(VisualRuntimeKind.PersistentZone);
-        }
-
-        public static PersistentSpellZone Create(CompiledSpell spell, CastRequest request, Vector3 position, float radius)
-        {
-            if (!request.budget.TryReserveEntity()) return null;
-            GameObject go = new GameObject(spell.displayName + " Zone"); go.transform.position = position;
-            PersistentSpellZone zone = go.AddComponent<PersistentSpellZone>(); zone._spell = spell; zone._request = request;
-            zone.Radius = Mathf.Clamp(radius, 0.7f, 8f); zone._life = Mathf.Max(1.2f, spell.zoneDuration > 0f ? spell.zoneDuration : spell.trailDuration);
-            zone.ReflectsProjectiles = spell.reflectsProjectiles;
-            RuntimeVisuals.Ring("Persistent Zone", position, spell.primaryColor, zone.Radius, 0.12f, go.transform).transform.localPosition = Vector3.zero;
-            SpellDeliveryVisuals.AttachZone(go, spell, request, zone.Radius, zone._life);
-            return zone;
-        }
-
-        public static void CreateLine(CompiledSpell spell, CastRequest request, Vector3 from, Vector3 to)
-        {
-            int segments = Mathf.Clamp(Mathf.CeilToInt(Vector3.Distance(from, to) / 1.5f), 2, 8);
-            for (int i = 0; i < segments; i++) Create(spell, request, Vector3.Lerp(from, to, i / (float)(segments - 1)), 1.1f);
-        }
-
-        private void Update()
-        {
-            if (GameWorld.Instance == null || !GameWorld.Instance.RunActive) { Destroy(gameObject); return; }
-            _life -= Time.deltaTime; _tick -= Time.deltaTime;
-            if (_spell.pullsEnemies)
-                foreach (EnemyController enemy in GameWorld.Instance.Enemies.Where(e => e != null && !e.IsDead && CombatMath.PlanarDistanceSquared(e.transform.position, transform.position) < Radius * Radius))
-                    enemy.PullToward(transform.position, 2.2f);
-            if (_tick <= 0f)
-            {
-                _tick = 0.65f;
-                foreach (EnemyController enemy in GameWorld.Instance.Enemies.Where(e => e != null && !e.IsDead && CombatMath.PlanarDistanceSquared(e.transform.position, transform.position) < Radius * Radius).ToArray())
-                {
-                    bool killed = enemy.TakeDamage(_spell.damage * _request.powerScale * 0.28f, _spell.primaryColor, _spell.element);
-                    if (killed) SpellExecutor.NotifyKill(_spell, _request, enemy.transform.position);
-                }
-            }
-            if (_life <= 0f) { SpellExecutor.ZoneExpired(_spell, _request, transform.position); Destroy(gameObject); }
+            CleanupZones();
+            return ActiveZones;
         }
     }
 
-    public sealed class SpellFamiliar : MonoBehaviour
+    public bool ReflectsProjectiles { get; private set; }
+    public float Radius { get; private set; }
+
+    private CompiledSpell _spell;
+    private CastRequest _request;
+    private ReactionContext22 _context;
+    private ReactionFieldAuthority22 _authority;
+    private float _life;
+    private float _baseLife;
+    private float _power = 1f;
+    private float _tick;
+    private float _createdAt;
+    private bool _expired;
+
+    private void OnEnable()
+    {
+        if (!ActiveZones.Contains(this))
+            ActiveZones.Add(this);
+        VisualRuntimeRegistry.Register(VisualRuntimeKind.PersistentZone);
+    }
+
+    private void OnDisable()
+    {
+        ActiveZones.Remove(this);
+        VisualRuntimeRegistry.Unregister(VisualRuntimeKind.PersistentZone);
+    }
+
+    private static void CleanupZones()
+    {
+        for (int i = ActiveZones.Count - 1; i >= 0; i--)
+        {
+            if (ActiveZones[i] == null)
+                ActiveZones.RemoveAt(i);
+        }
+    }
+
+    public static PersistentSpellZone Create(
+        CompiledSpell spell,
+        CastRequest request,
+        Vector3 position,
+        float radius)
+    {
+        return CreateInternal(spell, request, position, radius, 1f);
+    }
+
+    private static PersistentSpellZone CreateInternal(
+        CompiledSpell spell,
+        CastRequest request,
+        Vector3 position,
+        float radius,
+        float initialPower)
+    {
+        if (spell == null || request.budget == null)
+            return null;
+
+        CleanupZones();
+        float desiredRadius = Mathf.Clamp(radius, 0.7f, 8f);
+        float desiredLife = Mathf.Max(
+            1.2f,
+            spell.zoneDuration > 0f
+                ? spell.zoneDuration
+                : spell.trailDuration);
+
+        ReactionContext22 baseContext = SpellReactionBridge22.ContextFor(
+            request,
+            request.generation <= 0
+                ? ReactionSourceKind22.DirectCast
+                : ReactionSourceKind22.RuneDerived);
+        ReactionFieldAuthority22 authority =
+            request.generation <= 0 && spell.zoneDuration > 0f
+                ? ReactionFieldAuthority22.ExplicitPersistent
+                : ReactionFieldAuthority22.SecondaryPropagation;
+
+        if (!baseContext.canCreateField)
+        {
+            PresentationResidue2.SpawnStandalone(
+                position,
+                ElementalReactionCodex.FromSpellElement(spell.element),
+                desiredRadius,
+                Mathf.Min(1.2f, desiredLife),
+                unchecked((int)(baseContext.originCastId ^
+                    (baseContext.originCastId >> 32))),
+                PresentationPriority.Normal);
+            return null;
+        }
+
+        PersistentSpellZone mergeTarget =
+            FindCompatible(spell, position, desiredRadius);
+        if (mergeTarget != null)
+        {
+            mergeTarget.Merge(
+                spell,
+                request,
+                desiredRadius,
+                desiredLife,
+                authority,
+                initialPower);
+            return mergeTarget;
+        }
+
+        if (!EnsureCapacity(position, desiredLife))
+        {
+            ReactionDiagnostics22.RecordFieldRejected(
+                ElementalReactionCodex.FromSpellElement(spell.element));
+            return null;
+        }
+
+        if (!request.budget.TryReserveEntity())
+            return null;
+
+        GameObject go = new GameObject(spell.displayName + " Zone");
+        go.transform.position = position;
+
+        PersistentSpellZone zone = go.AddComponent<PersistentSpellZone>();
+        zone._spell = spell;
+        zone._request = request;
+        zone._context = PrepareContext(baseContext, authority);
+        zone._authority = authority;
+        zone.Radius = desiredRadius;
+        zone._baseLife = desiredLife;
+        zone._life = desiredLife;
+        zone._power = Mathf.Clamp(initialPower, 0.25f, 1f);
+        zone._createdAt = Time.time;
+        zone._tick = 0.35f;
+        zone.ReflectsProjectiles = spell.reflectsProjectiles;
+
+        SpellDeliveryVisuals.AttachZone(
+            go,
+            spell,
+            request,
+            zone.Radius,
+            zone._life);
+
+        ReactionElement signature =
+            ElementalReactionCodex.FromSpellElement(spell.element);
+        int seed = unchecked((int)(zone._context.originCastId ^
+            (zone._context.originCastId >> 32)));
+        PresentationResidue2.AttachSpellZone(
+            go,
+            signature,
+            zone.Radius,
+            zone._life,
+            seed,
+            PresentationPriority.Important);
+
+        ReactionPresentation22.EmitField(
+            SpellPresentationEventType.FieldCreated,
+            go,
+            signature,
+            zone.Radius,
+            zone._life,
+            0.55f,
+            zone._context,
+            zone._authority);
+
+        return zone;
+    }
+
+    public static void CreateLine(
+        CompiledSpell spell,
+        CastRequest request,
+        Vector3 from,
+        Vector3 to)
+    {
+        int segments = Mathf.Clamp(
+            Mathf.CeilToInt(Vector3.Distance(from, to) / 1.8f),
+            2,
+            5);
+
+        float segmentPower = Mathf.Clamp(
+            1.15f / Mathf.Sqrt(segments),
+            0.35f,
+            0.65f);
+        for (int i = 0; i < segments; i++)
+        {
+            CreateInternal(
+                spell,
+                request,
+                Vector3.Lerp(from, to, i / (float)(segments - 1)),
+                1.1f,
+                segmentPower);
+        }
+    }
+
+    private static PersistentSpellZone FindCompatible(
+        CompiledSpell spell,
+        Vector3 position,
+        float radius)
+    {
+        PersistentSpellZone best = null;
+        float bestDistance = float.MaxValue;
+
+        for (int i = 0; i < ActiveZones.Count; i++)
+        {
+            PersistentSpellZone zone = ActiveZones[i];
+            if (zone == null || zone._spell == null ||
+                zone._spell.element != spell.element)
+                continue;
+
+            Vector3 delta = zone.transform.position - position;
+            delta.y = 0f;
+            float mergeDistance = Mathf.Max(zone.Radius, radius) * 0.80f;
+            if (delta.sqrMagnitude > mergeDistance * mergeDistance ||
+                delta.sqrMagnitude >= bestDistance)
+                continue;
+
+            best = zone;
+            bestDistance = delta.sqrMagnitude;
+        }
+
+        return best;
+    }
+
+    private static bool EnsureCapacity(Vector3 position, float desiredLife)
+    {
+        ElementalReactionField[] reactionFields =
+            ElementalReactionField.Snapshot();
+        int total = ActiveZones.Count + reactionFields.Length;
+        int local = 0;
+        float localRadiusSquared = 12f * 12f;
+        PersistentSpellZone weakestLocal = null;
+        float weakestLocalScore = float.MaxValue;
+
+        for (int i = 0; i < ActiveZones.Count; i++)
+        {
+            PersistentSpellZone zone = ActiveZones[i];
+            if (zone == null)
+                continue;
+
+            Vector3 delta = zone.transform.position - position;
+            delta.y = 0f;
+            if (delta.sqrMagnitude <= localRadiusSquared)
+            {
+                local++;
+                float score = zone._life + zone._power * 2f;
+                if (score < weakestLocalScore)
+                {
+                    weakestLocalScore = score;
+                    weakestLocal = zone;
+                }
+            }
+        }
+
+        for (int i = 0; i < reactionFields.Length; i++)
+        {
+            ElementalReactionField field = reactionFields[i];
+            if (field == null)
+                continue;
+            Vector3 delta = field.transform.position - position;
+            delta.y = 0f;
+            if (delta.sqrMagnitude <= localRadiusSquared)
+                local++;
+        }
+
+        if (local >= ReactionBalance22.MaximumLocalGameplayFields)
+        {
+            if (weakestLocal == null || weakestLocal._life >= desiredLife)
+                return false;
+            ActiveZones.Remove(weakestLocal);
+            Destroy(weakestLocal.gameObject);
+            total--;
+        }
+
+        while (total >= ReactionBalance22.MaximumGameplayFields)
+        {
+            PersistentSpellZone weakest = FindWeakest();
+            if (weakest == null || weakest._life >= desiredLife)
+                return false;
+            ActiveZones.Remove(weakest);
+            Destroy(weakest.gameObject);
+            total--;
+        }
+
+        return true;
+    }
+
+    private static PersistentSpellZone FindWeakest()
+    {
+        PersistentSpellZone weakest = null;
+        float weakestScore = float.MaxValue;
+        for (int i = 0; i < ActiveZones.Count; i++)
+        {
+            PersistentSpellZone zone = ActiveZones[i];
+            if (zone == null)
+                continue;
+            float score = zone._life + zone._power * 2f +
+                Mathf.Max(0f, Time.time - zone._createdAt) * -0.02f;
+            if (score < weakestScore)
+            {
+                weakest = zone;
+                weakestScore = score;
+            }
+        }
+        return weakest;
+    }
+
+    private static ReactionContext22 PrepareContext(
+        ReactionContext22 context,
+        ReactionFieldAuthority22 authority)
+    {
+        context = context
+            .AsSource(ReactionSourceKind22.Field)
+            .WithoutFieldCreation();
+
+        if (authority != ReactionFieldAuthority22.ExplicitPersistent)
+        {
+            context.canActivateMajor = false;
+            context.canTriggerDeathReaction = false;
+            context.canRechargeReaction = false;
+            context.reactionRechargeCoefficient = 0f;
+        }
+
+        return context;
+    }
+
+    private void Merge(
+        CompiledSpell spell,
+        CastRequest request,
+        float radius,
+        float duration,
+        ReactionFieldAuthority22 authority,
+        float incomingPower)
+    {
+        if (spell.damage * request.powerScale >
+            _spell.damage * _request.powerScale)
+        {
+            _spell = spell;
+            _request = request;
+        }
+
+        if (ReactionBalance22.FieldPriority(authority) >
+            ReactionBalance22.FieldPriority(_authority))
+        {
+            _authority = authority;
+            _context = PrepareContext(
+                SpellReactionBridge22.ContextFor(
+                    request,
+                    request.generation <= 0
+                        ? ReactionSourceKind22.DirectCast
+                        : ReactionSourceKind22.RuneDerived),
+                authority);
+        }
+
+        Radius = Mathf.Max(Radius, radius);
+        _baseLife = Mathf.Max(_baseLife, duration);
+        _life = Mathf.Min(
+            _baseLife * 1.25f,
+            Mathf.Max(_life, duration) + duration * 0.20f);
+        _power = Mathf.Min(
+            ReactionBalance22.FieldPowerCap,
+            Mathf.Max(_power, incomingPower) +
+                ReactionBalance22.FieldReinforcement);
+        ReflectsProjectiles |= spell.reflectsProjectiles;
+
+        PresentationResidue2 residue = GetComponent<PresentationResidue2>();
+        if (residue != null)
+        {
+            residue.Merge(
+                ElementalReactionCodex.FromSpellElement(spell.element),
+                Radius,
+                _life,
+                _power);
+        }
+
+        ReactionDiagnostics22.RecordFieldMerge(
+            ElementalReactionCodex.FromSpellElement(spell.element));
+        ReactionPresentation22.EmitField(
+            SpellPresentationEventType.FieldMerged,
+            gameObject,
+            ElementalReactionCodex.FromSpellElement(spell.element),
+            Radius,
+            _life,
+            0.45f,
+            _context,
+            _authority);
+    }
+
+    private void Update()
+    {
+        if (GameWorld.Instance == null || !GameWorld.Instance.RunActive)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        _life -= Time.deltaTime;
+        _tick -= Time.deltaTime;
+
+        if (_tick <= 0f)
+        {
+            _tick = 0.85f;
+            Pulse();
+        }
+
+        if (_life <= 0f)
+            Expire();
+    }
+
+    private void Pulse()
+    {
+        if (_spell == null || GameWorld.Instance == null)
+            return;
+
+        ReactionElement element =
+            ElementalReactionCodex.FromSpellElement(_spell.element);
+        ReactionContext22 fieldContext = _context
+            .AsSource(ReactionSourceKind22.Field)
+            .WithoutFieldCreation();
+
+        EnemyController[] targets = GameWorld.Instance.Enemies
+            .Where(e => e != null && !e.IsDead &&
+                CombatMath.PlanarDistanceSquared(
+                    e.transform.position,
+                    transform.position) < Radius * Radius)
+            .ToArray();
+
+        for (int i = 0; i < targets.Length; i++)
+        {
+            EnemyController enemy = targets[i];
+            bool wasAlive = !enemy.IsDead;
+            ElementalReactionRuntime.DealReactionDamage(
+                enemy,
+                _spell.damage * _request.powerScale * 0.28f * _power *
+                    ReactionBalance22.FieldDamageAuthority(_authority),
+                element,
+                _spell.primaryColor,
+                false,
+                fieldContext);
+            ElementalReactionRuntime.ApplyBuildup(
+                enemy,
+                element,
+                0.22f * _power *
+                    ReactionBalance22.FieldBuildupAuthority(_authority),
+                4f,
+                fieldContext);
+
+            if (wasAlive && enemy.IsDead)
+                SpellExecutor.NotifyKill(
+                    _spell,
+                    _request,
+                    enemy.transform.position);
+        }
+
+        if (_spell.pullsEnemies)
+        {
+            foreach (EnemyController enemy in targets.Take(4))
+                enemy.PullToward(transform.position, 1.4f);
+        }
+
+        PresentationResidue2 residue = GetComponent<PresentationResidue2>();
+        if (residue != null)
+            residue.Pulse(Mathf.Min(0.65f, 0.32f * _power));
+
+        ReactionPresentation22.EmitField(
+            SpellPresentationEventType.FieldPulsed,
+            gameObject,
+            element,
+            Radius,
+            0.25f,
+            0.38f * _power,
+            fieldContext,
+            _authority);
+    }
+
+    private void Expire()
+    {
+        if (_expired)
+            return;
+        _expired = true;
+
+        ReactionPresentation22.EmitField(
+            SpellPresentationEventType.FieldExpired,
+            gameObject,
+            ElementalReactionCodex.FromSpellElement(_spell.element),
+            Radius,
+            0.35f,
+            0.32f,
+            _context,
+            _authority);
+        SpellExecutor.ZoneExpired(_spell, _request, transform.position);
+        Destroy(gameObject);
+    }
+}
+
+public sealed class SpellFamiliar : MonoBehaviour
     {
         private CompiledSpell _spell;
         private CastRequest _request;

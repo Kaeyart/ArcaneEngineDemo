@@ -5,6 +5,7 @@ namespace ArcaneEngine
 {
     public sealed class PresentationResidue2 : MonoBehaviour
     {
+        private const int LocalResidueCap22 = 10;
         private static readonly List<PresentationResidue2> Active =
             new List<PresentationResidue2>();
 
@@ -13,11 +14,9 @@ namespace ArcaneEngine
         private float _expiresAt;
         private int _seed;
         private PresentationPriority _priority;
-        private PooledPresentationParticle2 _particles;
         private LineRenderer _boundary;
-        private float _nextPulse;
-        private float _nextMotif;
         private bool _ownsLifetime;
+        private bool _gameplayField;
 
         public ReactionElement Signature
         {
@@ -42,13 +41,7 @@ namespace ArcaneEngine
             PresentationPriority priority)
         {
             return Attach(
-                host,
-                signature,
-                radius,
-                duration,
-                seed,
-                priority,
-                false);
+                host, signature, radius, duration, seed, priority, false, true);
         }
 
         public static PresentationResidue2 AttachReactionField(
@@ -60,13 +53,7 @@ namespace ArcaneEngine
             PresentationPriority priority)
         {
             return Attach(
-                host,
-                signature,
-                radius,
-                duration,
-                seed,
-                priority,
-                false);
+                host, signature, radius, duration, seed, priority, false, true);
         }
 
         public static void SurgeNear(
@@ -78,34 +65,29 @@ namespace ArcaneEngine
         {
             Cleanup();
             float radiusSquared = radius * radius;
-            bool found = false;
+            PresentationResidue2 best = null;
+            float bestDistance = float.MaxValue;
 
             for (int i = 0; i < Active.Count; i++)
             {
                 PresentationResidue2 residue = Active[i];
-                if (residue == null)
+                if (residue == null || !residue._gameplayField)
                     continue;
 
                 Vector3 delta = residue.transform.position - position;
                 delta.y = 0f;
-
-                if (delta.sqrMagnitude > radiusSquared)
+                if (delta.sqrMagnitude > radiusSquared ||
+                    delta.sqrMagnitude >= bestDistance)
                     continue;
 
-                residue.Merge(signature, residue._radius, duration, intensity);
-                residue.Pulse(intensity);
-                found = true;
+                best = residue;
+                bestDistance = delta.sqrMagnitude;
             }
 
-            if (!found)
+            if (best != null)
             {
-                SpawnStandalone(
-                    position,
-                    signature,
-                    Mathf.Max(0.8f, radius * 0.55f),
-                    duration,
-                    position.GetHashCode() ^ (int)signature,
-                    PresentationPriority.Critical);
+                best.Merge(signature, best._radius, duration, intensity);
+                best.Pulse(Mathf.Min(0.65f, intensity));
             }
         }
 
@@ -118,16 +100,18 @@ namespace ArcaneEngine
             PresentationPriority priority)
         {
             GameObject host = new GameObject(
-                "AE2 Residue " + ElementalReactionCodex.SignatureText(signature));
+                "AE2 Cosmetic Residue " +
+                ElementalReactionCodex.SignatureText(signature));
             host.transform.position = position;
             return Attach(
                 host,
                 signature,
                 radius,
-                duration,
+                Mathf.Min(1.5f, duration),
                 seed,
                 priority,
-                true);
+                true,
+                false);
         }
 
         private static PresentationResidue2 Attach(
@@ -137,21 +121,23 @@ namespace ArcaneEngine
             float duration,
             int seed,
             PresentationPriority priority,
-            bool ownsLifetime)
+            bool ownsLifetime,
+            bool gameplayField)
         {
             if (host == null)
                 return null;
 
             Cleanup();
 
-            if (Active.Count >= Patch200PresentationSettings.MaxResidues &&
-                priority < PresentationPriority.Critical)
+            int cap = Mathf.Min(Patch200PresentationSettings.MaxResidues, LocalResidueCap22);
+            if (Active.Count >= cap &&
+                !gameplayField &&
+                (int)priority < (int)PresentationPriority.Critical)
             {
                 return null;
             }
 
             PresentationResidue2 residue = host.GetComponent<PresentationResidue2>();
-
             if (residue == null)
                 residue = host.AddComponent<PresentationResidue2>();
 
@@ -161,7 +147,8 @@ namespace ArcaneEngine
                 duration,
                 seed,
                 priority,
-                ownsLifetime);
+                ownsLifetime,
+                gameplayField);
 
             if (!Active.Contains(residue))
                 Active.Add(residue);
@@ -177,15 +164,31 @@ namespace ArcaneEngine
             PresentationPriority priority,
             bool ownsLifetime)
         {
+            Initialize(
+                signature, radius, duration, seed, priority, ownsLifetime,
+                !ownsLifetime);
+        }
+
+        private void Initialize(
+            ReactionElement signature,
+            float radius,
+            float duration,
+            int seed,
+            PresentationPriority priority,
+            bool ownsLifetime,
+            bool gameplayField)
+        {
             _signature = signature;
             _radius = Mathf.Max(0.35f, radius);
-            _expiresAt = Mathf.Max(_expiresAt, Time.time + Mathf.Max(0.35f, duration));
+            float lifetime = gameplayField
+                ? Mathf.Max(0.35f, duration)
+                : Mathf.Clamp(duration, 0.35f, 1.5f);
+            _expiresAt = Mathf.Max(_expiresAt, Time.time + lifetime);
             _seed = seed;
             _priority = priority;
             _ownsLifetime = ownsLifetime;
-            _nextPulse = Time.time + 0.12f;
-            _nextMotif = Time.time + 0.28f;
-            Rebuild();
+            _gameplayField = gameplayField;
+            RebuildBoundary();
         }
 
         public void Merge(
@@ -197,68 +200,38 @@ namespace ArcaneEngine
             ReactionElement previous = _signature;
             _signature |= signature;
             _radius = Mathf.Max(_radius, radius);
-            _expiresAt = Mathf.Max(_expiresAt, Time.time + duration);
+            _expiresAt = Mathf.Max(
+                _expiresAt,
+                Time.time + (_gameplayField
+                    ? Mathf.Max(0.35f, duration)
+                    : Mathf.Min(1.5f, duration)));
 
-            if (previous != _signature)
-            {
-                Rebuild();
-                PresentationGeometry2.Burst(
-                    transform.position + Vector3.up * 0.08f,
-                    _signature,
-                    Mathf.Max(0.6f, _radius * 0.65f),
-                    0.5f,
-                    intensity,
-                    _priority,
-                    _seed ^ (int)_signature);
-            }
+            if (previous != _signature || _boundary == null)
+                RebuildBoundary();
         }
 
         public void Pulse(float intensity)
         {
+            if (!_gameplayField || intensity <= 0.01f)
+                return;
+
             Color color = ElementalReactionCodex.BlendColor(_signature);
+            color.a = 0.56f;
 
             PresentationGeometry2.Ring(
                 transform.position,
                 color,
-                Mathf.Max(0.4f, _radius * 0.22f),
-                0.045f,
-                0.42f,
+                Mathf.Max(0.4f, _radius * 0.20f),
+                0.035f,
+                0.28f,
                 _priority,
                 true);
 
-            EmitElementMotifs(intensity);
+            EmitSingleMotif(Mathf.Clamp01(intensity));
         }
 
-        private void Rebuild()
+        private void RebuildBoundary()
         {
-            if (_particles != null)
-                _particles.StopAndRelease();
-
-            ReactionElement primary = ElementalReactionCodex.PrimaryElement(_signature);
-            ElementVisualProfile2 profile = ElementVisualProfileRegistry2.Get(primary);
-
-            _particles = PresentationParticlePool2.Spawn(
-                new PresentationParticleRequest
-                {
-                    purpose = PresentationParticlePurpose.Field,
-                    position = transform.position + Vector3.up * 0.06f,
-                    follow = transform,
-                    direction = Vector3.up,
-                    signature = _signature,
-                    primary = primary,
-                    primaryColor = ElementalReactionCodex.BlendColor(_signature),
-                    secondaryColor = profile == null ? Color.white : profile.secondary,
-                    radius = _radius,
-                    duration = Mathf.Max(0.5f, _expiresAt - Time.time),
-                    intensity = 0.75f + ElementalReactionCodex.CountBits(_signature) * 0.08f,
-                    speed = profile == null ? 0.7f : profile.particleSpeed,
-                    seed = _seed,
-                    count = Mathf.RoundToInt(12f + _radius * 7f),
-                    looping = true,
-                    worldSpace = true,
-                    priority = _priority
-                });
-
             if (_boundary != null)
                 Destroy(_boundary.gameObject);
 
@@ -267,32 +240,40 @@ namespace ArcaneEngine
 
         private LineRenderer CreatePersistentBoundary()
         {
-            GameObject gameObject = new GameObject("AE2 Residue Boundary");
+            GameObject gameObject = new GameObject(
+                _gameplayField
+                    ? "AE2 Gameplay Field Boundary"
+                    : "AE2 Cosmetic Residue Boundary");
             gameObject.transform.SetParent(transform, false);
             LineRenderer line = gameObject.AddComponent<LineRenderer>();
             int segments = Patch200PresentationSettings.Quality == PresentationQuality.Low
-                ? 28
-                : 48;
+                ? 20
+                : 32;
             line.loop = true;
             line.positionCount = segments;
             line.useWorldSpace = false;
-            line.startWidth = 0.045f;
-            line.endWidth = 0.045f;
+            line.startWidth = _gameplayField ? 0.045f : 0.022f;
+            line.endWidth = line.startWidth;
             Color color = ElementalReactionCodex.BlendColor(_signature);
-            color.a = 0.8f;
+            color.a = _gameplayField ? 0.72f : 0.30f;
             line.startColor = color;
             line.endColor = color;
-            line.material = PresentationMaterialLibrary2.Mesh(color, 0.72f);
+            line.material = PresentationMaterialLibrary2.Mesh(
+                color,
+                _gameplayField ? 0.64f : 0.25f);
 
             for (int i = 0; i < segments; i++)
             {
                 float angle = i / (float)segments * Mathf.PI * 2f;
+                float irregular = _gameplayField
+                    ? 1f
+                    : 0.92f + 0.08f * Mathf.Sin(angle * 3f + (_seed & 31));
                 line.SetPosition(
                     i,
                     new Vector3(
-                        Mathf.Cos(angle) * _radius,
+                        Mathf.Cos(angle) * _radius * irregular,
                         0.045f,
-                        Mathf.Sin(angle) * _radius));
+                        Mathf.Sin(angle) * _radius * irregular));
             }
 
             return line;
@@ -312,118 +293,68 @@ namespace ArcaneEngine
                 return;
             }
 
-            if (_boundary != null)
+            if (_boundary != null && _gameplayField)
             {
+                float amplitude = Patch200PresentationSettings.ReducedMotion
+                    ? 0.005f
+                    : 0.015f;
                 float pulse = 1f +
-                    Mathf.Sin(Time.time * 3.2f + (_seed & 31)) *
-                    (Patch200PresentationSettings.ReducedMotion ? 0.01f : 0.035f);
+                    Mathf.Sin(Time.time * 1.6f + (_seed & 31)) * amplitude;
                 _boundary.transform.localScale = new Vector3(pulse, 1f, pulse);
-            }
-
-            if (Time.time >= _nextPulse)
-            {
-                _nextPulse = Time.time + 0.75f;
-                Pulse(0.65f);
-            }
-
-            if (Time.time >= _nextMotif)
-            {
-                _nextMotif = Time.time + 0.42f;
-                EmitElementMotifs(0.4f);
             }
         }
 
-        private void EmitElementMotifs(float intensity)
+        private void EmitSingleMotif(float intensity)
         {
-            int index = 0;
+            ReactionElement primary =
+                ElementalReactionCodex.PrimaryElement(_signature);
+            float angle = ((_seed & 255) * 0.017f) + Time.time * 0.25f;
+            Vector3 point = transform.position + new Vector3(
+                Mathf.Cos(angle) * _radius * 0.50f,
+                0.1f,
+                Mathf.Sin(angle) * _radius * 0.50f);
 
-            foreach (ReactionElement element in ElementalReactionCodex.Enumerate(_signature))
+            if (primary == ReactionElement.Lightning)
             {
-                float angle = ((_seed & 255) * 0.017f) +
-                              index * Mathf.PI * 2f /
-                              Mathf.Max(1, ElementalReactionCodex.CountBits(_signature));
-
-                Vector3 point = transform.position + new Vector3(
-                    Mathf.Cos(angle) * _radius * 0.55f,
-                    0.1f,
-                    Mathf.Sin(angle) * _radius * 0.55f);
-
-                if (element == ReactionElement.Lightning)
+                Vector3 opposite = transform.position + new Vector3(
+                    -Mathf.Cos(angle) * _radius * 0.45f,
+                    0.35f,
+                    -Mathf.Sin(angle) * _radius * 0.45f);
+                PresentationGeometry2.Beam(
+                    point + Vector3.up * 0.15f,
+                    opposite,
+                    ElementalReactionCodex.ColorFor(primary),
+                    0.028f,
+                    0.10f,
+                    PresentationPriority.Normal,
+                    true,
+                    _seed);
+            }
+            else
+            {
+                PresentationParticlePool2.Spawn(new PresentationParticleRequest
                 {
-                    Vector3 opposite = transform.position +
-                        new Vector3(-Mathf.Cos(angle), 0.55f, -Mathf.Sin(angle)) * _radius * 0.55f;
-                    PresentationGeometry2.Beam(
-                        point + Vector3.up * 0.2f,
-                        opposite,
-                        ElementalReactionCodex.ColorFor(element),
-                        0.04f,
-                        0.16f,
-                        PresentationPriority.Normal,
-                        true,
-                        _seed + index);
-                }
-                else if (element == ReactionElement.Fire ||
-                         element == ReactionElement.Toxic ||
-                         element == ReactionElement.Blood)
-                {
-                    PresentationParticlePool2.Spawn(new PresentationParticleRequest
-                    {
-                        purpose = element == ReactionElement.Fire
-                            ? PresentationParticlePurpose.Smoke
-                            : PresentationParticlePurpose.Residue,
-                        position = point,
-                        direction = Vector3.up,
-                        signature = element,
-                        primary = element,
-                        primaryColor = ElementalReactionCodex.ColorFor(element),
-                        secondaryColor = Color.white,
-                        radius = Mathf.Max(0.15f, _radius * 0.12f),
-                        duration = 0.5f,
-                        intensity = intensity,
-                        seed = _seed + index * 37,
-                        count = 4,
-                        priority = PresentationPriority.Decorative,
-                        worldSpace = true
-                    });
-                }
-                else if (element == ReactionElement.Cold ||
-                         element == ReactionElement.Physical)
-                {
-                    ElementVisualProfile2 profile = ElementVisualProfileRegistry2.Get(element);
-                    PresentationGeometry2.Primitive(
-                        "AE2 Residue Accent " + element,
-                        profile == null ? PrimitiveType.Cube : profile.accentShape,
-                        point,
-                        Vector3.one * Mathf.Clamp(_radius * 0.045f, 0.05f, 0.22f),
-                        profile == null ? Color.white : profile.secondary,
-                        0.4f,
-                        PresentationPriority.Decorative,
-                        false,
-                        Vector3.up * 0.35f);
-                }
-                else if (element == ReactionElement.Void)
-                {
-                    PresentationGeometry2.Ring(
-                        point,
-                        ElementalReactionCodex.ColorFor(element),
-                        Mathf.Max(0.12f, _radius * 0.08f),
-                        0.025f,
-                        0.28f,
-                        PresentationPriority.Normal,
-                        false);
-                }
-
-                index++;
+                    purpose = PresentationParticlePurpose.Residue,
+                    position = point,
+                    direction = Vector3.up,
+                    signature = primary,
+                    primary = primary,
+                    primaryColor = ElementalReactionCodex.ColorFor(primary),
+                    secondaryColor = Color.white,
+                    radius = Mathf.Max(0.12f, _radius * 0.08f),
+                    duration = 0.32f,
+                    intensity = intensity * 0.45f,
+                    seed = _seed,
+                    count = 2,
+                    priority = PresentationPriority.Decorative,
+                    worldSpace = true
+                });
             }
         }
 
         private void OnDestroy()
         {
             Active.Remove(this);
-
-            if (_particles != null)
-                _particles.StopAndRelease();
-
             if (_boundary != null)
                 Destroy(_boundary.gameObject);
         }

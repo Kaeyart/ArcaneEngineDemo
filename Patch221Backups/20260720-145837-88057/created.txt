@@ -1,0 +1,4 @@
+Assets/ArcaneEngine/Editor/Patch221Diagnostics.cs
+Assets/ArcaneEngine/PATCH_2_2_1.txt
+docs/PATCH_NOTES_2.2.1.md
+.arcane-patch-2.2.1-last-backup

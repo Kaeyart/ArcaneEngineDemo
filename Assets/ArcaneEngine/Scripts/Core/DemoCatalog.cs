@@ -27,9 +27,12 @@ namespace ArcaneEngine
             ContentValidator.ValidateAll();
         }
 
+        // ARCANE_PATCH_223_NULL_SAFE_CATALOG
+
         public static SpellCoreDefinition GetCore(string id)
         {
             Ensure();
+            if (string.IsNullOrEmpty(id)) return null;
             SpellCoreDefinition value;
             Cores.TryGetValue(id, out value);
             return value;
@@ -38,6 +41,7 @@ namespace ArcaneEngine
         public static SpellModifierDefinition GetModifier(string id)
         {
             Ensure();
+            if (string.IsNullOrEmpty(id)) return null;
             SpellModifierDefinition value;
             Modifiers.TryGetValue(id, out value);
             return value;
@@ -46,6 +50,7 @@ namespace ArcaneEngine
         public static ItemDefinition GetItem(string id)
         {
             Ensure();
+            if (string.IsNullOrEmpty(id)) return null;
             ItemDefinition value;
             Items.TryGetValue(id, out value);
             return value;

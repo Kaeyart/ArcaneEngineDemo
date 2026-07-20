@@ -1,0 +1,17 @@
+{
+  "name": "ArcaneEngine.EditModeTests",
+  "rootNamespace": "ArcaneEngine.Tests",
+  "references": [
+    "ArcaneEngine.Runtime"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ],
+  "autoReferenced": false,
+  "defineConstraints": [
+    "UNITY_INCLUDE_TESTS"
+  ]
+}

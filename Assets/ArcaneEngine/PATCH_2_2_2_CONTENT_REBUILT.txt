@@ -1,0 +1,2 @@
+Patch 2.2.2 authored content rebuilt successfully.
+Cores=15, Runes=53, Items=69, Relics=42, RoomLayouts=44, Enemies=52, AudioEvents=24, Affixes=95, RoomDefinitions=37, Shops=1, Rewards=1.

@@ -5,24 +5,70 @@ namespace ArcaneEngine
 {
     public sealed class ElementalReactionField : MonoBehaviour
     {
-        private const int MaxFields = 40;
-
         private static readonly List<ElementalReactionField> Active =
             new List<ElementalReactionField>();
 
         private ReactionElement _signature;
+        private ReactionFieldAuthority22 _authority;
+        private ReactionContext22 _context;
+        // ARCANE_PATCH_221_ENTITY_ID
+        private EntityId _ownerId;
         private float _radius;
+        private float _createdAt;
         private float _expiresAt;
         private float _damagePerPulse;
         private float _buildupPerPulse;
+        private float _powerMultiplier;
         private float _nextPulse;
         private float _pulseInterval;
+        private float _nextSurgeAllowed;
+        private float _pendingSurgeAt;
+        private float _pendingSurgePower;
+        private float _pendingSurgeDuration;
+        private int _reinforcementCount;
         private Renderer _renderer;
         private Vector3 _baseScale;
 
-        public ReactionElement Signature
+        public ReactionElement Signature { get { return _signature; } }
+        public ReactionFieldAuthority22 Authority { get { return _authority; } }
+        public ReactionContext22 Context { get { return _context; } }
+        public float Radius { get { return _radius; } }
+        public float RemainingDuration { get { return Mathf.Max(0f, _expiresAt - Time.time); } }
+        public float PowerMultiplier { get { return _powerMultiplier; } }
+        public int ReinforcementCount { get { return _reinforcementCount; } }
+
+        public static int ActiveCount
         {
-            get { return _signature; }
+            get
+            {
+                CleanupList();
+                return Active.Count;
+            }
+        }
+
+        public static int CountOwned(EntityId ownerId, ReactionElement signature)
+        {
+            CleanupList();
+            int count = 0;
+
+            for (int i = 0; i < Active.Count; i++)
+            {
+                ElementalReactionField field = Active[i];
+                if (field != null &&
+                    field._ownerId == ownerId &&
+                    ElementalReactionCodex.Contains(field._signature, signature))
+                {
+                    count++;
+                }
+            }
+
+            return count;
+        }
+
+        public static ElementalReactionField[] Snapshot()
+        {
+            CleanupList();
+            return Active.ToArray();
         }
 
         public static ElementalReactionField Spawn(
@@ -33,45 +79,65 @@ namespace ArcaneEngine
             float damagePerPulse,
             float buildupPerPulse)
         {
-            if (signature == ReactionElement.None)
-                return null;
+            ReactionContext22 context =
+                ReactionContext22.Direct(ReactionSourceKind22.PrimaryReaction)
+                    .Derive(ReactionSourceKind22.Field);
 
-            CleanupList();
+            return Spawn(
+                signature,
+                position,
+                radius,
+                duration,
+                damagePerPulse,
+                buildupPerPulse,
+                ReactionFieldAuthority22.PrimaryReaction,
+                context,
+                EntityId.None);
+        }
 
-            foreach (ElementalReactionField field in Active)
+        public static ElementalReactionField Spawn(
+            ReactionElement signature,
+            Vector3 position,
+            float radius,
+            float duration,
+            float damagePerPulse,
+            float buildupPerPulse,
+            ReactionFieldAuthority22 authority,
+            ReactionContext22 context,
+            EntityId ownerId)
+        {
+            if (signature == ReactionElement.None ||
+                authority == ReactionFieldAuthority22.Cosmetic)
             {
-                if (field == null)
-                    continue;
-
-                float mergeDistance =
-                    Mathf.Max(field._radius, radius) * 0.65f;
-
-                Vector3 delta =
-                    field.transform.position - position;
-
-                delta.y = 0f;
-
-                if (delta.sqrMagnitude <=
-                    mergeDistance * mergeDistance)
-                {
-                    field.Merge(
-                        signature,
-                        radius,
-                        duration,
-                        damagePerPulse,
-                        buildupPerPulse);
-
-                    return field;
-                }
+                return null;
             }
 
-            while (Active.Count >= MaxFields)
-            {
-                ElementalReactionField oldest = Active[0];
-                Active.RemoveAt(0);
+            CleanupList();
+            radius = Mathf.Max(0.6f, radius);
+            duration = Mathf.Max(0.4f, duration);
 
-                if (oldest != null)
-                    Destroy(oldest.gameObject);
+            ElementalReactionField mergeTarget =
+                FindMergeTarget(position, radius, signature, authority);
+
+            if (mergeTarget != null)
+            {
+                mergeTarget.Merge(
+                    signature,
+                    radius,
+                    duration,
+                    damagePerPulse,
+                    buildupPerPulse,
+                    authority,
+                    context,
+                    ownerId);
+
+                return mergeTarget;
+            }
+
+            if (!EnsureCapacity(position, authority))
+            {
+                ReactionDiagnostics22.RecordFieldRejected(signature);
+                return null;
             }
 
             GameObject gameObject =
@@ -79,13 +145,13 @@ namespace ArcaneEngine
 
             gameObject.name =
                 "Elemental Field " +
-                ElementalReactionCodex.SignatureText(signature);
+                ElementalReactionCodex.SignatureText(signature) +
+                " [" + authority + "]";
 
             gameObject.transform.position =
-                new Vector3(position.x, position.y + 0.04f, position.z);
+                new Vector3(position.x, position.y + 0.025f, position.z);
 
             Collider collider = gameObject.GetComponent<Collider>();
-
             if (collider != null)
                 Destroy(collider);
 
@@ -97,12 +163,14 @@ namespace ArcaneEngine
                 radius,
                 duration,
                 damagePerPulse,
-                buildupPerPulse);
+                buildupPerPulse,
+                authority,
+                context,
+                ownerId);
 
             Active.Add(result);
             return result;
         }
-
 
         public static void SurgeNear(
             Vector3 position,
@@ -111,45 +179,208 @@ namespace ArcaneEngine
             float damageScale,
             float durationBonus)
         {
+            SurgeNear(
+                position,
+                radius,
+                signature,
+                damageScale,
+                durationBonus,
+                ReactionContext22.Legacy(true));
+        }
+
+        public static void SurgeNear(
+            Vector3 position,
+            float radius,
+            ReactionElement signature,
+            float damageScale,
+            float durationBonus,
+            ReactionContext22 context)
+        {
             CleanupList();
             float radiusSquared = radius * radius;
-            bool surged = false;
+            ElementalReactionField best = null;
+            float bestDistance = float.MaxValue;
 
-            foreach (ElementalReactionField field in Active)
+            for (int i = 0; i < Active.Count; i++)
             {
+                ElementalReactionField field = Active[i];
+                if (field == null)
+                    continue;
+
+                Vector3 delta = field.transform.position - position;
+                delta.y = 0f;
+                float distance = delta.sqrMagnitude;
+
+                if (distance <= radiusSquared && distance < bestDistance)
+                {
+                    best = field;
+                    bestDistance = distance;
+                }
+            }
+
+            if (best == null)
+            {
+                if (context.canCreateField && context.generation <= 1)
+                {
+                    Spawn(
+                        signature,
+                        position,
+                        Mathf.Max(1f, radius * 0.45f),
+                        Mathf.Max(1f, durationBonus),
+                        Mathf.Max(0.1f, damageScale),
+                        0.12f,
+                        ReactionFieldAuthority22.SecondaryPropagation,
+                        context.WithoutFieldCreation(),
+                        EntityId.None);
+                }
+                else
+                {
+                    ReactionDiagnostics22.RecordBlocked("surge-no-field", context);
+                }
+                return;
+            }
+
+            best.QueueSurge(damageScale, durationBonus, context);
+        }
+
+        private static ElementalReactionField FindMergeTarget(
+            Vector3 position,
+            float radius,
+            ReactionElement signature,
+            ReactionFieldAuthority22 authority)
+        {
+            ElementalReactionField best = null;
+            float bestScore = float.MinValue;
+
+            for (int i = 0; i < Active.Count; i++)
+            {
+                ElementalReactionField field = Active[i];
+                if (field == null)
+                    continue;
+
+                float mergeDistance = Mathf.Max(field._radius, radius) * 0.72f;
+                Vector3 delta = field.transform.position - position;
+                delta.y = 0f;
+
+                if (delta.sqrMagnitude > mergeDistance * mergeDistance)
+                    continue;
+
+                bool same = field._signature == signature;
+                float score =
+                    (same ? 10f : 4f) +
+                    ReactionBalance22.FieldPriority(field._authority) +
+                    ReactionBalance22.FieldPriority(authority) -
+                    delta.magnitude * 0.2f;
+
+                if (score > bestScore)
+                {
+                    best = field;
+                    bestScore = score;
+                }
+            }
+
+            return best;
+        }
+
+        private static bool EnsureCapacity(
+            Vector3 position,
+            ReactionFieldAuthority22 incomingAuthority)
+        {
+            int localCount = 0;
+            ElementalReactionField weakestLocal = null;
+            int weakestPriority = int.MaxValue;
+            float localRadiusSquared = 12f * 12f;
+
+            for (int i = 0; i < Active.Count; i++)
+            {
+                ElementalReactionField field = Active[i];
                 if (field == null)
                     continue;
 
                 Vector3 delta = field.transform.position - position;
                 delta.y = 0f;
 
-                if (delta.sqrMagnitude > radiusSquared)
+                if (delta.sqrMagnitude <= localRadiusSquared)
+                {
+                    localCount++;
+                    int priority = ReactionBalance22.FieldPriority(field._authority);
+                    if (priority < weakestPriority)
+                    {
+                        weakestPriority = priority;
+                        weakestLocal = field;
+                    }
+                }
+            }
+
+            IReadOnlyList<PersistentSpellZone> spellZones =
+                PersistentSpellZone.Active;
+            for (int i = 0; i < spellZones.Count; i++)
+            {
+                PersistentSpellZone zone = spellZones[i];
+                if (zone == null)
                     continue;
 
-                field.Merge(
-                    signature,
-                    Mathf.Max(field._radius, radius * 0.45f),
-                    Mathf.Max(0.5f, durationBonus),
-                    field._damagePerPulse * Mathf.Max(0.15f, damageScale - 1f),
-                    field._buildupPerPulse * 0.4f);
-
-                field._damagePerPulse *= Mathf.Max(1f, damageScale);
-                field._expiresAt += Mathf.Max(0f, durationBonus);
-                field._nextPulse = Time.time;
-                field.Pulse();
-                surged = true;
+                Vector3 delta = zone.transform.position - position;
+                delta.y = 0f;
+                if (delta.sqrMagnitude <= localRadiusSquared)
+                    localCount++;
             }
 
-            if (!surged)
+            int incomingPriority = ReactionBalance22.FieldPriority(incomingAuthority);
+
+            if (localCount >= ReactionBalance22.MaximumLocalGameplayFields)
             {
-                Spawn(
-                    signature,
-                    position,
-                    Mathf.Max(1f, radius * 0.55f),
-                    Mathf.Max(1f, durationBonus),
-                    Mathf.Max(0.1f, damageScale),
-                    0.3f);
+                // Explicit SpellForge zones own the highest authority. Reaction
+                // residue may replace only a weaker reaction field, never an
+                // explicit Persistent zone.
+                if (weakestLocal == null || incomingPriority <= weakestPriority)
+                    return false;
+
+                Active.Remove(weakestLocal);
+                Destroy(weakestLocal.gameObject);
             }
+
+            int totalFields = Active.Count + spellZones.Count;
+            while (totalFields >= ReactionBalance22.MaximumGameplayFields)
+            {
+                ElementalReactionField weakest = FindWeakest();
+                if (weakest == null ||
+                    incomingPriority <= ReactionBalance22.FieldPriority(weakest._authority))
+                {
+                    return false;
+                }
+
+                Active.Remove(weakest);
+                Destroy(weakest.gameObject);
+                totalFields--;
+            }
+
+            return true;
+        }
+
+        private static ElementalReactionField FindWeakest()
+        {
+            ElementalReactionField weakest = null;
+            int weakestPriority = int.MaxValue;
+            float oldest = float.MaxValue;
+
+            for (int i = 0; i < Active.Count; i++)
+            {
+                ElementalReactionField field = Active[i];
+                if (field == null)
+                    continue;
+
+                int priority = ReactionBalance22.FieldPriority(field._authority);
+                if (priority < weakestPriority ||
+                    (priority == weakestPriority && field._createdAt < oldest))
+                {
+                    weakest = field;
+                    weakestPriority = priority;
+                    oldest = field._createdAt;
+                }
+            }
+
+            return weakest;
         }
 
         private void Initialize(
@@ -157,55 +388,62 @@ namespace ArcaneEngine
             float radius,
             float duration,
             float damagePerPulse,
-            float buildupPerPulse)
+            float buildupPerPulse,
+            ReactionFieldAuthority22 authority,
+            ReactionContext22 context,
+            EntityId ownerId)
         {
             _signature = signature;
+            _authority = authority;
+            _context = PrepareFieldContext(context, authority);
+            _ownerId = ownerId;
             _radius = Mathf.Max(0.6f, radius);
+            _createdAt = Time.time;
             _expiresAt = Time.time + Mathf.Max(0.4f, duration);
             _damagePerPulse = Mathf.Max(0f, damagePerPulse);
-            _buildupPerPulse = Mathf.Max(0.05f, buildupPerPulse);
-
-            ElementalReactionDefinition definition =
-                ElementalReactionCodex.Get(signature);
-
-            int pulses =
-                definition == null
-                    ? 5
-                    : definition.pulseCount;
-
-            _pulseInterval =
-                Mathf.Clamp(
-                    Mathf.Max(0.4f, duration) /
-                    Mathf.Max(1, pulses),
-                    0.28f,
-                    0.85f);
-
-            _nextPulse = Time.time + 0.08f;
+            _buildupPerPulse = Mathf.Max(0f, buildupPerPulse);
+            _powerMultiplier = 1f;
+            _pulseInterval = CalculatePulseInterval(signature, duration);
+            _nextPulse = Time.time + Mathf.Min(0.35f, _pulseInterval * 0.5f);
+            _nextSurgeAllowed = Time.time + 0.5f;
             _renderer = GetComponent<Renderer>();
 
-            if (_renderer != null)
-            {
-                _renderer.sharedMaterial =
-                    RuntimeVisuals.Material(
-                        ElementalReactionCodex.BlendColor(signature),
-                        0.42f);
-            }
+            RefreshMaterial();
+            RefreshScale();
 
-            _baseScale =
-                new Vector3(
-                    _radius * 2f,
-                    0.035f,
-                    _radius * 2f);
-
-            transform.localScale = _baseScale;
-
-            ProceduralSpellPresentation.EmitField(
+            ReactionPresentation22.EmitField(
                 SpellPresentationEventType.FieldCreated,
                 gameObject,
                 _signature,
                 _radius,
-                Mathf.Max(0.4f, duration),
-                1f);
+                duration,
+                0.55f,
+                _context,
+                _authority);
+        }
+
+        private static ReactionContext22 PrepareFieldContext(
+            ReactionContext22 context,
+            ReactionFieldAuthority22 authority)
+        {
+            if (!context.IsValid)
+                context = ReactionContext22.Legacy(true);
+
+            context.sourceKind = ReactionSourceKind22.Field;
+            context.canCreateField = false;
+
+            if (authority != ReactionFieldAuthority22.ExplicitPersistent)
+                context.canTriggerDeathReaction = false;
+
+            if (authority == ReactionFieldAuthority22.DeathResidue ||
+                authority == ReactionFieldAuthority22.SecondaryPropagation)
+            {
+                context.canActivateMajor = false;
+                context.canRechargeReaction = false;
+                context.reactionRechargeCoefficient = 0f;
+            }
+
+            return context;
         }
 
         private void Merge(
@@ -213,72 +451,101 @@ namespace ArcaneEngine
             float radius,
             float duration,
             float damagePerPulse,
-            float buildupPerPulse)
+            float buildupPerPulse,
+            ReactionFieldAuthority22 authority,
+            ReactionContext22 context,
+            EntityId ownerId)
         {
+            bool sameSignature = _signature == signature;
             ReactionElement combined = _signature | signature;
+            int existingPriority = ReactionBalance22.FieldPriority(_authority);
+            int incomingPriority = ReactionBalance22.FieldPriority(authority);
 
             _signature = combined;
-            _radius =
-                Mathf.Clamp(
-                    Mathf.Max(_radius, radius) +
-                    ElementalReactionCodex.CountBits(combined) * 0.08f,
-                    0.6f,
-                    8.5f);
+            _radius = Mathf.Clamp(
+                Mathf.Max(_radius, radius) +
+                (sameSignature ? 0f : ElementalReactionCodex.CountBits(combined) * 0.05f),
+                0.6f,
+                7.5f);
 
-            _expiresAt =
-                Mathf.Max(
-                    _expiresAt,
-                    Time.time + duration);
+            float remaining = RemainingDuration;
+            float extension = Mathf.Min(duration * 0.25f, 2f);
+            _expiresAt = Time.time + Mathf.Max(remaining, duration) + extension;
 
-            _damagePerPulse =
-                Mathf.Max(
-                    _damagePerPulse,
-                    damagePerPulse) * 1.08f;
+            _damagePerPulse = Mathf.Max(_damagePerPulse, damagePerPulse);
+            _buildupPerPulse = Mathf.Max(_buildupPerPulse, buildupPerPulse);
+            _powerMultiplier = Mathf.Min(
+                ReactionBalance22.FieldPowerCap,
+                _powerMultiplier + ReactionBalance22.FieldReinforcement);
+            _reinforcementCount++;
 
-            _buildupPerPulse =
-                Mathf.Max(
-                    _buildupPerPulse,
-                    buildupPerPulse);
-
-            ElementalReactionDefinition definition =
-                ElementalReactionCodex.Get(combined);
-
-            if (definition != null)
+            if (incomingPriority > existingPriority)
             {
-                _pulseInterval =
-                    Mathf.Clamp(
-                        definition.duration /
-                        Mathf.Max(1, definition.pulseCount),
-                        0.25f,
-                        0.75f);
+                _authority = authority;
+                _context = PrepareFieldContext(context, authority);
+                _ownerId = ownerId;
             }
 
-            if (_renderer != null)
-            {
-                _renderer.sharedMaterial =
-                    RuntimeVisuals.Material(
-                        ElementalReactionCodex.BlendColor(combined),
-                        0.46f);
-            }
+            _pulseInterval = CalculatePulseInterval(_signature, RemainingDuration);
+            RefreshMaterial();
+            RefreshScale();
+            ReactionDiagnostics22.RecordFieldMerge(_signature);
 
-            _baseScale =
-                new Vector3(
-                    _radius * 2f,
-                    0.035f,
-                    _radius * 2f);
-
-            GameFeelSystem.Burst(
-                transform.position + Vector3.up * 0.08f,
-                ElementalReactionCodex.BlendColor(combined),
-                0.8f);
-
-            ProceduralSpellPresentation.EmitField(
+            ReactionPresentation22.EmitField(
                 SpellPresentationEventType.FieldMerged,
                 gameObject,
                 _signature,
                 _radius,
-                Mathf.Max(0.4f, duration),
-                1.25f);
+                duration,
+                0.70f,
+                _context,
+                _authority);
+        }
+
+        private void QueueSurge(
+            float damageScale,
+            float durationBonus,
+            ReactionContext22 context)
+        {
+            if (Time.time < _nextSurgeAllowed)
+            {
+                ReactionDiagnostics22.RecordBlocked("field-surge-cooldown", context);
+                return;
+            }
+
+            _nextSurgeAllowed = Time.time + ReactionBalance22.FieldSurgeCooldown;
+            _pendingSurgeAt = Time.time + 0.4f;
+            _pendingSurgePower = Mathf.Min(
+                ReactionBalance22.FieldSurgePowerCap,
+                Mathf.Max(0f, damageScale - 1f));
+            _pendingSurgeDuration = Mathf.Min(
+                Mathf.Max(0f, durationBonus),
+                RemainingDuration * ReactionBalance22.FieldSurgeDurationCap);
+
+            ReactionPresentation22.EmitField(
+                SpellPresentationEventType.FieldMerged,
+                gameObject,
+                _signature,
+                _radius,
+                0.4f,
+                0.45f,
+                _context,
+                _authority);
+        }
+
+        private void ApplyPendingSurge()
+        {
+            if (_pendingSurgeAt <= 0f || Time.time < _pendingSurgeAt)
+                return;
+
+            _powerMultiplier = Mathf.Min(
+                ReactionBalance22.FieldPowerCap,
+                _powerMultiplier + _pendingSurgePower);
+            _expiresAt += _pendingSurgeDuration;
+            _pendingSurgeAt = 0f;
+            _pendingSurgePower = 0f;
+            _pendingSurgeDuration = 0f;
+            _nextPulse = Mathf.Max(_nextPulse, Time.time + 0.12f);
         }
 
         private void Update()
@@ -289,15 +556,13 @@ namespace ArcaneEngine
                 return;
             }
 
-            float pulse =
-                1f +
-                Mathf.Sin(Time.time * 4.5f) * 0.045f;
+            ApplyPendingSurge();
 
-            transform.localScale =
-                new Vector3(
-                    _baseScale.x * pulse,
-                    _baseScale.y,
-                    _baseScale.z * pulse);
+            float quietMotion = 1f + Mathf.Sin(Time.time * 1.5f) * 0.012f;
+            transform.localScale = new Vector3(
+                _baseScale.x * quietMotion,
+                _baseScale.y,
+                _baseScale.z * quietMotion);
 
             if (Time.time < _nextPulse)
                 return;
@@ -308,13 +573,15 @@ namespace ArcaneEngine
 
         private void Pulse()
         {
-            ProceduralSpellPresentation.EmitField(
+            ReactionPresentation22.EmitField(
                 SpellPresentationEventType.FieldPulsed,
                 gameObject,
                 _signature,
                 _radius,
                 _pulseInterval,
-                0.8f);
+                0.50f,
+                _context,
+                _authority);
 
             List<EnemyController> enemies =
                 ElementalReactionRuntime.EnemiesWithin(
@@ -325,77 +592,124 @@ namespace ArcaneEngine
             ReactionElement primary =
                 ElementalReactionCodex.PrimaryElement(_signature);
 
-            Color color =
-                ElementalReactionCodex.BlendColor(_signature);
+            Color color = ElementalReactionCodex.BlendColor(_signature);
+            int elementCount = Mathf.Max(1, ElementalReactionCodex.CountBits(_signature));
+            float damageAuthority = ReactionBalance22.FieldDamageAuthority(_authority);
+            float buildupAuthority = ReactionBalance22.FieldBuildupAuthority(_authority);
+            int controlCount = 0;
 
-            foreach (EnemyController enemy in enemies)
+            for (int i = 0; i < enemies.Count; i++)
             {
-                float distance =
-                    Vector3.Distance(
-                        transform.position,
-                        enemy.transform.position);
+                EnemyController enemy = enemies[i];
+                float distance = Vector3.Distance(transform.position, enemy.transform.position);
+                float falloff = Mathf.Clamp01(1f - distance / Mathf.Max(0.1f, _radius));
+                ReactionContext22 pulseContext = _context;
 
-                float falloff =
-                    Mathf.Clamp01(
-                        1f - distance /
-                        Mathf.Max(0.1f, _radius));
+                if (!ReactionLineageRegistry22.TryMarkTarget(
+                    pulseContext,
+                    enemy,
+                    Mathf.Min(0.45f, _pulseInterval * 0.75f)))
+                {
+                    continue;
+                }
 
                 ElementalReactionRuntime.DealReactionDamage(
                     enemy,
                     _damagePerPulse *
+                    _powerMultiplier *
+                    damageAuthority *
                     Mathf.Lerp(0.45f, 1f, falloff),
                     primary,
                     color,
-                    false);
+                    false,
+                    pulseContext);
 
-                int elementCount =
-                    Mathf.Max(
-                        1,
-                        ElementalReactionCodex.CountBits(_signature));
-
-                foreach (
-                    ReactionElement element
-                    in ElementalReactionCodex.Enumerate(_signature))
+                if (buildupAuthority > 0f)
                 {
-                    ElementalReactionRuntime.ApplyBuildup(
-                        enemy,
-                        element,
-                        _buildupPerPulse /
-                        Mathf.Sqrt(elementCount),
-                        3.5f,
-                        true);
+                    foreach (ReactionElement element in ElementalReactionCodex.Enumerate(_signature))
+                    {
+                        ElementalReactionRuntime.ApplyBuildup(
+                            enemy,
+                            element,
+                            _buildupPerPulse *
+                            _powerMultiplier *
+                            buildupAuthority /
+                            Mathf.Sqrt(elementCount),
+                            3.5f,
+                            pulseContext);
+                    }
                 }
 
-                if (ElementalReactionCodex.Contains(
-                    _signature,
-                    ReactionElement.Void))
+                if (controlCount < 4 &&
+                    ElementalReactionCodex.Contains(_signature, ReactionElement.Void))
                 {
-                    enemy.PullToward(
-                        transform.position,
-                        4.5f + elementCount);
+                    enemy.PullToward(transform.position, 2f + elementCount * 0.35f);
+                    controlCount++;
                 }
 
-                if (ElementalReactionCodex.Contains(
-                    _signature,
-                    ReactionElement.Physical))
+                if (controlCount < 4 &&
+                    ElementalReactionCodex.Contains(_signature, ReactionElement.Physical))
                 {
-                    enemy.ApplyImpact(
-                        enemy.transform.position -
-                        transform.position,
-                        8f + elementCount * 2f);
+                    using (ElementalReactionRuntime.UseContext(pulseContext))
+                    {
+                        enemy.ApplyImpact(
+                            enemy.transform.position - transform.position,
+                            4f + elementCount);
+                    }
+                    controlCount++;
                 }
             }
         }
 
+        private static float CalculatePulseInterval(
+            ReactionElement signature,
+            float duration)
+        {
+            ElementalReactionDefinition definition = ElementalReactionCodex.Get(signature);
+            int pulses = definition == null ? 5 : Mathf.Max(1, definition.pulseCount);
+
+            return Mathf.Clamp(
+                Mathf.Max(0.6f, duration) / pulses,
+                0.6f,
+                1.2f);
+        }
+
+        private void RefreshMaterial()
+        {
+            if (_renderer == null)
+                return;
+
+            float alpha = _authority == ReactionFieldAuthority22.ExplicitPersistent
+                ? 0.30f
+                : _authority == ReactionFieldAuthority22.PrimaryReaction
+                    ? 0.24f
+                    : 0.18f;
+
+            _renderer.sharedMaterial = RuntimeVisuals.Material(
+                ElementalReactionCodex.BlendColor(_signature),
+                alpha);
+        }
+
+        private void RefreshScale()
+        {
+            _baseScale = new Vector3(
+                _radius * 2f,
+                0.022f,
+                _radius * 2f);
+            transform.localScale = _baseScale;
+        }
+
         private void OnDestroy()
         {
-            ProceduralSpellPresentation.EmitField(
+            ReactionPresentation22.EmitField(
                 SpellPresentationEventType.FieldExpired,
                 gameObject,
                 _signature,
                 _radius,
                 0f,
-                0f);
+                0f,
+                _context,
+                _authority);
 
             Active.Remove(this);
         }

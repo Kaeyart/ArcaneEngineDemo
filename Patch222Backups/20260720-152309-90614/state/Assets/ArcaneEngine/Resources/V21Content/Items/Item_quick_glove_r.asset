@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfc62e83a0e31e79aabb4d884bbdeaf3, type: 3}
+  m_Name: Item_quick_glove_r
+  m_EditorClassIdentifier: ArcaneEngine.Runtime::ArcaneEngine.ItemDefinition
+  id: quick_glove_r
+  displayName: Quickweave Glove
+  description: Ember set. Shortens spell cooldowns.
+  slot: 5
+  rarity: 2
+  twoHanded: 0
+  health: 0
+  mana: 0
+  movementSpeed: 0
+  armor: 0
+  resistance: 0
+  critChance: 0
+  critDamage: 0
+  spellPower: 0
+  cooldownReduction: 0.16
+  triggerEnergy: 0
+  mutation: 0
+  setId: ember
+  grantedCoreId: 
+  baseFamily: 
+  implicitText: 
+  itemTags:
+  - caster
+  - weapon
+  color: {r: 0.75, g: 0.25, b: 1, a: 1}

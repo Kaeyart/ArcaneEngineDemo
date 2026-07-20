@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: Affix_lingering
+  m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21AffixContentAsset
+  stableId: lingering
+  displayName: Lingering
+  stat: zone_damage
+  kind: 1
+  group: zone_damage
+  tags:
+  - caster
+  slots: 080000000900000003000000
+  baseMinimum: 0.06
+  baseMaximum: 0.13
+  percentage: 1
+  local: 0
+  weight: 65

@@ -9,15 +9,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: aa5841fb8c09da2089c2860db2ba62e8, type: 3}
   m_Name: RoomDefinition_treasurevault_1
-  m_EditorClassIdentifier: ArcaneEngine.Runtime:ArcaneEngine:V21RoomDefinitionAsset
-  stableId: 
-  displayName: 
-  biome: 
-  roomType: 0
-  difficulty: 0
-  obstaclePattern: 0
+  m_EditorClassIdentifier: ArcaneEngine.Runtime::ArcaneEngine.V21RoomDefinitionAsset
+  stableId: treasurevault_1
+  displayName: Gilded Crypt II
+  biome: The Ossuary Catacombs
+  roomType: 5
+  difficulty: 2
+  obstaclePattern: 1
   hasHazards: 0
-  floorColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-  accentColor: {r: 0, g: 1, b: 1, a: 1}
+  floorColor: {r: 0.11, g: 0.09, b: 0.04, a: 1}
+  accentColor: {r: 1, g: 0.78, b: 0.15, a: 1}
