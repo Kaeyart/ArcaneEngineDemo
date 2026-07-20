@@ -1,0 +1,4 @@
+arcane-engine-arpg-foundation-hardening-300a11
+requires=3.0.0-alpha.1
+dataVersion=30002
+targetUnity=6000.5.2f1

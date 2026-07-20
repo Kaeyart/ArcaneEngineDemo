@@ -92,7 +92,7 @@ namespace ArcaneEngine
                 .Distinct()
                 .ToList();
             if (pool.Count == 0) return string.Empty;
-            string selected = pool[Mathf.Abs(seed) % pool.Count];
+            string selected = pool[ArpgDeterminism30.Index(seed, pool.Count)];
             profile.ownedRuneIds.Add(selected);
             if (world != null) world.AddModifier(selected, 1);
             SpellModifierDefinition definition = DemoCatalog.GetModifier(selected);
@@ -107,7 +107,7 @@ namespace ArcaneEngine
                 .Distinct()
                 .ToList();
             if (pool.Count == 0) return string.Empty;
-            string selected = pool[Mathf.Abs(seed) % pool.Count];
+            string selected = pool[ArpgDeterminism30.Index(seed, pool.Count)];
             profile.ownedCoreIds.Add(selected);
             if (world != null) world.AddCoreCopy(selected);
             return FriendlyCoreName(selected);
@@ -121,7 +121,7 @@ namespace ArcaneEngine
                 .Where(value => !profile.ownedLinkConditionIds.Contains(value))
                 .ToList();
             if (pool.Count == 0) return string.Empty;
-            int selected = pool[Mathf.Abs(seed) % pool.Count];
+            int selected = pool[ArpgDeterminism30.Index(seed, pool.Count)];
             profile.ownedLinkConditionIds.Add(selected);
             if (world != null && world.SpellLinks != null) world.SpellLinks.GrantLegacyCondition((SpellLinkCondition)selected);
             return ((SpellLinkCondition)selected).ToString();

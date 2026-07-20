@@ -90,10 +90,11 @@ namespace ArcaneEngine
         public int quality;
         public bool corrupted;
         public bool fractured;
+        public string fracturedAffixId;
         public List<ArpgAffixRoll30> prefixes = new List<ArpgAffixRoll30>();
         public List<ArpgAffixRoll30> suffixes = new List<ArpgAffixRoll30>();
 
-        public int AffixCount { get { return prefixes.Count + suffixes.Count; } }
+        public int AffixCount { get { return (prefixes == null ? 0 : prefixes.Count) + (suffixes == null ? 0 : suffixes.Count); } }
         public int PrefixLimit { get { return rarity == ArpgItemRarity30.Magic ? 1 : (int)rarity >= (int)ArpgItemRarity30.Rare ? 3 : 0; } }
         public int SuffixLimit { get { return rarity == ArpgItemRarity30.Magic ? 1 : (int)rarity >= (int)ArpgItemRarity30.Rare ? 3 : 0; } }
     }
@@ -140,7 +141,7 @@ namespace ArcaneEngine
     [Serializable]
     public sealed class ArpgProfile30
     {
-        public int dataVersion = 30001;
+        public int dataVersion = 30002;
         public string characterId = Guid.NewGuid().ToString("N");
         public string characterName = "Astral Wanderer";
         public ArpgClass30 characterClass = ArpgClass30.Unchosen;
@@ -190,14 +191,14 @@ namespace ArcaneEngine
 
         public int Currency(ArpgCurrency30 currency)
         {
-            ArpgCurrencyStack30 stack = currencies.FirstOrDefault(value => value.currency == currency);
+            ArpgCurrencyStack30 stack = currencies == null ? null : currencies.FirstOrDefault(value => value != null && value.currency == currency);
             return stack == null ? 0 : stack.amount;
         }
 
         public void AddCurrency(ArpgCurrency30 currency, int amount)
         {
             if (amount == 0) return;
-            ArpgCurrencyStack30 stack = currencies.FirstOrDefault(value => value.currency == currency);
+            ArpgCurrencyStack30 stack = currencies == null ? null : currencies.FirstOrDefault(value => value != null && value.currency == currency);
             if (stack == null)
             {
                 stack = new ArpgCurrencyStack30 { currency = currency, amount = 0 };
@@ -296,17 +297,21 @@ namespace ArcaneEngine
         public static void Repair(ArpgProfile30 profile)
         {
             if (profile == null) return;
-            profile.dataVersion = 30001;
+            profile.dataVersion = 30002;
             if (string.IsNullOrEmpty(profile.characterId)) profile.characterId = Guid.NewGuid().ToString("N");
             if (string.IsNullOrWhiteSpace(profile.characterName)) profile.characterName = "Astral Wanderer";
+            if (!Enum.IsDefined(typeof(ArpgClass30), profile.characterClass)) profile.characterClass = ArpgClass30.Unchosen;
+            if (!Enum.IsDefined(typeof(ArpgAscendancy30), profile.ascendancy)) profile.ascendancy = ArpgAscendancy30.None;
             profile.level = Mathf.Clamp(profile.level, 0, 100);
             profile.experience = Mathf.Max(0, profile.experience);
             profile.constellationPoints = Mathf.Max(0, profile.constellationPoints);
             profile.atlasPoints = Mathf.Max(0, profile.atlasPoints);
             profile.ascendancyPoints = Mathf.Max(0, profile.ascendancyPoints);
-            profile.highestCompletedTier = Mathf.Clamp(profile.highestCompletedTier, -1, 99);
+            profile.highestCompletedTier = Mathf.Clamp(profile.highestCompletedTier, -1, 39);
             profile.totalMapsCompleted = Mathf.Max(0, profile.totalMapsCompleted);
             profile.totalDeaths = Mathf.Max(0, profile.totalDeaths);
+            profile.attunementBase = Mathf.Clamp(profile.attunementBase, 0, 100);
+
             if (profile.completedMapIds == null) profile.completedMapIds = new List<string>();
             if (profile.masteredMapIds == null) profile.masteredMapIds = new List<string>();
             if (profile.allocatedConstellationNodes == null) profile.allocatedConstellationNodes = new List<string>();
@@ -319,17 +324,92 @@ namespace ArcaneEngine
             if (profile.items == null) profile.items = new List<ArpgItem30>();
             if (profile.equipped == null) profile.equipped = new List<ArpgEquippedItem30>();
             if (profile.currencies == null) profile.currencies = new List<ArpgCurrencyStack30>();
-            profile.completedMapIds = profile.completedMapIds.Where(value => !string.IsNullOrEmpty(value)).Distinct().ToList();
-            profile.masteredMapIds = profile.masteredMapIds.Where(value => !string.IsNullOrEmpty(value)).Distinct().ToList();
-            profile.allocatedConstellationNodes = profile.allocatedConstellationNodes.Where(value => !string.IsNullOrEmpty(value)).Distinct().ToList();
-            profile.discoveredConstellations = profile.discoveredConstellations.Where(value => !string.IsNullOrEmpty(value)).Distinct().ToList();
-            profile.allocatedAscendancyNodes = profile.allocatedAscendancyNodes.Where(value => !string.IsNullOrEmpty(value)).Distinct().ToList();
-            profile.ownedCoreIds = profile.ownedCoreIds.Where(value => !string.IsNullOrEmpty(value)).Distinct().ToList();
-            profile.ownedRuneIds = profile.ownedRuneIds.Where(value => !string.IsNullOrEmpty(value)).Distinct().ToList();
-            profile.ownedLinkConditionIds = profile.ownedLinkConditionIds.Distinct().ToList();
+
+            profile.completedMapIds = CleanStrings(profile.completedMapIds);
+            profile.masteredMapIds = CleanStrings(profile.masteredMapIds);
+            profile.allocatedConstellationNodes = CleanStrings(profile.allocatedConstellationNodes);
+            profile.discoveredConstellations = CleanStrings(profile.discoveredConstellations);
+            profile.allocatedAscendancyNodes = CleanStrings(profile.allocatedAscendancyNodes);
+            profile.ownedCoreIds = CleanStrings(profile.ownedCoreIds);
+            profile.ownedRuneIds = CleanStrings(profile.ownedRuneIds);
+            profile.ownedLinkConditionIds = profile.ownedLinkConditionIds
+                .Where(value => Enum.IsDefined(typeof(SpellLinkCondition), value))
+                .Distinct()
+                .ToList();
+
+            HashSet<string> mapInstances = new HashSet<string>();
             profile.maps.RemoveAll(value => value == null || string.IsNullOrEmpty(value.mapId));
-            profile.items.RemoveAll(value => value == null || string.IsNullOrEmpty(value.instanceId));
-            profile.equipped.RemoveAll(value => value == null || string.IsNullOrEmpty(value.itemInstanceId) || profile.GetItem(value.itemInstanceId) == null);
+            foreach (ArpgMapItem30 map in profile.maps.ToArray())
+            {
+                if (string.IsNullOrEmpty(map.instanceId)) map.instanceId = Guid.NewGuid().ToString("N");
+                if (!mapInstances.Add(map.instanceId)) { profile.maps.Remove(map); continue; }
+                map.tier = Mathf.Clamp(map.tier, 0, 39);
+                map.quality = Mathf.Clamp(map.quality, 0, 30);
+                if (!Enum.IsDefined(typeof(ArpgMapRarity30), map.rarity)) map.rarity = ArpgMapRarity30.Normal;
+                if (map.affixIds == null) map.affixIds = new List<string>();
+                map.affixIds = CleanStrings(map.affixIds);
+            }
+
+            HashSet<string> itemInstances = new HashSet<string>();
+            profile.items.RemoveAll(value => value == null || string.IsNullOrEmpty(value.baseId));
+            foreach (ArpgItem30 item in profile.items.ToArray())
+            {
+                if (string.IsNullOrEmpty(item.instanceId)) item.instanceId = Guid.NewGuid().ToString("N");
+                if (!itemInstances.Add(item.instanceId)) { profile.items.Remove(item); continue; }
+                item.itemLevel = Mathf.Clamp(item.itemLevel, 1, 200);
+                item.quality = Mathf.Clamp(item.quality, 0, item.corrupted ? 30 : 20);
+                if (!Enum.IsDefined(typeof(ArpgItemSlot30), item.slot)) item.slot = ArpgItemSlot30.MainHand;
+                if (!Enum.IsDefined(typeof(ArpgItemRarity30), item.rarity)) item.rarity = ArpgItemRarity30.Normal;
+                if (item.prefixes == null) item.prefixes = new List<ArpgAffixRoll30>();
+                if (item.suffixes == null) item.suffixes = new List<ArpgAffixRoll30>();
+                RepairAffixes(item.prefixes, item.PrefixLimit);
+                RepairAffixes(item.suffixes, item.SuffixLimit);
+                List<ArpgAffixRoll30> all = item.prefixes.Concat(item.suffixes).ToList();
+                if (item.fractured)
+                {
+                    if (string.IsNullOrEmpty(item.fracturedAffixId) || all.All(value => value.affixId != item.fracturedAffixId))
+                        item.fracturedAffixId = all.Count == 0 ? string.Empty : all[0].affixId;
+                    if (string.IsNullOrEmpty(item.fracturedAffixId)) item.fractured = false;
+                }
+                else item.fracturedAffixId = string.Empty;
+            }
+
+            profile.equipped = profile.equipped
+                .Where(value => value != null && !string.IsNullOrEmpty(value.itemInstanceId))
+                .Where(value => profile.GetItem(value.itemInstanceId) != null)
+                .GroupBy(value => value.slot)
+                .Select(group => group.Last())
+                .Where(value => profile.GetItem(value.itemInstanceId).slot == value.slot)
+                .ToList();
+
+            profile.currencies = profile.currencies
+                .Where(value => value != null && value.amount > 0 && Enum.IsDefined(typeof(ArpgCurrency30), value.currency))
+                .GroupBy(value => value.currency)
+                .Select(group => new ArpgCurrencyStack30
+                {
+                    currency = group.Key,
+                    amount = Mathf.Clamp(group.Sum(value => Mathf.Max(0, value.amount)), 0, 999999)
+                })
+                .Where(value => value.amount > 0)
+                .ToList();
+        }
+
+        private static List<string> CleanStrings(IEnumerable<string> values)
+        {
+            return values.Where(value => !string.IsNullOrWhiteSpace(value)).Distinct().ToList();
+        }
+
+        private static void RepairAffixes(List<ArpgAffixRoll30> rolls, int limit)
+        {
+            rolls.RemoveAll(value => value == null || string.IsNullOrEmpty(value.affixId));
+            HashSet<string> seen = new HashSet<string>();
+            rolls.RemoveAll(value => !seen.Add(value.affixId));
+            foreach (ArpgAffixRoll30 roll in rolls)
+            {
+                roll.tier = Mathf.Clamp(roll.tier, 1, 10);
+                if (float.IsNaN(roll.value) || float.IsInfinity(roll.value)) roll.value = 0f;
+            }
+            if (rolls.Count > limit) rolls.RemoveRange(limit, rolls.Count - limit);
         }
     }
 }

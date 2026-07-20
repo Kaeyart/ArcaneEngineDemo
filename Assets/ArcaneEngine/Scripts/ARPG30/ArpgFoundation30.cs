@@ -163,7 +163,7 @@ namespace ArcaneEngine
 
         public bool LaunchFreeTierZero(out string message)
         {
-            int seed = Mathf.Abs(Environment.TickCount ^ Profile.totalMapsCompleted * 7919);
+            int seed = ArpgDeterminism30.Combine(Environment.TickCount, Profile.totalMapsCompleted, Profile.highestCompletedTier);
             ArpgMapItem30 map = ArpgItems30.GenerateMap(0, seed, ArpgMapRarity30.Normal, false);
             map.instanceId = "free-tier-zero-" + seed;
             return LaunchMapInternal(map, false, out message);
@@ -258,7 +258,7 @@ namespace ArcaneEngine
             List<RoomTemplate> rooms = MegaCatalog.AllRooms.Where(value => value != null && value.type == DungeonRoomType.Combat).ToList();
             if (rooms.Count == 0) rooms = MegaCatalog.AllRooms.Where(value => value != null).ToList();
             if (rooms.Count == 0) return null;
-            return rooms[Mathf.Abs(seed) % rooms.Count];
+            return rooms[ArpgDeterminism30.Index(seed, rooms.Count)];
         }
 
         private void SpawnMapEnemies(ArpgMapItem30 map)
@@ -287,7 +287,7 @@ namespace ArcaneEngine
                 bool elite = map.tier >= 10 && index > 0 && index % Mathf.Max(3, 8 - map.tier / 8) == 0;
                 EnemyController.Spawn(position, archetype, Mathf.Max(1, map.tier + 1), _activeDifficulty, elite, false);
             }
-            EnemyArchetype boss = bossPool[Mathf.Abs(map.seed / 17) % bossPool.Count];
+            EnemyArchetype boss = bossPool[ArpgDeterminism30.Index(map.seed / 17, bossPool.Count)];
             EnemyController.Spawn(new Vector3(0f, 0.75f, 9f), boss, Mathf.Max(1, map.tier + 2), _activeDifficulty, true, true);
         }
 
@@ -344,17 +344,17 @@ namespace ArcaneEngine
                 string rune = ArpgLegacyBridge30.GrantRandomRune(_world, Profile, map.seed + 17);
                 if (!string.IsNullOrEmpty(rune)) _rewardLines.Add("Support Rune: " + rune);
             }
-            else if (map.tier >= 2 && Mathf.Abs(map.seed) % 4 == 0)
+            else if (map.tier >= 2 && ArpgDeterminism30.Positive(map.seed) % 4 == 0)
             {
                 string rune = ArpgLegacyBridge30.GrantRandomRune(_world, Profile, map.seed + 19);
                 if (!string.IsNullOrEmpty(rune)) _rewardLines.Add("Support Rune: " + rune);
             }
-            if (map.tier >= 3 && (Profile.ownedCoreIds.Count < 2 || Mathf.Abs(map.seed) % 9 == 0))
+            if (map.tier >= 3 && (Profile.ownedCoreIds.Count < 2 || ArpgDeterminism30.Positive(map.seed) % 9 == 0))
             {
                 string core = ArpgLegacyBridge30.GrantRandomCore(_world, Profile, map.seed + 23);
                 if (!string.IsNullOrEmpty(core)) _rewardLines.Add("Spell Core: " + core);
             }
-            if (map.tier >= 6 && (Profile.ownedLinkConditionIds.Count == 0 || Mathf.Abs(map.seed) % 12 == 0))
+            if (map.tier >= 6 && (Profile.ownedLinkConditionIds.Count == 0 || ArpgDeterminism30.Positive(map.seed) % 12 == 0))
             {
                 string link = ArpgLegacyBridge30.GrantRandomLink(_world, Profile, map.seed + 29);
                 if (!string.IsNullOrEmpty(link)) _rewardLines.Add("Spell Link: " + link);
