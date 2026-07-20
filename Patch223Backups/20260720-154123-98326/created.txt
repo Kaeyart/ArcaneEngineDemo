@@ -1,6 +1,0 @@
-Assets/ArcaneEngine/Editor/Patch223RuntimeSafetyValidator.cs
-Assets/ArcaneEngine/Editor/Patch223RuntimeSafetyValidator.cs.meta
-Assets/ArcaneEngine/PATCH_2_2_3.txt
-Assets/ArcaneEngine/PATCH_2_2_3.txt.meta
-docs/PATCH_NOTES_2.2.3.md
-.arcane-patch-2.2.3-last-backup

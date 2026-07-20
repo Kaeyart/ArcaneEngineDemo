@@ -1,2 +1,0 @@
-Arcane Engine Demo Patch 2.1.1
-ScriptableObject identity repair and pooled-particle lifecycle correction.

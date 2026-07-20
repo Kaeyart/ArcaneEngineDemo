@@ -1,9 +1,0 @@
-# Install Arcane Engine v1.4.0 into the current project
-
-Close Unity completely. Put `ArcaneEngineDemo_v1.4.0_SPELLCRAFT_AND_SPELL_LINKS.zip` in `/home/kaey/Downloads`, then paste this entire command into Terminal:
-
-```bash
-set -euo pipefail; PROJECT='/home/kaey/Desktop/ArcaneEngineDemo_v1.0.0_DEMO_PATCH/ArcaneEngineDemo'; ZIP='/home/kaey/Downloads/ArcaneEngineDemo_v1.4.0_SPELLCRAFT_AND_SPELL_LINKS.zip'; if pgrep -x Unity >/dev/null 2>&1; then printf '%s\n' 'Close Unity completely, then run this command again.'; exit 1; fi; test -d "$PROJECT/Assets/ArcaneEngine"; test -f "$ZIP"; STAMP="$(date +%Y%m%d_%H%M%S)"; BACKUP="/home/kaey/Desktop/ArcaneEngineDemo_backup_before_v1.4.0_$STAMP"; TMP="$(mktemp -d /tmp/arcane_engine_v140_install.XXXXXX)"; trap 'rm -rf "$TMP"' EXIT; mkdir -p "$BACKUP"; rsync -a --exclude Library --exclude Temp --exclude Logs --exclude obj --exclude Builds "$PROJECT/" "$BACKUP/"; unzip -q "$ZIP" -d "$TMP"; test -d "$TMP/ArcaneEngineDemo/Assets/ArcaneEngine"; test -f "$TMP/ArcaneEngineDemo/Assets/ArcaneEngine/Scripts/Spells/SpellLinks.cs"; rsync -a "$TMP/ArcaneEngineDemo/" "$PROJECT/"; grep -Fq 'bundleVersion: 1.4.0' "$PROJECT/ProjectSettings/ProjectSettings.asset"; grep -Fq 'VERSION 1.4.0-DEMO' "$PROJECT/Assets/ArcaneEngine/Scripts/UI/V1FrontEndUI.cs"; grep -Fq 'public const int CurrentVersion = 8' "$PROJECT/Assets/ArcaneEngine/Scripts/Progression/ProfileSystem.cs"; printf '%s\n' "Arcane Engine v1.4.0 installed successfully. Backup: $BACKUP" 'Reopen the same project in Unity 6000.5.2f1, wait for compilation, open Assets/ArcaneEngine/Scenes/Main.unity, clear the Console, run Arcane Engine > Validate 1.4.0 Demo, then press Play.'
-```
-
-This overwrites project files in place but first creates a timestamped backup on the Desktop. It does not create another Unity Hub project and does not delete `Library`, `Temp`, `Logs`, `obj` or `Builds` from the current project.

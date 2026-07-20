@@ -1,3 +1,0 @@
-Assets/ArcaneEngine/Scripts/UI/V21ProductUI.cs
-Assets/ArcaneEngine/Scripts/Core/PlayerController.cs
-Assets/ArcaneEngine/Scripts/Spells/SpellCompiler.cs

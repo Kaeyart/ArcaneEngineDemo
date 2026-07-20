@@ -1,7 +1,0 @@
-Assets/ArcaneEngine/Scripts/Combat/ElementalReactionCodex.cs
-Assets/ArcaneEngine/Scripts/Combat/ElementalReactionCodex.Generated.cs
-Assets/ArcaneEngine/Scripts/Combat/ElementalReactionRuntime.cs
-Assets/ArcaneEngine/Scripts/Combat/ElementalReactionField.cs
-Assets/ArcaneEngine/Editor/ElementalReactionDiagnostics.cs
-docs/ElementalReactionCodex.md
-docs/ElementalReactionCodex.csv
