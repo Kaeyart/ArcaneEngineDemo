@@ -1,0 +1,10 @@
+Assets/ArcaneEngine/Scripts/ARPG30
+Assets/ArcaneEngine/Scripts/ARPG30.meta
+Assets/ArcaneEngine/Editor/Patch300Alpha1Validator.cs
+Assets/ArcaneEngine/Editor/Patch300Alpha1Validator.cs.meta
+Assets/ArcaneEngine/PATCH_3_0_0_ALPHA_1.txt
+Assets/ArcaneEngine/PATCH_3_0_0_ALPHA_1.txt.meta
+docs/PATCH_NOTES_3.0.0-alpha.1.md
+docs/IMPLEMENTATION_MANIFEST_3.0.0-alpha.1.md
+docs/VALIDATION_CHECKLIST_3.0.0-alpha.1.md
+.arcane-patch-3.0.0-alpha.1-last-backup

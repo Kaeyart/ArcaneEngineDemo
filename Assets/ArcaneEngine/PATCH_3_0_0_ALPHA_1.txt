@@ -1,0 +1,3 @@
+arcane-engine-arpg-foundation-300a1
+Endgame-first persistent ARPG foundation.
+Requires Patch 2.2.5.

@@ -266,8 +266,6 @@ namespace ArcaneEngine
             float manaRatio = Player == null || Stats == null ? 1f : Player.Mana / Mathf.Max(1f, Stats.maxMana);
             ProfileData profile = ProfileManager.Current;
             Stats = Equipment.BuildStats(profile.healthRank, profile.manaRank, profile.powerRank);
-            // ARCANE_PATCH_300A1_PERSISTENT_STATS
-            ArpgStatHooks30.ApplyPersistentStats(Stats);
             RunDirector run = GetComponent<RunDirector>();
             if (run != null && run.Difficulty.reducedHealing) Stats.healingMultiplier *= 0.55f;
             if (run != null) run.ApplyRunBonuses(Stats);
