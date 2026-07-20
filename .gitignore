@@ -1,3 +1,4 @@
+# Unity generated folders
 [Ll]ibrary/
 [Tt]emp/
 [Oo]bj/
@@ -7,6 +8,8 @@
 [Uu]ser[Ss]ettings/
 [Mm]emoryCaptures/
 [Rr]ecordings/
+
+# IDE and generated project files
 *.csproj
 *.sln
 *.suo
@@ -19,8 +22,29 @@
 *.mdb
 *.opendb
 *.VC.db
+.idea/
+.vscode/
+.vs/
+
+# Operating-system files
+.DS_Store
+Thumbs.db
 sysinfo.txt
+
+# Project-generated test and release output
 V21_TEST_RESULTS/
 V21_BUILD/
 V21_RELEASE/
+artifacts/
+builds/
 
+# Local installer backups and state pointers
+/*Backups/
+/.repo-cleanup-backups/
+/.arcane-*-last-backup
+
+# Common local patch residue
+*.orig
+*.rej
+*.bak
+*~

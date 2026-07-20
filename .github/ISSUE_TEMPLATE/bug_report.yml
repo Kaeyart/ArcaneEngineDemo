@@ -1,0 +1,79 @@
+name: Bug report
+description: Report a reproducible defect in Arcane Engine Demo.
+title: "[Bug]: "
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Report the first unique Console error and avoid posting secrets or private paths.
+  - type: input
+    id: version
+    attributes:
+      label: Project version
+      description: Patch, tag, branch, or commit.
+      placeholder: 3.0.0-alpha.1
+    validations:
+      required: true
+  - type: input
+    id: unity
+    attributes:
+      label: Unity version
+      placeholder: 6000.5.2f1
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: System
+      options:
+        - SpellForge
+        - Casting and Runes
+        - Reactions and ailments
+        - Maps and Atlas
+        - Items and crafting
+        - Classes and Ascendancies
+        - Constellations
+        - Persistence and migration
+        - UI and presentation
+        - Audio
+        - Build or CI
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Reproduction steps
+      placeholder: |
+        1. Open...
+        2. Enter Play Mode...
+        3. ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: console
+    attributes:
+      label: First unique Console error or relevant log
+      render: text
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: I searched existing issues.
+          required: true
+        - label: I removed credentials and private data.
+          required: true

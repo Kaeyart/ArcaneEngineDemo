@@ -1,4 +1,0 @@
-Arcane Engine Demo Patch 2.1.0
-Spell Morphology and Combat Presentation
-SpellVisualContract schema 21000
-Generated assets are created in Unity by Patch210AssetBuilder.

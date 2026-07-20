@@ -1,0 +1,32 @@
+name: Repository Hygiene
+
+on:
+  push:
+    branches:
+      - main
+      - "feature/**"
+      - "hotfix/**"
+      - "release/**"
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: repo-hygiene-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    name: Validate repository structure
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+          fetch-depth: 0
+
+      - name: Validate repository
+        run: python3 tools/repo_hygiene.py --project .

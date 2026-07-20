@@ -1,4 +1,0 @@
-Patch 2.1.1 authored content rebuilt successfully.
-Spell cores: 15
-Runes: 53
-Items: 69
