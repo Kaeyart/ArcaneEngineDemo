@@ -379,13 +379,6 @@ namespace ArcaneEngine
                 LastTouched.Remove(stale[i]);
             }
         }
-        // ARCANE_PATCH_224_LINEAGE_CLEAR
-        public static void ClearAll224()
-        {
-            Reset();
-        }
-
-
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void Reset()

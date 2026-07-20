@@ -211,13 +211,23 @@ namespace ArcaneEngine
 
         public List<PlacedModifier> GetActivePlacements()
         {
-            // ARCANE_PATCH_224_TOUCH_CONNECTIVITY
-            Dictionary<PlacedModifier, int> distances = BuildTouchDistances224();
-            return placed
-                .Where(piece => distances.ContainsKey(piece))
-                .OrderBy(piece => distances[piece])
-                .ThenBy(piece => piece.placementOrder)
-                .ToList();
+            List<PlacedModifier> active = new List<PlacedModifier>();
+            HashSet<PlacedModifier> activeSet = new HashSet<PlacedModifier>();
+            bool changed = true;
+            int safety = 0;
+            while (changed && safety++ < 64)
+            {
+                changed = false;
+                foreach (PlacedModifier piece in placed.OrderBy(p => p.placementOrder))
+                {
+                    if (activeSet.Contains(piece)) continue;
+                    if (!InputTouchesCore(piece) && !InputTouchesActiveOutput(piece, activeSet)) continue;
+                    activeSet.Add(piece);
+                    active.Add(piece);
+                    changed = true;
+                }
+            }
+            return active.OrderBy(p => GraphDistance(p, activeSet)).ThenBy(p => p.placementOrder).ToList();
         }
 
         public bool IsPlacementConnected(PlacedModifier piece) { return GetActivePlacements().Contains(piece); }
@@ -225,7 +235,13 @@ namespace ArcaneEngine
         public string GetInactiveReason(PlacedModifier piece)
         {
             if (piece == null) return "No piece selected.";
-            return "Inactive: this Support Rune is not touching the Spell Core or another connected Support Rune.";
+            SpellModifierDefinition definition = DemoCatalog.GetModifier(piece.modifierId);
+            int side = RotateSide(definition.inputSide, piece.rotation);
+            HexCoord predecessor = piece.anchor + HexCoord.Directions[side];
+            if (predecessor.DistanceFromOrigin() > Radius) return "Inactive: the input points outside the board.";
+            if (!GetOccupiedMap().ContainsKey(predecessor) && !predecessor.Equals(new HexCoord(0, 0)))
+                return "Inactive: its input receives no adjacent output.";
+            return "Inactive: the neighboring output is not connected to the Spell Core.";
         }
 
         public int TotalInstability()
@@ -311,12 +327,30 @@ namespace ArcaneEngine
 
         private bool InputTouchesCore(PlacedModifier piece)
         {
-            return PlacementTouchesCore224(piece);
+            if (GameWorld.Instance != null && GameWorld.Instance.Equipment != null &&
+                GameWorld.Instance.Equipment.HasMutation(UniqueMutation.CentralVirtualConnector) && piece.anchor.DistanceFromOrigin() == 1) return true;
+            SpellModifierDefinition definition = DemoCatalog.GetModifier(piece.modifierId);
+            int side = RotateSide(definition.inputSide, piece.rotation);
+            return (piece.anchor + HexCoord.Directions[side]).Equals(new HexCoord(0, 0));
         }
 
         private bool InputTouchesActiveOutput(PlacedModifier piece, HashSet<PlacedModifier> active)
         {
-            return active != null && active.Any(candidate => PlacementsTouch224(piece, candidate));
+            SpellModifierDefinition definition = DemoCatalog.GetModifier(piece.modifierId);
+            int inputSide = RotateSide(definition.inputSide, piece.rotation);
+            HexCoord predecessorCell = piece.anchor + HexCoord.Directions[inputSide];
+            foreach (PlacedModifier candidate in active)
+            {
+                int requiredOutput = (inputSide + 3) % 6;
+                SpellModifierDefinition candidateDefinition = DemoCatalog.GetModifier(candidate.modifierId);
+                bool faces = candidateDefinition.outputSides.Any(side =>
+                {
+                    int absoluteSide = RotateSide(side, candidate.rotation);
+                    return absoluteSide == requiredOutput && GetOutputPortCell(candidate, absoluteSide).Equals(predecessorCell);
+                });
+                if (faces) return true;
+            }
+            return false;
         }
 
         public static HexCoord GetOutputPortCell(PlacedModifier piece, int absoluteSide)
@@ -333,71 +367,29 @@ namespace ArcaneEngine
 
         private int GraphDistance(PlacedModifier piece, HashSet<PlacedModifier> active)
         {
-            Dictionary<PlacedModifier, int> distances = BuildTouchDistances224();
-            int distance;
-            return piece != null && distances.TryGetValue(piece, out distance) ? distance : 64;
-        }
-        private Dictionary<PlacedModifier, int> BuildTouchDistances224()
-        {
-            Dictionary<PlacedModifier, int> distances = new Dictionary<PlacedModifier, int>();
-            Queue<PlacedModifier> frontier = new Queue<PlacedModifier>();
-
-            foreach (PlacedModifier piece in placed.OrderBy(value => value.placementOrder))
+            int distance = 1;
+            PlacedModifier current = piece;
+            HashSet<PlacedModifier> visited = new HashSet<PlacedModifier>();
+            while (current != null && visited.Add(current) && distance < 64)
             {
-                if (!PlacementTouchesCore224(piece)) continue;
-                distances[piece] = 1;
-                frontier.Enqueue(piece);
-            }
-
-            while (frontier.Count > 0)
-            {
-                PlacedModifier current = frontier.Dequeue();
-                int nextDistance = distances[current] + 1;
-                foreach (PlacedModifier candidate in placed.OrderBy(value => value.placementOrder))
+                SpellModifierDefinition definition = DemoCatalog.GetModifier(current.modifierId);
+                int side = RotateSide(definition.inputSide, current.rotation);
+                HexCoord predecessor = current.anchor + HexCoord.Directions[side];
+                if (predecessor.Equals(new HexCoord(0, 0))) return distance;
+                int requiredOutput = (side + 3) % 6;
+                current = active.FirstOrDefault(candidate =>
                 {
-                    if (candidate == null || distances.ContainsKey(candidate)) continue;
-                    if (!PlacementsTouch224(current, candidate)) continue;
-                    distances[candidate] = nextDistance;
-                    frontier.Enqueue(candidate);
-                }
+                    SpellModifierDefinition candidateDefinition = DemoCatalog.GetModifier(candidate.modifierId);
+                    return candidateDefinition != null && candidateDefinition.outputSides.Any(output =>
+                    {
+                        int absoluteSide = RotateSide(output, candidate.rotation);
+                        return absoluteSide == requiredOutput && GetOutputPortCell(candidate, absoluteSide).Equals(predecessor);
+                    });
+                });
+                distance++;
             }
-
-            return distances;
+            return distance;
         }
-
-        private bool PlacementTouchesCore224(PlacedModifier piece)
-        {
-            if (piece == null) return false;
-            SpellModifierDefinition definition = DemoCatalog.GetModifier(piece.modifierId);
-            if (definition == null) return false;
-
-            foreach (HexCoord cell in GetOccupiedCells(definition, piece.anchor, piece.rotation))
-                if (cell.DistanceFromOrigin() == 1)
-                    return true;
-
-            return GameWorld.Instance != null &&
-                   GameWorld.Instance.Equipment != null &&
-                   GameWorld.Instance.Equipment.HasMutation(UniqueMutation.CentralVirtualConnector) &&
-                   piece.anchor.DistanceFromOrigin() == 1;
-        }
-
-        private static bool PlacementsTouch224(PlacedModifier first, PlacedModifier second)
-        {
-            if (first == null || second == null || first == second) return false;
-            SpellModifierDefinition firstDefinition = DemoCatalog.GetModifier(first.modifierId);
-            SpellModifierDefinition secondDefinition = DemoCatalog.GetModifier(second.modifierId);
-            if (firstDefinition == null || secondDefinition == null) return false;
-
-            HashSet<HexCoord> secondCells = new HashSet<HexCoord>(
-                GetOccupiedCells(secondDefinition, second.anchor, second.rotation));
-            foreach (HexCoord cell in GetOccupiedCells(firstDefinition, first.anchor, first.rotation))
-                for (int side = 0; side < HexCoord.Directions.Length; side++)
-                    if (secondCells.Contains(cell + HexCoord.Directions[side]))
-                        return true;
-            return false;
-        }
-
-
 
         private void PushUndo()
         {

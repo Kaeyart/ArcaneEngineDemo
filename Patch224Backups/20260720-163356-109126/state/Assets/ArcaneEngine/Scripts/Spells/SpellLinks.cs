@@ -307,47 +307,29 @@ namespace ArcaneEngine
 
         public void Activate(SpellSlot sourceSlot, TriggerMoment moment, CastRequest parent, Vector3 position)
         {
-            // ARCANE_PATCH_224_LINK_RUNTIME
-            if (_world == null || parent.linkGeneration >= 6) return;
-            if (parent.budget == null)
-                parent.budget = new SpellCastBudget(_world.Stats.triggerEnergy);
-
-            foreach (SpellLinkSave link in _links
-                .Where(value => value.sourceSlot == (int)sourceSlot &&
-                                SpellLinkRules.ToMoment(value.condition) == moment)
-                .ToArray())
+            if (parent.budget == null || parent.generation >= 6) return;
+            foreach (SpellLinkSave link in _links.Where(value => value.sourceSlot == (int)sourceSlot && SpellLinkRules.ToMoment(value.condition) == moment).ToArray())
             {
                 if (link.condition == SpellLinkCondition.OnCast && !parent.manualCast) continue;
-
                 int lastEvent;
-                if (_lastEventIds.TryGetValue(link.instanceId, out lastEvent) &&
-                    lastEvent == parent.budget.eventId) continue;
-
+                if (_lastEventIds.TryGetValue(link.instanceId, out lastEvent) && lastEvent == parent.budget.eventId) continue;
                 float lastTime;
-                if (_lastActivationTimes.TryGetValue(link.instanceId, out lastTime) &&
-                    Time.time - lastTime < SpellLinkRules.Cooldown(link.condition)) continue;
-
+                if (_lastActivationTimes.TryGetValue(link.instanceId, out lastTime) && Time.time - lastTime < SpellLinkRules.Cooldown(link.condition)) continue;
                 CompiledSpell destination = _world.GetSpell((SpellSlot)link.destinationSlot);
                 if (destination == null) continue;
 
                 _lastEventIds[link.instanceId] = parent.budget.eventId;
                 _lastActivationTimes[link.instanceId] = Time.time;
-
                 CastRequest child = parent;
                 child.origin = position + Vector3.up * 0.08f;
                 child.castOrigin = child.origin;
-                if (link.condition != SpellLinkCondition.OnCast)
-                    child.targetPosition = position;
+                if (link.condition != SpellLinkCondition.OnCast) child.targetPosition = position;
                 Vector3 direction = child.targetPosition - child.origin;
                 direction.y = 0f;
-                child.direction = direction.sqrMagnitude > 0.01f
-                    ? direction.normalized
-                    : parent.direction;
+                child.direction = direction.sqrMagnitude > 0.01f ? direction.normalized : parent.direction;
                 child.powerScale = parent.powerScale * SpellLinkRules.TriggerPower(link.condition);
-                child.generation = Mathf.Min(parent.generation + 1, 6);
-                child.linkGeneration = parent.linkGeneration + 1;
+                child.generation = parent.generation + 1;
                 child.manualCast = false;
-
                 SpellVisualEvents.LinkActivation(_world.GetSpell(sourceSlot), destination, position, moment);
                 SpellExecutor.Cast(destination, child);
             }

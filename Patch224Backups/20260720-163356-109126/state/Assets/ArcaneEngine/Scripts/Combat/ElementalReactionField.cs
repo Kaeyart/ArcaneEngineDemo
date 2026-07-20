@@ -698,23 +698,6 @@ namespace ArcaneEngine
                 _radius * 2f);
             transform.localScale = _baseScale;
         }
-        // ARCANE_PATCH_224_FIELD_CLEAR
-        public static void ClearAll224()
-        {
-            // ARCANE_PATCH_225_FIELD_CLEAR_FIX
-            CleanupList();
-            ElementalReactionField[] snapshot = Active.ToArray();
-            Active.Clear();
-            for (int i = 0; i < snapshot.Length; i++)
-            {
-                ElementalReactionField field = snapshot[i];
-                if (field == null) continue;
-                field.gameObject.SetActive(false);
-                UnityEngine.Object.Destroy(field.gameObject);
-            }
-        }
-
-
 
         private void OnDestroy()
         {

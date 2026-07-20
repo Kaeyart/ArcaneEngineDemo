@@ -14,7 +14,8 @@ namespace ArcaneEngine
             new List<SpellMorphologyOwner21>();
         private float _lastFlash;
         private float _flashEnergy;
-        // ARCANE_PATCH_225_UNUSED_FIELD_FIX
+        private float _lastImportantEvent;
+
         public static MorphologyPresentationDirector21 Instance
         {
             get
@@ -477,6 +478,7 @@ namespace ArcaneEngine
             _targetResponses.Clear();
             _flashEnergy = 0f;
             _lastFlash = 0f;
+            _lastImportantEvent = 0f;
             GeneratedAssetRuntime21.ClearRuntimeCaches();
         }
 

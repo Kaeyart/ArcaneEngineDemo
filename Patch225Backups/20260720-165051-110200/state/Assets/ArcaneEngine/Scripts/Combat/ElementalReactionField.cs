@@ -701,8 +701,7 @@ namespace ArcaneEngine
         // ARCANE_PATCH_224_FIELD_CLEAR
         public static void ClearAll224()
         {
-            // ARCANE_PATCH_225_FIELD_CLEAR_FIX
-            CleanupList();
+            Cleanup();
             ElementalReactionField[] snapshot = Active.ToArray();
             Active.Clear();
             for (int i = 0; i < snapshot.Length; i++)

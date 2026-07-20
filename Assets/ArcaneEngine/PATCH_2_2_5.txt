@@ -1,0 +1,7 @@
+Arcane Engine Demo Patch 2.2.5
+compile-cleanup-hotfix-22500
+
+Fixes:
+- ElementalReactionField.ClearAll224 calls the existing CleanupList method.
+- SpellEffectLifecycle224 uses the Unity 6000.5 FindObjectsByType overloads without FindObjectsSortMode.
+- Removes the unused MorphologyPresentationDirector21._lastImportantEvent field and reset.

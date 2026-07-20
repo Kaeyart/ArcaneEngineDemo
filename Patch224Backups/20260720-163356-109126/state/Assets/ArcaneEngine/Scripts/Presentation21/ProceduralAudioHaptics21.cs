@@ -242,20 +242,6 @@ namespace ArcaneEngine
             }
         }
 
-        // ARCANE_PATCH_224_LIFECYCLE_AUDIO_CLEAR
-        public static void StopAll()
-        {
-            for (int i = 0; i < Voices.Count; i++)
-            {
-                ProceduralAudioVoice21 voice = Voices[i];
-                if (voice != null)
-                    voice.StopAndReset();
-            }
-
-            _duckUntil = 0f;
-            _duckTarget = 1f;
-        }
-
         private static void Play(
             AudioClip clip,
             Vector3 position,

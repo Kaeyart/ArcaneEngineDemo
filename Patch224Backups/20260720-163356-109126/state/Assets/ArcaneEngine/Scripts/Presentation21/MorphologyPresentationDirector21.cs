@@ -14,7 +14,8 @@ namespace ArcaneEngine
             new List<SpellMorphologyOwner21>();
         private float _lastFlash;
         private float _flashEnergy;
-        // ARCANE_PATCH_225_UNUSED_FIELD_FIX
+        private float _lastImportantEvent;
+
         public static MorphologyPresentationDirector21 Instance
         {
             get
@@ -457,34 +458,17 @@ namespace ArcaneEngine
             if (remove != null)
                 for (int i = 0; i < remove.Count; i++) _targetResponses.Remove(remove[i]);
         }
-        // ARCANE_PATCH_224_DIRECTOR_CLEAR
-        public static void ClearTransient224()
-        {
-            if (_instance != null)
-                _instance.ClearTransientInternal224();
-        }
-
-        private void ClearTransientInternal224()
-        {
-            for (int i = _sceneOwners.Count - 1; i >= 0; i--)
-                if (_sceneOwners[i] != null)
-                    Destroy(_sceneOwners[i].gameObject);
-            _sceneOwners.Clear();
-
-            foreach (TargetSurfaceResponse21 response in _targetResponses.Values)
-                if (response != null)
-                    response.ClearPresentation224();
-            _targetResponses.Clear();
-            _flashEnergy = 0f;
-            _lastFlash = 0f;
-            GeneratedAssetRuntime21.ClearRuntimeCaches();
-        }
-
-
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            ClearTransientInternal224();
+            for (int i = _sceneOwners.Count - 1; i >= 0; i--)
+            {
+                if (_sceneOwners[i] != null)
+                    Destroy(_sceneOwners[i].gameObject);
+            }
+            _sceneOwners.Clear();
+            _targetResponses.Clear();
+            GeneratedAssetRuntime21.ClearRuntimeCaches();
         }
     }
 
@@ -816,19 +800,7 @@ namespace ArcaneEngine
                     mark.gameObject.transform.localScale *= pulse / Mathf.Max(0.001f, 0.92f + Mathf.Sin((Time.unscaledTime - Time.unscaledDeltaTime) * (2f + mark.intensity) + i) * 0.08f);
                 }
             }
-        }        // ARCANE_PATCH_224_TARGET_MARK_CLEAR
-        public void ClearPresentation224()
-        {
-            for (int i = 0; i < _marks.Count; i++)
-                if (_marks[i].gameObject != null)
-                    Destroy(_marks[i].gameObject);
-            _marks.Clear();
-            _deformUntil = 0f;
-            _deformMagnitude = 0f;
-            transform.localScale = _baseScale;
         }
-
-
 
         private void OnDestroy()
         {

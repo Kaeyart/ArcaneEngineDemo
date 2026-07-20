@@ -1,0 +1,6 @@
+Arcane Engine Demo Patch 2.2.4
+lifecycle-linking-hotfix-22400
+
+- Clears active spell, reaction, morphology, residue, pooled particle, and procedural audio presentation on room transitions, scene unloads, player death, and run end.
+- Gives Spell Links an independent recursion depth so reaction/Split propagation generation cannot suppress valid links.
+- Changes SpellForge activation to physical edge-touch connectivity: every Rune touching the Core or another connected Rune is active.

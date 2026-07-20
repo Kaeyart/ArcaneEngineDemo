@@ -1,0 +1,8 @@
+Assets/ArcaneEngine/Editor/Patch225CompileCleanupValidator.cs
+Assets/ArcaneEngine/Editor/Patch225CompileCleanupValidator.cs.meta
+Assets/ArcaneEngine/PATCH_2_2_5.txt
+Assets/ArcaneEngine/PATCH_2_2_5.txt.meta
+docs/PATCH_NOTES_2.2.5.md
+docs/IMPLEMENTATION_MANIFEST_2.2.5.md
+docs/VALIDATION_CHECKLIST_2.2.5.md
+.arcane-patch-2.2.5-last-backup

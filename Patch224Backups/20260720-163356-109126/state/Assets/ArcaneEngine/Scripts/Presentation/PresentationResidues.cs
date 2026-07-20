@@ -351,22 +351,6 @@ namespace ArcaneEngine
                 });
             }
         }
-        // ARCANE_PATCH_224_RESIDUE_CLEAR
-        public static void ClearAll224()
-        {
-            Cleanup();
-            PresentationResidue2[] snapshot = Active.ToArray();
-            Active.Clear();
-            for (int i = 0; i < snapshot.Length; i++)
-            {
-                PresentationResidue2 residue = snapshot[i];
-                if (residue == null) continue;
-                residue.gameObject.SetActive(false);
-                UnityEngine.Object.Destroy(residue.gameObject);
-            }
-        }
-
-
 
         private void OnDestroy()
         {

@@ -612,9 +612,6 @@ namespace ArcaneEngine
 
         public void ClearTransientObjects()
         {
-            // ARCANE_PATCH_224_GAMEWORLD_CLEANUP
-            SpellEffectLifecycle224.ClearAll(SpellEffectCleanupReason224.PlayerDeathOrRunEnd);
-
             if (DemoV05Director.Instance != null) DemoV05Director.Instance.Objective.Clear();
             foreach (EnemyController enemy in Enemies.ToArray()) if (enemy != null) Destroy(enemy.gameObject);
             Enemies.Clear();

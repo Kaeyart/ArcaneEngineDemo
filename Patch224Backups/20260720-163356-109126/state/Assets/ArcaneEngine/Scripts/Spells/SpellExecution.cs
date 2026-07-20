@@ -70,8 +70,6 @@ namespace ArcaneEngine
         public Vector3 targetPosition;
         public float powerScale;
         public int generation;
-        // ARCANE_PATCH_224_LINK_DEPTH
-        public int linkGeneration;
         public SpellCastBudget budget;
         public bool manualCast;
     }
@@ -539,33 +537,26 @@ namespace ArcaneEngine
     }
 
     private static void InvokeTriggers(CompiledSpell spell, TriggerMoment moment, CastRequest parent, Vector3 position)
-    {
-        if (spell == null) return;
-        if (parent.budget == null)
-            parent.budget = new SpellCastBudget(GameWorld.Instance.Stats.triggerEnergy);
-
-        // Spell Links use their own recursion depth. Reaction/Split propagation generation
-        // must not prevent an otherwise valid equipped-spell link from firing.
-        if (GameWorld.Instance != null && GameWorld.Instance.SpellLinks != null)
-            GameWorld.Instance.SpellLinks.Activate(spell.slot, moment, parent, position);
-
-        if (parent.generation >= MaxGeneration) return;
-        foreach (TriggerSpec trigger in spell.triggers.Where(t => t.moment == moment))
         {
-            if (!parent.budget.TrySpend(trigger)) continue;
-            CompiledSpell linked = GameWorld.Instance.GetSpell(trigger.linkedSlot);
-            if (linked == null) continue;
-            SpellVisualEvents.LinkActivation(spell, linked, position, moment);
-            CastRequest child = parent;
-            child.origin = position + Vector3.up * 0.08f;
-            child.castOrigin = child.origin;
-            child.powerScale = parent.powerScale * trigger.inheritedPower;
-            child.generation = parent.generation + 1;
-            child.manualCast = false;
-            ResolveTargetContext(trigger.targetContext, ref child);
-            Cast(linked, child);
+            if (spell == null || parent.generation >= MaxGeneration || parent.budget == null) return;
+            if (GameWorld.Instance != null && GameWorld.Instance.SpellLinks != null)
+                GameWorld.Instance.SpellLinks.Activate(spell.slot, moment, parent, position);
+            foreach (TriggerSpec trigger in spell.triggers.Where(t => t.moment == moment))
+            {
+                if (!parent.budget.TrySpend(trigger)) continue;
+                CompiledSpell linked = GameWorld.Instance.GetSpell(trigger.linkedSlot);
+                if (linked == null) continue;
+                SpellVisualEvents.LinkActivation(spell, linked, position, moment);
+                CastRequest child = parent;
+                child.origin = position + Vector3.up * 0.08f;
+                child.castOrigin = child.origin;
+                child.powerScale = parent.powerScale * trigger.inheritedPower;
+                child.generation = parent.generation + 1;
+                child.manualCast = false;
+                ResolveTargetContext(trigger.targetContext, ref child);
+                Cast(linked, child);
+            }
         }
-    }
 
         private static void ResolveTargetContext(TargetContext context, ref CastRequest request)
         {

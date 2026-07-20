@@ -42,10 +42,6 @@ namespace ArcaneEngine
         /// </summary>
         public IEnumerator LoadRoomAsync(string sceneName, Action onComplete = null)
         {
-            // ARCANE_PATCH_224_ROOM_CLEANUP
-            if (!string.IsNullOrEmpty(_currentRoomScene) && _currentRoomScene != sceneName)
-                SpellEffectLifecycle224.ClearAll(SpellEffectCleanupReason224.RoomTransition);
-
             // Unload current room
             if (!string.IsNullOrEmpty(_currentRoomScene) && _currentRoomScene != sceneName)
             {

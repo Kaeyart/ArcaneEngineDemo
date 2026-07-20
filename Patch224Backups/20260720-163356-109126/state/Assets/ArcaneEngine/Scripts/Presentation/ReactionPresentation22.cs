@@ -316,14 +316,6 @@ namespace ArcaneEngine
         private static readonly Dictionary<string, Stamp> Stamps =
             new Dictionary<string, Stamp>();
         private static float _nextCleanup;
-        // ARCANE_PATCH_224_COALESCER_CLEAR
-        public static void ClearAll224()
-        {
-            Stamps.Clear();
-            _nextCleanup = 0f;
-        }
-
-
 
         public static bool TryAccept(ref SpellPresentationEvent presentationEvent)
         {
