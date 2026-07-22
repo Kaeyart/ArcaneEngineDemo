@@ -1,0 +1,8 @@
+ARCANE ENGINE DEMO PATCH 3.1.0-alpha.1
+FIRST DESCENT
+
+Persistent multi-character front end, playable Astral Refuge, Tier 0–5 White Map vertical slice,
+loot/equipment/stash/crafting, six starter Constellations, three monster families, eighteen variants,
+six bosses, persistent progression, migration, backup and recovery foundations.
+
+Package/static validation does not equal Unity compilation or Play Mode validation.

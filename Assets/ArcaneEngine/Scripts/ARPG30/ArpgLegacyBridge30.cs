@@ -34,6 +34,7 @@ namespace ArcaneEngine
                 ForceSingleCore(world, starter);
                 profile.ownedCoreIds.Clear();
                 profile.ownedCoreIds.Add(starter);
+                profile.activeCoreId = starter;
                 profile.ownedRuneIds.Clear();
                 profile.ownedLinkConditionIds.Clear();
                 profile.starterLoadoutInitialized = true;
@@ -66,6 +67,8 @@ namespace ArcaneEngine
                     if (DemoCatalog.GetModifier(runeId) != null) world.AddModifier(runeId, 1);
                 }
                 EnsureOwnedCores(world, profile);
+                if (!string.IsNullOrEmpty(profile.activeCoreId) && profile.ownedCoreIds.Contains(profile.activeCoreId) && DemoCatalog.GetCore(profile.activeCoreId) != null)
+                    ForceSingleCore(world, profile.activeCoreId);
                 if (world.SpellLinks != null)
                 {
                     world.SpellLinks.ResetRun();
@@ -81,6 +84,47 @@ namespace ArcaneEngine
             {
                 Debug.LogWarning("Arcane Engine 3.0 discovery restoration failed safely: " + exception.Message);
             }
+        }
+
+
+        public static bool EquipCore(GameWorld world, ArpgProfile30 profile, string coreId, out string message)
+        {
+            message = string.Empty;
+            if (world == null || profile == null)
+            {
+                message = "The SpellForge runtime is not ready.";
+                return false;
+            }
+
+            if (string.IsNullOrEmpty(coreId) || !profile.ownedCoreIds.Contains(coreId) || DemoCatalog.GetCore(coreId) == null)
+            {
+                message = "That Spell Core has not been discovered.";
+                return false;
+            }
+
+            try
+            {
+                ForceSingleCore(world, coreId);
+                profile.activeCoreId = coreId;
+                PersistPreparedStarter(coreId);
+                world.MarkSpellsDirty();
+                world.RepairModifierOwnership();
+                world.RecalculateStats(true);
+                ArpgProfileStore30.Save(profile);
+                message = "Equipped " + FriendlyCoreName(coreId) + " in the primary SpellForge slot.";
+                return true;
+            }
+            catch (Exception exception)
+            {
+                message = "The Core could not be equipped: " + exception.Message;
+                Debug.LogWarning(message);
+                return false;
+            }
+        }
+
+        public static string CoreDisplayName(string id)
+        {
+            return FriendlyCoreName(id);
         }
 
         public static string GrantRandomRune(GameWorld world, ArpgProfile30 profile, int seed)

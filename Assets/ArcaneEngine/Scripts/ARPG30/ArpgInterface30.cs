@@ -2,129 +2,190 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-#if ENABLE_INPUT_SYSTEM
-using UnityEngine.InputSystem;
-#endif
 
 namespace ArcaneEngine
 {
+    public enum ArpgPanel31
+    {
+        None,
+        Character,
+        MapDevice,
+        Constellations,
+        Inventory,
+        Stash,
+        Crafting,
+        SpellForge,
+        Training
+    }
+
     public sealed class ArpgInterface30 : MonoBehaviour
     {
-        private bool _open;
-        private int _tab;
+        public static ArpgInterface30 Instance { get; private set; }
+        public bool IsOpen { get { return _panel != ArpgPanel31.None; } }
+        public string Message { get { return _message; } }
+
+        private ArpgPanel31 _panel = ArpgPanel31.None;
         private Vector2 _leftScroll;
         private Vector2 _rightScroll;
         private string _selectedConstellationId;
         private string _selectedItemId;
-        private string _selectedMapInstanceId;
-        private string _uiMessage = "";
+        private string _selectedMapId;
+        private string _message = string.Empty;
+        private float _messageUntil;
         private GUIStyle _title;
-        private GUIStyle _section;
+        private GUIStyle _heading;
         private GUIStyle _small;
         private GUIStyle _wrap;
+        private GUIStyle _good;
+        private GUIStyle _warning;
+        private Texture2D _backdrop;
+        private Texture2D _panelTexture;
+        private Texture2D _accent;
 
-        private static readonly string[] Tabs = { "Character", "Atlas", "Constellations", "Items", "Discoveries" };
+        private void Awake()
+        {
+            if (Instance != null && Instance != this)
+            {
+                Destroy(this);
+                return;
+            }
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+
+        private void OnDestroy()
+        {
+            if (Instance == this) Instance = null;
+            if (_backdrop != null) Destroy(_backdrop);
+            if (_panelTexture != null) Destroy(_panelTexture);
+            if (_accent != null) Destroy(_accent);
+        }
 
         private void Update()
         {
-#if ENABLE_INPUT_SYSTEM
-            if (Keyboard.current != null && Keyboard.current.f7Key.wasPressedThisFrame) _open = !_open;
-#else
-            if (Input.GetKeyDown(KeyCode.F7)) _open = !_open;
-#endif
+            if (ArpgFrontend31.Instance == null || !ArpgFrontend31.Instance.IsGameplay) return;
+            if (ArpgFoundation30.Profile == null) return;
+
+            if (ArpgInput31.Pressed(ArpgAction31.Inventory)) TogglePanel(ArpgPanel31.Inventory);
+            if (ArpgInput31.Pressed(ArpgAction31.MapDevice)) TogglePanel(ArpgPanel31.MapDevice);
+            if (ArpgInput31.Pressed(ArpgAction31.SpellForge)) TogglePanel(ArpgPanel31.SpellForge);
+            if (ArpgInput31.Pressed(ArpgAction31.Constellations)) TogglePanel(ArpgPanel31.Constellations);
+            if (ArpgInput31.CancelPressed() && _panel != ArpgPanel31.None) ClosePanel();
+        }
+
+        public void OpenPanel(ArpgPanel31 panel)
+        {
+            _panel = panel;
+            _leftScroll = Vector2.zero;
+            _rightScroll = Vector2.zero;
+            SetCursorMode(true);
+        }
+
+        public void ClosePanel()
+        {
+            _panel = ArpgPanel31.None;
+            SetCursorMode(false);
+        }
+
+        public void TogglePanel(ArpgPanel31 panel)
+        {
+            if (_panel == panel) ClosePanel();
+            else OpenPanel(panel);
+        }
+
+        public void SetMessage(string message)
+        {
+            _message = message ?? string.Empty;
+            _messageUntil = Time.unscaledTime + 5.5f;
+        }
+
+        private void SetCursorMode(bool menu)
+        {
+            Cursor.visible = menu;
+            Cursor.lockState = menu ? CursorLockMode.None : CursorLockMode.Locked;
         }
 
         private void OnGUI()
         {
             if (ArpgFoundation30.Instance == null || ArpgFoundation30.Profile == null) return;
+            if (ArpgFrontend31.Instance == null || ArpgFrontend31.Instance.State != ArpgFrontendState31.Gameplay) return;
             EnsureStyles();
-            DrawStatusStrip();
-            if (ArpgFoundation30.Profile.characterClass == ArpgClass30.Unchosen)
-            {
-                DrawClassSelection();
-                return;
-            }
-            if (!_open) return;
-            DrawMainPanel();
+            DrawHud();
+            if (_panel != ArpgPanel31.None) DrawPanel();
+            if (!string.IsNullOrEmpty(_message) && Time.unscaledTime <= _messageUntil)
+                GUI.Label(new Rect(Screen.width * 0.5f - 360f, Screen.height - 112f, 720f, 44f), _message, GUI.skin.box);
         }
 
-        private void EnsureStyles()
-        {
-            if (_title != null) return;
-            _title = new GUIStyle(GUI.skin.label) { fontSize = 22, fontStyle = FontStyle.Bold };
-            _section = new GUIStyle(GUI.skin.label) { fontSize = 16, fontStyle = FontStyle.Bold };
-            _small = new GUIStyle(GUI.skin.label) { fontSize = 11 };
-            _wrap = new GUIStyle(GUI.skin.label) { wordWrap = true };
-        }
-
-        private void DrawStatusStrip()
+        private void DrawHud()
         {
             ArpgProfile30 profile = ArpgFoundation30.Profile;
-            GUILayout.BeginArea(new Rect(12f, 10f, Mathf.Min(760f, Screen.width - 24f), 76f), GUI.skin.box);
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("ARCANE ENGINE 3.0", _section, GUILayout.Width(210f));
-            GUILayout.Label(profile.characterClass == ArpgClass30.Unchosen ? "No ARPG character" : profile.characterClass + " · Level " + profile.level + " · Highest Tier " + Mathf.Max(0, profile.highestCompletedTier), GUILayout.ExpandWidth(true));
-            if (profile.characterClass != ArpgClass30.Unchosen && GUILayout.Button(_open ? "Close [F7]" : "Atlas [F7]", GUILayout.Width(110f))) _open = !_open;
-            GUILayout.EndHorizontal();
+            Rect top = new Rect(18f, 14f, Mathf.Min(820f, Screen.width - 36f), 82f);
+            GUI.Box(top, GUIContent.none);
+            GUI.Label(new Rect(top.x + 16f, top.y + 10f, 320f, 25f), profile.characterName + " · " + profile.characterClass + " · Level " + profile.level, _heading);
+            GUI.Label(new Rect(top.x + 16f, top.y + 38f, 360f, 20f), "XP " + profile.experience + " / " + profile.ExperienceToNextLevel + " · Inventory " + profile.InventoryCount + "/" + profile.inventoryCapacity, _small);
+            GUI.Label(new Rect(top.x + 390f, top.y + 12f, 400f, 45f), ArpgFoundation30.Instance.LastMessage, _small);
+
             if (ArpgFoundation30.Instance.MapActive)
             {
                 ArpgMapItem30 map = ArpgFoundation30.Instance.ActiveMap;
-                GUILayout.Label("ACTIVE MAP · Tier " + map.tier + " · " + map.rarity + (map.corrupted ? " · Corrupted" : string.Empty) + (ArpgFoundation30.Instance.TimedMapRemaining > 0f ? " · " + Mathf.CeilToInt(ArpgFoundation30.Instance.TimedMapRemaining) + "s" : string.Empty));
+                GUI.Box(new Rect(Screen.width - 354f, 14f, 336f, 82f), GUIContent.none);
+                GUI.Label(new Rect(Screen.width - 336f, 24f, 300f, 24f), "ACTIVE MAP · T" + map.tier + " " + map.rarity, _heading);
+                string guardian = ArpgFoundation30.Instance.GuardianDefeated ? "Guardian defeated — secure the cache" : "Defeat the map guardian";
+                GUI.Label(new Rect(Screen.width - 336f, 52f, 300f, 20f), guardian, _small);
+                if (ArpgFoundation30.Instance.TimedMapRemaining > 0f)
+                    GUI.Label(new Rect(Screen.width - 130f, 52f, 90f, 20f), Mathf.CeilToInt(ArpgFoundation30.Instance.TimedMapRemaining) + "s", _warning);
             }
-            else GUILayout.Label(ArpgFoundation30.Instance.LastMessage, _small);
-            GUILayout.EndArea();
-        }
-
-        private void DrawClassSelection()
-        {
-            Rect rect = new Rect(Screen.width * 0.5f - 360f, Screen.height * 0.5f - 245f, 720f, 490f);
-            GUILayout.BeginArea(rect, GUI.skin.window);
-            GUILayout.Label("Awaken in the Astral Refuge", _title);
-            GUILayout.Label("Choose one permanent base class. You begin at Level 0 with one bare-bones Spell Core, no Support Runes, no Spell Links, no equipment, and no currency. Tier 0 maps are always available.", _wrap);
-            GUILayout.Space(12f);
-            foreach (ArpgClassDefinition30 definition in ArpgContent30.Classes)
+            else
             {
-                GUILayout.BeginVertical(GUI.skin.box);
-                GUILayout.Label(definition.displayName, _section);
-                GUILayout.Label(definition.description, _wrap);
-                GUILayout.Label("Ascendancies: " + string.Join(" · ", definition.ascendancies.Select(value => ArpgContent30.Ascendancy(value).displayName).ToArray()), _small);
-                if (GUILayout.Button("Begin as " + definition.displayName, GUILayout.Height(34f)))
+                string objective = ArpgFoundation30.Instance.CurrentObjective;
+                if (!string.IsNullOrEmpty(objective))
                 {
-                    string message;
-                    ArpgFoundation30.Instance.ChooseClass(definition.id, out message);
-                    _uiMessage = message;
-                    _open = true;
+                    GUI.Box(new Rect(Screen.width - 454f, 14f, 436f, 82f), GUIContent.none);
+                    GUI.Label(new Rect(Screen.width - 434f, 24f, 390f, 24f), "CURRENT OBJECTIVE", _heading);
+                    GUI.Label(new Rect(Screen.width - 434f, 52f, 390f, 20f), objective, _small);
                 }
-                GUILayout.EndVertical();
             }
-            if (!string.IsNullOrEmpty(_uiMessage)) GUILayout.Label(_uiMessage, _wrap);
+        }
+
+        private void DrawPanel()
+        {
+            Rect rect = new Rect(Mathf.Max(24f, Screen.width * 0.035f), 112f, Mathf.Max(860f, Screen.width * 0.93f), Mathf.Max(560f, Screen.height - 142f));
+            GUI.DrawTexture(rect, _backdrop, ScaleMode.StretchToFill);
+            GUILayout.BeginArea(new Rect(rect.x + 18f, rect.y + 14f, rect.width - 36f, rect.height - 28f));
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(PanelTitle(_panel), _title, GUILayout.ExpandWidth(true));
+            if (ArpgFoundation30.Instance.MapActive && GUILayout.Button("Abandon Map", GUILayout.Width(130f), GUILayout.Height(32f))) ArpgFoundation30.Instance.AbandonMap();
+            if (GUILayout.Button("Close", GUILayout.Width(90f), GUILayout.Height(32f))) ClosePanel();
+            GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();
+            DrawNav(ArpgPanel31.Character, "Character");
+            DrawNav(ArpgPanel31.MapDevice, "Map Device");
+            DrawNav(ArpgPanel31.Inventory, "Inventory");
+            DrawNav(ArpgPanel31.Stash, "Stash");
+            DrawNav(ArpgPanel31.Crafting, "Crafting");
+            DrawNav(ArpgPanel31.SpellForge, "SpellForge");
+            DrawNav(ArpgPanel31.Constellations, "Constellations");
+            DrawNav(ArpgPanel31.Training, "Training");
+            GUILayout.EndHorizontal();
+            GUILayout.Space(8f);
+
+            switch (_panel)
+            {
+                case ArpgPanel31.Character: DrawCharacter(); break;
+                case ArpgPanel31.MapDevice: DrawMaps(); break;
+                case ArpgPanel31.Inventory: DrawInventory(false, false); break;
+                case ArpgPanel31.Stash: DrawInventory(true, false); break;
+                case ArpgPanel31.Crafting: DrawInventory(false, true); break;
+                case ArpgPanel31.SpellForge: DrawSpellForge(); break;
+                case ArpgPanel31.Constellations: DrawConstellations(); break;
+                case ArpgPanel31.Training: DrawTraining(); break;
+            }
             GUILayout.EndArea();
         }
 
-        private void DrawMainPanel()
+        private void DrawNav(ArpgPanel31 panel, string label)
         {
-            Rect rect = new Rect(Mathf.Max(20f, Screen.width * 0.04f), 94f, Mathf.Max(760f, Screen.width * 0.92f), Mathf.Max(540f, Screen.height - 118f));
-            GUILayout.BeginArea(rect, GUI.skin.window);
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Astral Refuge · Endgame-First ARPG", _title, GUILayout.ExpandWidth(true));
-            if (ArpgFoundation30.Instance.MapActive && GUILayout.Button("Abandon Active Map", GUILayout.Width(150f))) ArpgFoundation30.Instance.AbandonMap();
-            if (GUILayout.Button("X", GUILayout.Width(34f))) _open = false;
-            GUILayout.EndHorizontal();
-            GUILayout.BeginHorizontal();
-            for (int index = 0; index < Tabs.Length; index++)
-            {
-                if (GUILayout.Toggle(_tab == index, Tabs[index], GUI.skin.button)) _tab = index;
-            }
-            GUILayout.EndHorizontal();
-            GUILayout.Space(5f);
-            if (_tab == 0) DrawCharacter();
-            else if (_tab == 1) DrawAtlas();
-            else if (_tab == 2) DrawConstellations();
-            else if (_tab == 3) DrawItems();
-            else DrawDiscoveries();
-            GUILayout.Space(4f);
-            if (!string.IsNullOrEmpty(_uiMessage)) GUILayout.Label(_uiMessage, GUI.skin.box);
-            GUILayout.EndArea();
+            if (GUILayout.Toggle(_panel == panel, label, GUI.skin.button, GUILayout.Height(28f))) _panel = panel;
         }
 
         private void DrawCharacter()
@@ -133,138 +194,254 @@ namespace ArcaneEngine
             ArpgClassDefinition30 classDefinition = ArpgContent30.Class(profile.characterClass);
             ArpgStatAccumulator30 stats = ArpgStatHooks30.Build(profile);
             _rightScroll = GUILayout.BeginScrollView(_rightScroll);
-            GUILayout.Label(classDefinition.displayName + " · Level " + profile.level, _section);
-            GUILayout.Label(classDefinition.description, _wrap);
-            GUILayout.Label("Experience: " + profile.experience + " / " + profile.ExperienceToNextLevel);
-            GUILayout.Label("Constellation Points: " + profile.constellationPoints + " · Atlas Points: " + profile.atlasPoints + " · Ascendancy Points: " + profile.ascendancyPoints);
-            GUILayout.Label("Attunement: " + ArpgStatHooks30.AttunementUsed(profile) + " / " + ArpgStatHooks30.AttunementMaximum(profile));
+            GUILayout.Label(profile.characterName + " · " + (classDefinition == null ? profile.characterClass.ToString() : classDefinition.displayName), _heading);
+            if (classDefinition != null) GUILayout.Label(classDefinition.description, _wrap);
+            GUILayout.Label("Level " + profile.level + " · Experience " + profile.experience + "/" + profile.ExperienceToNextLevel);
+            GUILayout.Label("Highest Tier " + Mathf.Max(0, profile.highestCompletedTier) + " · Maps " + profile.totalMapsCompleted + " · Deaths " + profile.totalDeaths);
+            GUILayout.Label("Constellation Points " + profile.constellationPoints + " · Atlas Points " + profile.atlasPoints + " · Attunement " + ArpgStatHooks30.AttunementUsed(profile) + "/" + ArpgStatHooks30.AttunementMaximum(profile));
             GUILayout.Space(8f);
-            GUILayout.Label("Persistent Statistics", _section);
+            GUILayout.Label("Combat Statistics", _heading);
             DrawStat("Spell Power", stats.Get(ArpgStat30.SpellPower), true);
             DrawStat("Maximum Health", stats.Get(ArpgStat30.MaximumHealth), false);
             DrawStat("Maximum Mana", stats.Get(ArpgStat30.MaximumMana), false);
+            DrawStat("Armour", stats.Get(ArpgStat30.Armour), false);
+            DrawStat("Evasion", stats.Get(ArpgStat30.Evasion), false);
+            DrawStat("Arcane Ward", stats.Get(ArpgStat30.ArcaneWard), false);
             DrawStat("Critical Chance", stats.Get(ArpgStat30.CriticalChance), true);
-            DrawStat("Cooldown Recovery", stats.Get(ArpgStat30.CooldownRecovery), true);
-            DrawStat("Mana Efficiency", stats.Get(ArpgStat30.ManaEfficiency), true);
-            DrawStat("Map Sustain", stats.Get(ArpgStat30.MapSustain), true);
-            DrawStat("Item Rarity", stats.Get(ArpgStat30.ItemRarity), true);
+            DrawStat("Move Speed", stats.Get(ArpgStat30.MoveSpeed), true);
+            DrawStat("Ailment Buildup", stats.Get(ArpgStat30.AilmentBuildup), true);
+            DrawStat("Reaction Power", stats.Get(ArpgStat30.ReactionPower), true);
+            DrawStat("Rune Capacity", stats.Get(ArpgStat30.RuneCapacity), false);
             GUILayout.Space(8f);
-            GUILayout.Label("Ascendancy", _section);
-            if (profile.ascendancy == ArpgAscendancy30.None)
+            GUILayout.Label("Elemental Power", _heading);
+            DrawStat("Fire", stats.Get(ArpgStat30.FirePower), true);
+            DrawStat("Cold", stats.Get(ArpgStat30.ColdPower), true);
+            DrawStat("Lightning", stats.Get(ArpgStat30.LightningPower), true);
+            DrawStat("Physical", stats.Get(ArpgStat30.PhysicalPower), true);
+            DrawStat("Blood", stats.Get(ArpgStat30.BloodPower), true);
+            DrawStat("Toxic", stats.Get(ArpgStat30.ToxicPower), true);
+            DrawStat("Void", stats.Get(ArpgStat30.VoidPower), true);
+            GUILayout.Space(8f);
+            GUILayout.Label("Equipped", _heading);
+            foreach (ArpgItemSlot30 slot in Enum.GetValues(typeof(ArpgItemSlot30)).Cast<ArpgItemSlot30>())
             {
-                GUILayout.Label("Complete Tier 9 to earn the first two Ascendancy Points, then choose one permanent specialization.", _wrap);
-                foreach (ArpgAscendancy30 id in classDefinition.ascendancies)
+                ArpgItem30 item = profile.Equipped(slot);
+                GUILayout.BeginHorizontal(GUI.skin.box);
+                GUILayout.Label(slot + ": " + (item == null ? "Empty" : item.displayName), GUILayout.ExpandWidth(true));
+                GUI.enabled = item != null;
+                if (GUILayout.Button("Unequip", GUILayout.Width(88f)) && profile.Unequip(slot)) SaveAndRecalculate("Unequipped " + item.displayName + ".");
+                GUI.enabled = true;
+                GUILayout.EndHorizontal();
+            }
+            GUILayout.EndScrollView();
+        }
+
+        private void DrawMaps()
+        {
+            ArpgProfile30 profile = ArpgFoundation30.Profile;
+            GUILayout.BeginHorizontal();
+            GUILayout.BeginVertical(GUILayout.Width(390f));
+            GUILayout.Label("White Map Network · Tier 0–5", _heading);
+            GUILayout.Label("Basic Completion unlocks connected maps. Mastery awards permanent Atlas progression.", _wrap);
+            _leftScroll = GUILayout.BeginScrollView(_leftScroll, GUI.skin.box);
+            foreach (ArpgMapDefinition30 map in ArpgContent30.Maps.Where(value => value.playableIn31 && value.tier <= 5).OrderBy(value => value.tier).ThenBy(value => value.displayName))
+            {
+                bool complete = profile.completedMapIds.Contains(map.id);
+                bool mastered = profile.masteredMapIds.Contains(map.id);
+                bool available = map.tier == 0 || map.tier <= profile.highestCompletedTier + 1 || profile.maps.Any(value => value != null && value.mapId == map.id);
+                string label = (available ? string.Empty : "LOCKED · ") + "T" + map.tier + " " + map.displayName + "\n" + (complete ? "Complete" : "Incomplete") + (mastered ? " · Mastered" : string.Empty);
+                GUI.enabled = available;
+                if (GUILayout.Toggle(_selectedMapId == map.id, label, GUI.skin.button)) _selectedMapId = map.id;
+                GUI.enabled = true;
+            }
+            GUILayout.EndScrollView();
+            GUI.enabled = !ArpgFoundation30.Instance.MapActive;
+            if (GUILayout.Button("Generate Free Tier 0 Map", GUILayout.Height(38f)))
+            {
+                string result;
+                ArpgFoundation30.Instance.LaunchFreeTierZero(out result);
+                SetMessage(result);
+                if (ArpgFoundation30.Instance.MapActive) ClosePanel();
+            }
+            GUI.enabled = true;
+            GUILayout.EndVertical();
+
+            GUILayout.BeginVertical(GUI.skin.box);
+            ArpgMapDefinition30 selectedDefinition = ArpgContent30.Map(_selectedMapId);
+            ArpgMapItem30 selectedItem = profile.maps.FirstOrDefault(value => value != null && value.mapId == _selectedMapId);
+            if (selectedDefinition == null)
+            {
+                GUILayout.Label("Select a map node.", _heading);
+            }
+            else
+            {
+                GUILayout.Label(selectedDefinition.displayName, _title);
+                GUILayout.Label("Tier " + selectedDefinition.tier + " · Guardian: " + selectedDefinition.bossName);
+                GUILayout.Label("Region: " + selectedDefinition.region + " · " + selectedDefinition.environmentHint + " · Reward focus: " + selectedDefinition.rewardFocus, _wrap);
+                GUILayout.Space(6f);
+                GUILayout.Label("Mastery", _heading);
+                GUILayout.Label(selectedDefinition.masteryDescription, _wrap);
+                GUILayout.Space(6f);
+                GUILayout.Label("Owned copies", _heading);
+                List<ArpgMapItem30> copies = profile.maps.Where(value => value != null && value.mapId == selectedDefinition.id).OrderBy(value => value.rarity).ToList();
+                if (copies.Count == 0) GUILayout.Label(selectedDefinition.tier == 0 ? "Tier 0 can be regenerated freely." : "No owned map item.");
+                foreach (ArpgMapItem30 copy in copies)
                 {
-                    ArpgAscendancyDefinition30 definition = ArpgContent30.Ascendancy(id);
                     GUILayout.BeginVertical(GUI.skin.box);
-                    GUILayout.Label(definition.displayName, _section);
-                    GUILayout.Label(definition.description, _wrap);
-                    GUI.enabled = profile.highestCompletedTier >= 9 && profile.ascendancyPoints >= 2;
-                    if (GUILayout.Button("Choose " + definition.displayName))
+                    GUILayout.Label(copy.rarity + (copy.affixIds.Count > 0 ? " · " + copy.affixIds.Count + " modifier(s)" : string.Empty));
+                    foreach (string id in copy.affixIds)
                     {
-                        string message;
-                        ArpgFoundation30.Instance.ChooseAscendancy(id, out message);
-                        _uiMessage = message;
+                        ArpgMapAffixDefinition30 affix = ArpgContent30.MapAffix(id);
+                        if (affix != null) GUILayout.Label("• " + affix.displayName + " — " + affix.description, _small);
+                    }
+                    GUI.enabled = !ArpgFoundation30.Instance.MapActive;
+                    if (GUILayout.Button("Open this map", GUILayout.Height(34f)))
+                    {
+                        string result;
+                        ArpgFoundation30.Instance.LaunchMap(copy, out result);
+                        SetMessage(result);
+                        if (ArpgFoundation30.Instance.MapActive) ClosePanel();
                     }
                     GUI.enabled = true;
                     GUILayout.EndVertical();
                 }
             }
-            else
-            {
-                ArpgAscendancyDefinition30 definition = ArpgContent30.Ascendancy(profile.ascendancy);
-                GUILayout.Label(definition.displayName + " · " + definition.description, _wrap);
-                foreach (ArpgAscendancyNodeDefinition30 node in definition.nodes)
-                {
-                    bool allocated = profile.allocatedAscendancyNodes.Contains(node.id);
-                    GUILayout.BeginHorizontal(GUI.skin.box);
-                    GUILayout.Label((allocated ? "✓ " : "○ ") + node.displayName + " — " + node.description, _wrap, GUILayout.ExpandWidth(true));
-                    GUI.enabled = !allocated && profile.ascendancyPoints > 0;
-                    if (GUILayout.Button(allocated ? "Allocated" : "Allocate", GUILayout.Width(90f)))
-                    {
-                        string message;
-                        ArpgFoundation30.Instance.AllocateAscendancyNode(node.id, out message);
-                        _uiMessage = message;
-                    }
-                    GUI.enabled = true;
-                    GUILayout.EndHorizontal();
-                }
-            }
-            GUILayout.EndScrollView();
+            GUILayout.EndVertical();
+            GUILayout.EndHorizontal();
         }
 
-        private void DrawAtlas()
+        private void DrawInventory(bool stash, bool crafting)
         {
             ArpgProfile30 profile = ArpgFoundation30.Profile;
             GUILayout.BeginHorizontal();
-            GUILayout.BeginVertical(GUILayout.Width(330f));
-            GUILayout.Label("Atlas Progress", _section);
-            foreach (ArpgMapBand30 band in new[] { ArpgMapBand30.White, ArpgMapBand30.Blue, ArpgMapBand30.Yellow, ArpgMapBand30.Red })
-            {
-                List<ArpgMapDefinition30> maps = ArpgContent30.Maps.Where(value => value.Band == band).ToList();
-                int completed = maps.Count(value => profile.completedMapIds.Contains(value.id));
-                int mastered = maps.Count(value => profile.masteredMapIds.Contains(value.id));
-                GUILayout.Label(band + ": " + completed + "/" + maps.Count + " complete · " + mastered + " mastered");
-            }
-            GUILayout.Label("Highest completed tier: " + Mathf.Max(0, profile.highestCompletedTier));
-            GUILayout.Label("Atlas Points: " + profile.atlasPoints);
-            GUILayout.Space(8f);
-            GUI.enabled = !ArpgFoundation30.Instance.MapActive;
-            if (GUILayout.Button("Open Free Tier 0 Map", GUILayout.Height(38f)))
-            {
-                string message;
-                ArpgFoundation30.Instance.LaunchFreeTierZero(out message);
-                _uiMessage = message;
-                if (ArpgFoundation30.Instance.MapActive) _open = false;
-            }
-            GUI.enabled = true;
-            GUILayout.Space(8f);
-            GUILayout.Label("Map Inventory", _section);
+            GUILayout.BeginVertical(GUILayout.Width(410f));
+            GUILayout.Label(stash ? "Persistent Stash" : crafting ? "Crafting Inventory" : "Inventory", _heading);
+            IEnumerable<ArpgItem30> source = stash ? profile.StashItems() : profile.InventoryItems();
+            List<ArpgItem30> items = source.OrderByDescending(value => value.rarity).ThenByDescending(value => value.itemLevel).ThenBy(value => value.displayName).ToList();
+            GUILayout.Label(items.Count + (stash ? " stored items" : " / " + profile.inventoryCapacity + " carried items"), _small);
             _leftScroll = GUILayout.BeginScrollView(_leftScroll, GUI.skin.box);
-            foreach (ArpgMapItem30 map in profile.maps.OrderBy(value => value.tier).ThenBy(value => value.rarity).ToList())
+            foreach (ArpgItem30 item in items)
             {
-                ArpgMapDefinition30 definition = ArpgContent30.Map(map.mapId);
-                string label = "T" + map.tier + " " + map.Band + " · " + map.rarity + (map.corrupted ? " · CORRUPTED" : string.Empty) + "\n" + (definition == null ? map.mapId : definition.displayName);
-                if (GUILayout.Toggle(_selectedMapInstanceId == map.instanceId, label, GUI.skin.button)) _selectedMapInstanceId = map.instanceId;
+                string equipped = profile.IsEquipped(item.instanceId) ? " · EQUIPPED" : string.Empty;
+                string locked = item.locked ? " · LOCKED" : string.Empty;
+                string label = item.rarity + " · iLvl " + item.itemLevel + " · " + item.slot + equipped + locked + "\n" + item.displayName;
+                if (GUILayout.Toggle(_selectedItemId == item.instanceId, label, GUI.skin.button)) _selectedItemId = item.instanceId;
             }
             GUILayout.EndScrollView();
             GUILayout.EndVertical();
 
             GUILayout.BeginVertical(GUI.skin.box);
-            ArpgMapItem30 selected = profile.maps.FirstOrDefault(value => value.instanceId == _selectedMapInstanceId);
-            if (selected == null)
+            ArpgItem30 selected = profile.GetItem(_selectedItemId);
+            if (selected == null || (stash != profile.IsInStash(selected.instanceId) && !crafting))
             {
-                GUILayout.Label("Select a map item.", _section);
-                GUILayout.Label("White tiers 0–9 form the foundation. Blue 10–19 forms the build. Yellow 20–29 specializes it. Red 30–39 tests and optimizes it.", _wrap);
+                GUILayout.Label("Select an item.", _heading);
             }
             else
             {
-                ArpgMapDefinition30 definition = ArpgContent30.Map(selected.mapId);
-                GUILayout.Label(definition == null ? selected.mapId : definition.displayName, _title);
-                GUILayout.Label("Tier " + selected.tier + " · " + selected.Band + " band · " + selected.rarity + (selected.corrupted ? " · CORRUPTED" : string.Empty));
-                GUILayout.Label("Boss: " + (definition == null ? "Unknown" : definition.bossName));
-                GUILayout.Label("Quality: " + selected.quality + "%");
-                GUILayout.Label("Mastery requirement: " + MasteryText(selected.Band), _wrap);
-                GUILayout.Space(6f);
-                GUILayout.Label("Map Modifiers", _section);
-                if (selected.affixIds.Count == 0) GUILayout.Label("No modifiers.");
-                foreach (string id in selected.affixIds)
+                GUILayout.Label(selected.displayName, _title);
+                GUILayout.TextArea(ArpgItems30.Describe(selected), GUILayout.MinHeight(180f));
+                ArpgItem30 equipped = profile.Equipped(selected.slot);
+                if (equipped != null && equipped.instanceId != selected.instanceId)
                 {
-                    ArpgMapAffixDefinition30 affix = ArpgContent30.MapAffix(id);
-                    if (affix != null) GUILayout.Label("• " + affix.displayName + " — " + affix.description, _wrap);
+                    GUILayout.Label("Compared with " + equipped.displayName, _heading);
+                    GUILayout.TextArea(ArpgItems30.Compare(selected, equipped), GUILayout.MinHeight(80f));
                 }
-                GUI.enabled = !ArpgFoundation30.Instance.MapActive;
-                if (GUILayout.Button("Open Map", GUILayout.Height(38f)))
+                GUILayout.BeginHorizontal();
+                if (!stash && !crafting && GUILayout.Button("Equip", GUILayout.Height(34f)))
                 {
-                    string message;
-                    ArpgFoundation30.Instance.LaunchMap(selected, out message);
-                    _uiMessage = message;
-                    if (ArpgFoundation30.Instance.MapActive) _open = false;
+                    string result;
+                    if (profile.Equip(selected, out result)) SaveAndRecalculate(result); else SetMessage(result);
+                }
+                if (!stash && !crafting && GUILayout.Button("Move to Stash", GUILayout.Height(34f)))
+                {
+                    if (profile.MoveToStash(selected)) SaveAndRecalculate("Moved " + selected.displayName + " to the Stash.");
+                }
+                if (stash && GUILayout.Button("Move to Inventory", GUILayout.Height(34f)))
+                {
+                    if (profile.MoveToInventory(selected)) SaveAndRecalculate("Moved " + selected.displayName + " to the inventory.");
+                    else SetMessage("Inventory is full.");
+                }
+                if (GUILayout.Button(selected.locked ? "Unlock" : "Lock", GUILayout.Height(34f)))
+                {
+                    selected.locked = !selected.locked;
+                    SaveAndRecalculate((selected.locked ? "Locked " : "Unlocked ") + selected.displayName + ".");
+                }
+                GUILayout.EndHorizontal();
+                if (crafting) DrawCraftingActions(selected);
+            }
+            GUILayout.EndVertical();
+            GUILayout.EndHorizontal();
+        }
+
+        private void DrawCraftingActions(ArpgItem30 item)
+        {
+            ArpgProfile30 profile = ArpgFoundation30.Profile;
+            GUILayout.Space(8f);
+            GUILayout.Label("Five Core Crafting Actions", _heading);
+            ArpgCurrency30[] core =
+            {
+                ArpgCurrency30.SparkOfAlteration,
+                ArpgCurrency30.RuneOfAugmentation,
+                ArpgCurrency30.SigilOfElevation,
+                ArpgCurrency30.ArcaneExalt,
+                ArpgCurrency30.ReformationOrb
+            };
+            foreach (ArpgCurrency30 currency in core)
+            {
+                GUILayout.BeginHorizontal(GUI.skin.box);
+                GUILayout.Label(ArpgItems30.CurrencyName(currency) + " · " + profile.Currency(currency), GUILayout.ExpandWidth(true));
+                GUI.enabled = profile.Currency(currency) > 0 && !item.locked;
+                if (GUILayout.Button("Apply", GUILayout.Width(90f)))
+                {
+                    string result;
+                    ArpgFoundation30.Instance.CraftItem(item, currency, out result);
+                    SetMessage(result);
                 }
                 GUI.enabled = true;
-                GUILayout.Space(8f);
-                DrawMapCraftButtons(selected);
+                GUILayout.EndHorizontal();
             }
+            if (item.locked) GUILayout.Label("Unlock this item before crafting.", _warning);
+        }
+
+        private void DrawSpellForge()
+        {
+            ArpgProfile30 profile = ArpgFoundation30.Profile;
+            GUILayout.BeginHorizontal();
+            GUILayout.BeginVertical(GUILayout.Width(430f));
+            GUILayout.Label("Discovered Spell Cores", _heading);
+            _leftScroll = GUILayout.BeginScrollView(_leftScroll, GUI.skin.box);
+            foreach (string coreId in profile.ownedCoreIds)
+            {
+                bool active = coreId == profile.activeCoreId;
+                GUILayout.BeginVertical(GUI.skin.box);
+                GUILayout.Label((active ? "ACTIVE · " : string.Empty) + ArpgLegacyBridge30.CoreDisplayName(coreId), _heading);
+                GUI.enabled = !active;
+                if (GUILayout.Button(active ? "Equipped" : "Equip Core"))
+                {
+                    string result;
+                    if (ArpgLegacyBridge30.EquipCore(GameWorld.Instance, profile, coreId, out result)) SaveAndRecalculate(result); else SetMessage(result);
+                }
+                GUI.enabled = true;
+                GUILayout.EndVertical();
+            }
+            GUILayout.EndScrollView();
+            GUILayout.EndVertical();
+            GUILayout.BeginVertical(GUI.skin.box);
+            GUILayout.Label("Support Runes", _heading);
+            GUILayout.Label("Owned Support Runes are restored into the existing SpellForge board. Use the existing board controls to place them. Only edge-connected Runes are active.", _wrap);
+            _rightScroll = GUILayout.BeginScrollView(_rightScroll);
+            foreach (string runeId in profile.ownedRuneIds)
+            {
+                SpellModifierDefinition definition = DemoCatalog.GetModifier(runeId);
+                GUILayout.Label("• " + (definition == null ? runeId : definition.displayName));
+            }
+            if (profile.ownedRuneIds.Count == 0) GUILayout.Label("No Support Runes discovered yet.");
+            GUILayout.Space(10f);
+            GUILayout.Label("Spell Links", _heading);
+            foreach (int value in profile.ownedLinkConditionIds)
+                GUILayout.Label("• " + (Enum.IsDefined(typeof(SpellLinkCondition), value) ? ((SpellLinkCondition)value).ToString() : value.ToString()));
+            if (profile.ownedLinkConditionIds.Count == 0) GUILayout.Label("No Spell Links discovered yet.");
+            GUILayout.EndScrollView();
             GUILayout.EndVertical();
             GUILayout.EndHorizontal();
         }
@@ -273,54 +450,51 @@ namespace ArcaneEngine
         {
             ArpgProfile30 profile = ArpgFoundation30.Profile;
             GUILayout.BeginHorizontal();
-            GUILayout.BeginVertical(GUILayout.Width(330f));
-            GUILayout.Label("Constellations", _section);
-            GUILayout.Label("Points: " + profile.constellationPoints + " · Attunement: " + ArpgStatHooks30.AttunementUsed(profile) + "/" + ArpgStatHooks30.AttunementMaximum(profile));
+            GUILayout.BeginVertical(GUILayout.Width(420f));
+            GUILayout.Label("Starter Constellations", _heading);
+            GUILayout.Label("Points " + profile.constellationPoints + " · Attunement " + ArpgStatHooks30.AttunementUsed(profile) + "/" + ArpgStatHooks30.AttunementMaximum(profile));
             _leftScroll = GUILayout.BeginScrollView(_leftScroll, GUI.skin.box);
-            foreach (ArpgConstellationDefinition30 constellation in ArpgContent30.Constellations.Where(value => profile.discoveredConstellations.Contains(value.id)).OrderBy(value => value.category).ThenBy(value => value.displayName))
+            foreach (ArpgConstellationDefinition30 constellation in ArpgContent30.Constellations.Where(value => profile.discoveredConstellations.Contains(value.id)))
             {
                 int allocated = constellation.nodes.Count(value => profile.allocatedConstellationNodes.Contains(value.id));
-                string label = constellation.category + " · " + constellation.displayName + "\n" + allocated + "/" + constellation.nodes.Count + " Stars · " + constellation.attunementCost + " Attunement";
-                if (GUILayout.Toggle(_selectedConstellationId == constellation.id, label, GUI.skin.button)) _selectedConstellationId = constellation.id;
+                if (GUILayout.Toggle(_selectedConstellationId == constellation.id, constellation.displayName + "\n" + allocated + "/" + constellation.nodes.Count + " Stars · " + constellation.attunementCost + " Attunement", GUI.skin.button))
+                    _selectedConstellationId = constellation.id;
             }
             GUILayout.EndScrollView();
             int resetCost = Mathf.Max(1, profile.allocatedConstellationNodes.Count / 10);
+            GUI.enabled = profile.allocatedConstellationNodes.Count > 0;
             if (GUILayout.Button("Reset All · " + resetCost + " Null Orb(s)"))
             {
-                string message;
-                ArpgFoundation30.Instance.ResetConstellations(out message);
-                _uiMessage = message;
+                string result;
+                ArpgFoundation30.Instance.ResetConstellations(out result);
+                SetMessage(result);
             }
+            GUI.enabled = true;
             GUILayout.EndVertical();
 
             GUILayout.BeginVertical(GUI.skin.box);
             ArpgConstellationDefinition30 selected = ArpgContent30.Constellation(_selectedConstellationId);
             if (selected == null)
             {
-                GUILayout.Label("Select a discovered constellation.", _section);
-                GUILayout.Label("Constellations are independent clusters. Invest through Small, Medium, and Large Stars to reach a Completion Boon. Completed constellations consume Attunement.", _wrap);
+                GUILayout.Label("Select a Constellation.", _heading);
             }
             else
             {
                 GUILayout.Label(selected.displayName, _title);
-                GUILayout.Label(selected.category + " · " + selected.attunementCost + " Completion Attunement", _small);
                 GUILayout.Label(selected.description, _wrap);
                 _rightScroll = GUILayout.BeginScrollView(_rightScroll);
                 foreach (ArpgConstellationNodeDefinition30 node in selected.nodes)
                 {
                     bool allocated = profile.allocatedConstellationNodes.Contains(node.id);
                     GUILayout.BeginVertical(GUI.skin.box);
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Label((allocated ? "✓ " : "○ ") + node.size + " · " + node.displayName, _section, GUILayout.ExpandWidth(true));
-                    GUILayout.Label(node.pointCost + " pt", GUILayout.Width(45f));
-                    GUILayout.EndHorizontal();
+                    GUILayout.Label((allocated ? "✓ " : "○ ") + node.size + " · " + node.displayName + " · " + node.pointCost + " pt", _heading);
                     GUILayout.Label(node.description, _wrap);
                     GUI.enabled = !allocated;
                     if (GUILayout.Button(allocated ? "Allocated" : "Allocate"))
                     {
-                        string message;
-                        ArpgFoundation30.Instance.AllocateConstellationNode(node.id, out message);
-                        _uiMessage = message;
+                        string result;
+                        ArpgFoundation30.Instance.AllocateConstellationNode(node.id, out result);
+                        SetMessage(result);
                     }
                     GUI.enabled = true;
                     GUILayout.EndVertical();
@@ -331,116 +505,65 @@ namespace ArcaneEngine
             GUILayout.EndHorizontal();
         }
 
-        private void DrawItems()
+        private void DrawTraining()
         {
-            ArpgProfile30 profile = ArpgFoundation30.Profile;
-            GUILayout.BeginHorizontal();
-            GUILayout.BeginVertical(GUILayout.Width(350f));
-            GUILayout.Label("Equipped", _section);
-            foreach (ArpgItemSlot30 slot in Enum.GetValues(typeof(ArpgItemSlot30)).Cast<ArpgItemSlot30>())
+            GUILayout.Label("Refuge Training Target", _title);
+            GUILayout.Label("Attack the target in the Refuge to inspect direct damage, elemental composition, ailments, reactions, critical strikes, projectiles, and Chain behavior through the existing combat diagnostics.", _wrap);
+            GUILayout.Space(10f);
+            GUILayout.Label("Live diagnostic summary", _heading);
+            string report = ArpgRefuge31.Instance == null ? "Training target is unavailable." : ArpgRefuge31.Instance.TrainingReport;
+            GUILayout.TextArea(report, GUILayout.MinHeight(220f));
+            GUILayout.Space(10f);
+            if (GUILayout.Button("Reset Training Metrics", GUILayout.Width(220f), GUILayout.Height(34f)) && ArpgRefuge31.Instance != null)
             {
-                ArpgItem30 item = profile.Equipped(slot);
-                GUILayout.Label(slot + ": " + (item == null ? "Empty" : item.displayName), _small);
-            }
-            GUILayout.Space(6f);
-            GUILayout.Label("Inventory · " + profile.items.Count + " items", _section);
-            _leftScroll = GUILayout.BeginScrollView(_leftScroll, GUI.skin.box);
-            foreach (ArpgItem30 item in profile.items.OrderByDescending(value => value.itemLevel).ThenByDescending(value => value.rarity))
-            {
-                string label = item.slot + " · " + item.rarity + " · iLvl " + item.itemLevel + "\n" + item.displayName;
-                if (GUILayout.Toggle(_selectedItemId == item.instanceId, label, GUI.skin.button)) _selectedItemId = item.instanceId;
-            }
-            GUILayout.EndScrollView();
-            GUILayout.EndVertical();
-
-            GUILayout.BeginVertical(GUI.skin.box);
-            ArpgItem30 selected = profile.GetItem(_selectedItemId);
-            if (selected == null) GUILayout.Label("Select an item.", _section);
-            else
-            {
-                GUILayout.Label(selected.displayName, _title);
-                GUILayout.TextArea(ArpgItems30.Describe(selected), GUILayout.MinHeight(160f));
-                if (GUILayout.Button("Equip in " + selected.slot, GUILayout.Height(34f))) ArpgFoundation30.Instance.EquipItem(selected);
-                GUILayout.Space(8f);
-                GUILayout.Label("Currency Crafting", _section);
-                _rightScroll = GUILayout.BeginScrollView(_rightScroll);
-                foreach (ArpgCurrency30 currency in Enum.GetValues(typeof(ArpgCurrency30)).Cast<ArpgCurrency30>())
-                {
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Label(ArpgItems30.CurrencyName(currency) + " · " + profile.Currency(currency), GUILayout.ExpandWidth(true));
-                    GUI.enabled = profile.Currency(currency) > 0;
-                    if (GUILayout.Button("Use", GUILayout.Width(70f)))
-                    {
-                        string message;
-                        ArpgFoundation30.Instance.CraftItem(selected, currency, out message);
-                        _uiMessage = message;
-                    }
-                    GUI.enabled = true;
-                    GUILayout.EndHorizontal();
-                }
-                GUILayout.EndScrollView();
-            }
-            GUILayout.EndVertical();
-            GUILayout.EndHorizontal();
-        }
-
-        private void DrawDiscoveries()
-        {
-            ArpgProfile30 profile = ArpgFoundation30.Profile;
-            _rightScroll = GUILayout.BeginScrollView(_rightScroll);
-            GUILayout.Label("Persistent Discoveries", _title);
-            GUILayout.Label("Spell Cores · " + profile.ownedCoreIds.Count, _section);
-            foreach (string id in profile.ownedCoreIds)
-            {
-                SpellCoreDefinition definition = DemoCatalog.GetCore(id);
-                GUILayout.Label("• " + (definition == null ? id : definition.displayName));
-            }
-            GUILayout.Space(6f);
-            GUILayout.Label("Support Runes · " + profile.ownedRuneIds.Count, _section);
-            foreach (string id in profile.ownedRuneIds)
-            {
-                SpellModifierDefinition definition = DemoCatalog.GetModifier(id);
-                GUILayout.Label("• " + (definition == null ? id : definition.displayName));
-            }
-            GUILayout.Space(6f);
-            GUILayout.Label("Spell Link Conditions · " + profile.ownedLinkConditionIds.Count, _section);
-            foreach (int value in profile.ownedLinkConditionIds) GUILayout.Label("• " + (Enum.IsDefined(typeof(SpellLinkCondition), value) ? ((SpellLinkCondition)value).ToString() : value.ToString()));
-            GUILayout.Space(6f);
-            GUILayout.Label("Currency", _section);
-            foreach (ArpgCurrency30 currency in Enum.GetValues(typeof(ArpgCurrency30)).Cast<ArpgCurrency30>()) GUILayout.Label("• " + ArpgItems30.CurrencyName(currency) + ": " + profile.Currency(currency));
-            GUILayout.Space(8f);
-            GUILayout.Label("Roguelite Mode", _section);
-            GUILayout.Label("The existing run modes remain installed and available through their original Home Base interface. They are optional Fracture-style content and do not replace persistent Atlas progression.", _wrap);
-            GUILayout.EndScrollView();
-        }
-
-        private void DrawMapCraftButtons(ArpgMapItem30 map)
-        {
-            ArpgProfile30 profile = ArpgFoundation30.Profile;
-            ArpgCurrency30[] currencies = { ArpgCurrency30.RefinementShard, ArpgCurrency30.SparkOfAlteration, ArpgCurrency30.SigilOfElevation, ArpgCurrency30.ChaosFragment, ArpgCurrency30.CorruptionCatalyst, ArpgCurrency30.DivineMeasure };
-            GUILayout.Label("Map Crafting", _section);
-            foreach (ArpgCurrency30 currency in currencies)
-            {
-                GUILayout.BeginHorizontal();
-                GUILayout.Label(ArpgItems30.CurrencyName(currency) + " · " + profile.Currency(currency), GUILayout.ExpandWidth(true));
-                GUI.enabled = profile.Currency(currency) > 0;
-                if (GUILayout.Button("Use", GUILayout.Width(70f)))
-                {
-                    string message;
-                    ArpgFoundation30.Instance.CraftMap(map, currency, out message);
-                    _uiMessage = message;
-                }
-                GUI.enabled = true;
-                GUILayout.EndHorizontal();
+                ArpgRefuge31.Instance.ResetTrainingMetrics();
+                SetMessage("Training metrics reset.");
             }
         }
 
-        private static string MasteryText(ArpgMapBand30 band)
+        private void SaveAndRecalculate(string message)
         {
-            if (band == ArpgMapBand30.White) return "Defeat the map guardian.";
-            if (band == ArpgMapBand30.Blue) return "Complete the map while it is Magic or Rare.";
-            if (band == ArpgMapBand30.Yellow) return "Complete the map while it is Rare.";
-            return "Complete the map while it is Rare and Corrupted.";
+            ArpgProfileStore30.Save(ArpgFoundation30.Profile);
+            if (GameWorld.Instance != null) GameWorld.Instance.RecalculateStats(true);
+            SetMessage(message);
+        }
+
+        private void EnsureStyles()
+        {
+            if (_title != null) return;
+            _backdrop = SolidTexture(new Color(0.025f, 0.035f, 0.065f, 0.97f));
+            _panelTexture = SolidTexture(new Color(0.06f, 0.08f, 0.14f, 0.96f));
+            _accent = SolidTexture(new Color(0.24f, 0.58f, 1f, 1f));
+            _title = new GUIStyle(GUI.skin.label) { fontSize = 25, fontStyle = FontStyle.Bold, normal = { textColor = new Color(0.86f, 0.92f, 1f) } };
+            _heading = new GUIStyle(GUI.skin.label) { fontSize = 16, fontStyle = FontStyle.Bold, normal = { textColor = new Color(0.68f, 0.82f, 1f) } };
+            _small = new GUIStyle(GUI.skin.label) { fontSize = 12, wordWrap = true, normal = { textColor = new Color(0.76f, 0.8f, 0.9f) } };
+            _wrap = new GUIStyle(GUI.skin.label) { fontSize = 14, wordWrap = true };
+            _good = new GUIStyle(_small) { normal = { textColor = new Color(0.42f, 0.95f, 0.64f) } };
+            _warning = new GUIStyle(_small) { normal = { textColor = new Color(1f, 0.56f, 0.25f) } };
+        }
+
+        private static Texture2D SolidTexture(Color color)
+        {
+            Texture2D texture = new Texture2D(1, 1, TextureFormat.RGBA32, false);
+            texture.name = "ArcaneEngine31_UI";
+            texture.SetPixel(0, 0, color);
+            texture.Apply();
+            return texture;
+        }
+
+        private static string PanelTitle(ArpgPanel31 panel)
+        {
+            switch (panel)
+            {
+                case ArpgPanel31.MapDevice: return "Astral Map Device";
+                case ArpgPanel31.Constellations: return "Constellation Archive";
+                case ArpgPanel31.Inventory: return "Inventory & Equipment";
+                case ArpgPanel31.Stash: return "Persistent Stash";
+                case ArpgPanel31.Crafting: return "Arcane Crafting Station";
+                case ArpgPanel31.SpellForge: return "SpellForge Altar";
+                case ArpgPanel31.Training: return "Combat Laboratory";
+                default: return "Character Archive";
+            }
         }
 
         private static void DrawStat(string label, float value, bool percentage)

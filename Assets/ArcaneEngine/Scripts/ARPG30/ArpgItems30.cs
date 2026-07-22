@@ -9,6 +9,8 @@ namespace ArcaneEngine
     {
         public static ArpgItem30 GenerateItem(int itemLevel, ArpgClass30 affinity, int seed, float rarityBonus)
         {
+            if (!ArpgArsenalItemFactory32.SuppressOverride)
+                return ArpgArsenalItemFactory32.Generate(itemLevel, affinity, seed, rarityBonus);
             ArpgContent30.Ensure();
             System.Random random = new System.Random(seed);
             List<ArpgItemBaseDefinition30> bases = ArpgContent30.ItemBases
@@ -18,7 +20,7 @@ namespace ArcaneEngine
             if (bases.Count == 0) throw new InvalidOperationException("No item base is valid for item level " + itemLevel + ".");
             ArpgItemBaseDefinition30 selectedBase = bases[random.Next(bases.Count)];
             float roll = (float)random.NextDouble() + Mathf.Clamp(rarityBonus, 0f, 0.3f);
-            ArpgItemRarity30 rarity = roll > 1.23f ? ArpgItemRarity30.Exceptional : roll > 0.83f ? ArpgItemRarity30.Rare : roll > 0.38f ? ArpgItemRarity30.Magic : ArpgItemRarity30.Normal;
+            ArpgItemRarity30 rarity = roll > 0.82f ? ArpgItemRarity30.Rare : roll > 0.34f ? ArpgItemRarity30.Magic : ArpgItemRarity30.Normal;
             ArpgItem30 item = new ArpgItem30
             {
                 instanceId = Guid.NewGuid().ToString("N"),
@@ -27,9 +29,10 @@ namespace ArcaneEngine
                 slot = selectedBase.slot,
                 rarity = rarity,
                 itemLevel = Mathf.Max(1, itemLevel),
-                quality = 0
+                quality = 0,
+                acquiredUnix = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
             };
-            int affixes = rarity == ArpgItemRarity30.Normal ? 0 : rarity == ArpgItemRarity30.Magic ? random.Next(1, 3) : rarity == ArpgItemRarity30.Exceptional ? random.Next(5, 7) : random.Next(3, 7);
+            int affixes = rarity == ArpgItemRarity30.Normal ? 0 : rarity == ArpgItemRarity30.Magic ? random.Next(1, 3) : random.Next(3, 6);
             for (int index = 0; index < affixes; index++) AddRandomAffix(item, random, null);
             RefreshName(item);
             return item;
@@ -39,7 +42,10 @@ namespace ArcaneEngine
         {
             ArpgContent30.Ensure();
             tier = Mathf.Clamp(tier, 0, 39);
-            List<ArpgMapDefinition30> maps = ArpgContent30.Maps.Where(value => value.tier == tier).ToList();
+            List<ArpgMapDefinition30> maps = ArpgContent30.Maps
+                .Where(value => value.tier == tier)
+                .Where(value => tier > 5 || value.playableIn31)
+                .ToList();
             System.Random random = new System.Random(seed);
             if (maps.Count == 0) throw new InvalidOperationException("No map definition exists for tier " + tier + ".");
             ArpgMapDefinition30 map = maps[random.Next(maps.Count)];
@@ -70,6 +76,11 @@ namespace ArcaneEngine
             if (profile == null || item == null)
             {
                 message = "Select an item first.";
+                return false;
+            }
+            if (item.locked)
+            {
+                message = "Unlock the item before crafting.";
                 return false;
             }
             if (item.corrupted && currency != ArpgCurrency30.DivineMeasure)
@@ -108,19 +119,13 @@ namespace ArcaneEngine
                     else { success = AddRandomAffix(item, random, null); message = success ? "A modifier was added." : "No compatible modifier was available."; }
                     break;
                 case ArpgCurrency30.SigilOfElevation:
-                    if (item.rarity == ArpgItemRarity30.Normal)
-                    {
-                        item.rarity = ArpgItemRarity30.Magic;
-                        success = AddRandomAffix(item, random, null);
-                        message = success ? "The item became Magic." : "No compatible Magic modifier was available.";
-                    }
-                    else if (item.rarity == ArpgItemRarity30.Magic)
+                    if (item.rarity == ArpgItemRarity30.Magic)
                     {
                         item.rarity = ArpgItemRarity30.Rare;
                         while (item.AffixCount < 3) if (!AddRandomAffix(item, random, null)) break;
-                        message = "The item became Rare.";
+                        message = "The Magic item became Rare.";
                     }
-                    else { success = false; message = "Elevation requires a Normal or Magic item."; }
+                    else { success = false; message = "Sovereign Ember requires a Magic item."; }
                     break;
                 case ArpgCurrency30.ArcaneExalt:
                     if ((int)item.rarity < (int)ArpgItemRarity30.Rare || item.AffixCount >= 6) { success = false; message = "Exaltation requires a Rare item with an open modifier."; }
@@ -146,7 +151,7 @@ namespace ArcaneEngine
                 case ArpgCurrency30.ElementalEssence:
                     if (item.rarity == ArpgItemRarity30.Normal) item.rarity = ArpgItemRarity30.Magic;
                     if (item.rarity == ArpgItemRarity30.Magic && item.AffixCount >= 2) item.rarity = ArpgItemRarity30.Rare;
-                    success = AddRandomAffix(item, random, random.Next(2) == 0 ? "potency" : "trigger", false);
+                    success = AddRandomAffix(item, random, new[] { "flame", "frost", "storm", "impact" }[random.Next(4)], false);
                     message = success ? "A guaranteed spell-family modifier was added." : "No compatible Essence modifier was available.";
                     break;
                 case ArpgCurrency30.OmenOfControl:
@@ -200,6 +205,7 @@ namespace ArcaneEngine
             message = string.Empty;
             if (profile == null || map == null) { message = "Select a map first."; return false; }
             if (map.corrupted && currency != ArpgCurrency30.DivineMeasure) { message = "Corrupted maps cannot be modified."; return false; }
+            ArpgMapItem30 snapshot = CloneMapState(map);
             if (!profile.SpendCurrency(currency, 1)) { message = "No " + CurrencyName(currency) + " remains."; return false; }
             System.Random random = new System.Random(StableSeed(map.instanceId, currency.ToString(), map.affixIds.Count + map.quality));
             bool success = true;
@@ -237,7 +243,11 @@ namespace ArcaneEngine
                     message = "That currency does not modify maps.";
                     break;
             }
-            if (!success) profile.AddCurrency(currency, 1);
+            if (!success)
+            {
+                RestoreMapState(map, snapshot);
+                profile.AddCurrency(currency, 1);
+            }
             return success;
         }
 
@@ -252,6 +262,7 @@ namespace ArcaneEngine
                 ArpgAffixDefinition30 definition = ArpgContent30.Affix(roll.affixId);
                 if (definition != null) accumulator.Add(new ArpgStatModifier30(definition.stat, roll.value), 1f);
             }
+            ArpgArsenalStats32.AddExtendedItemStats(item, accumulator);
         }
 
         public static string Describe(ArpgItem30 item)
@@ -262,12 +273,53 @@ namespace ArcaneEngine
             if (item.quality > 0) lines.Add("Quality: +" + item.quality + "%");
             ArpgItemBaseDefinition30 itemBase = ArpgContent30.ItemBase(item.baseId);
             if (itemBase != null) foreach (ArpgStatModifier30 modifier in itemBase.implicitModifiers) lines.Add("Implicit: " + DescribeModifier(modifier.stat, modifier.value * (1f + item.quality / 100f)));
-            foreach (ArpgAffixRoll30 roll in MutableAffixes(item))
+            foreach (ArpgAffixRoll30 roll in (item.prefixes ?? new List<ArpgAffixRoll30>()).Concat(item.suffixes ?? new List<ArpgAffixRoll30>()))
             {
+                if (roll == null) continue;
                 ArpgAffixDefinition30 definition = ArpgContent30.Affix(roll.affixId);
                 if (definition != null) lines.Add(DescribeModifier(definition.stat, roll.value) + " [T" + roll.tier + "]" + (item.fractured && item.fracturedAffixId == roll.affixId ? " [FRACTURED]" : string.Empty));
             }
+            string extended = ArpgArsenalStats32.DescribeExtended(item);
+            if (!string.IsNullOrEmpty(extended)) lines.Add(extended);
             return string.Join("\n", lines.ToArray());
+        }
+
+
+        public static string Compare(ArpgItem30 candidate, ArpgItem30 equipped)
+        {
+            if (candidate == null) return string.Empty;
+            ArpgStatAccumulator30 candidateStats = new ArpgStatAccumulator30();
+            ArpgStatAccumulator30 equippedStats = new ArpgStatAccumulator30();
+            AddItemStats(candidate, candidateStats);
+            AddItemStats(equipped, equippedStats);
+
+            List<string> lines = new List<string>();
+            foreach (ArpgStat30 stat in Enum.GetValues(typeof(ArpgStat30)).Cast<ArpgStat30>())
+            {
+                float delta = candidateStats.Get(stat) - equippedStats.Get(stat);
+                if (Mathf.Abs(delta) < 0.0001f) continue;
+                bool flat = stat == ArpgStat30.MaximumHealth ||
+                            stat == ArpgStat30.MaximumMana ||
+                            stat == ArpgStat30.TriggerEnergy ||
+                            stat == ArpgStat30.Attunement ||
+                            stat == ArpgStat30.Armour ||
+                            stat == ArpgStat30.Evasion ||
+                            stat == ArpgStat30.ArcaneWard ||
+                            stat == ArpgStat30.RuneCapacity;
+                string value = flat ? delta.ToString("+0;-0") : (delta * 100f).ToString("+0.##;-0.##") + "%";
+                lines.Add(value + " " + stat);
+            }
+
+            return lines.Count == 0 ? "No numerical change." : string.Join("\n", lines.ToArray());
+        }
+
+        public static bool IsCoreCraftingCurrency(ArpgCurrency30 currency)
+        {
+            return currency == ArpgCurrency30.SparkOfAlteration ||
+                   currency == ArpgCurrency30.RuneOfAugmentation ||
+                   currency == ArpgCurrency30.SigilOfElevation ||
+                   currency == ArpgCurrency30.ArcaneExalt ||
+                   currency == ArpgCurrency30.ReformationOrb;
         }
 
         public static string CurrencyName(ArpgCurrency30 currency)
@@ -275,12 +327,12 @@ namespace ArcaneEngine
             switch (currency)
             {
                 case ArpgCurrency30.RefinementShard: return "Refinement Shard";
-                case ArpgCurrency30.SparkOfAlteration: return "Spark of Alteration";
-                case ArpgCurrency30.RuneOfAugmentation: return "Rune of Augmentation";
-                case ArpgCurrency30.SigilOfElevation: return "Sigil of Elevation";
-                case ArpgCurrency30.ArcaneExalt: return "Arcane Exalt";
+                case ArpgCurrency30.SparkOfAlteration: return "Flux Shard";
+                case ArpgCurrency30.RuneOfAugmentation: return "Binding Seal";
+                case ArpgCurrency30.SigilOfElevation: return "Sovereign Ember";
+                case ArpgCurrency30.ArcaneExalt: return "Astral Needle";
                 case ArpgCurrency30.NullOrb: return "Null Orb";
-                case ArpgCurrency30.ReformationOrb: return "Reformation Orb";
+                case ArpgCurrency30.ReformationOrb: return "Tempering Prism";
                 case ArpgCurrency30.ChaosFragment: return "Chaos Fragment";
                 case ArpgCurrency30.ElementalEssence: return "Elemental Essence";
                 case ArpgCurrency30.OmenOfControl: return "Omen of Control";
@@ -321,7 +373,7 @@ namespace ArcaneEngine
             ArpgAffixRoll30 affix = new ArpgAffixRoll30
             {
                 affixId = selected.id,
-                tier = Mathf.Clamp(1 + selected.minimumItemLevel / 22, 1, 4),
+                tier = Mathf.Clamp(1 + selected.minimumItemLevel / 3, 1, 4),
                 value = Mathf.Lerp(selected.minimum, selected.maximum, (float)random.NextDouble())
             };
             if (selected.prefix) item.prefixes.Add(affix); else item.suffixes.Add(affix);
@@ -343,6 +395,7 @@ namespace ArcaneEngine
             foreach (ArpgAffixRoll30 roll in (item.prefixes ?? new List<ArpgAffixRoll30>()).Concat(item.suffixes ?? new List<ArpgAffixRoll30>()))
             {
                 if (roll == null) continue;
+                if (item.fractured && item.fracturedAffixId == roll.affixId) continue;
                 ArpgAffixDefinition30 definition = ArpgContent30.Affix(roll.affixId);
                 if (definition == null) continue;
                 roll.value = Mathf.Lerp(definition.minimum, definition.maximum, (float)random.NextDouble());
@@ -386,6 +439,33 @@ namespace ArcaneEngine
             }
         }
 
+        private static ArpgMapItem30 CloneMapState(ArpgMapItem30 map)
+        {
+            return new ArpgMapItem30
+            {
+                instanceId = map.instanceId,
+                mapId = map.mapId,
+                tier = map.tier,
+                seed = map.seed,
+                rarity = map.rarity,
+                corrupted = map.corrupted,
+                quality = map.quality,
+                affixIds = map.affixIds == null ? new List<string>() : new List<string>(map.affixIds)
+            };
+        }
+
+        private static void RestoreMapState(ArpgMapItem30 target, ArpgMapItem30 snapshot)
+        {
+            target.instanceId = snapshot.instanceId;
+            target.mapId = snapshot.mapId;
+            target.tier = snapshot.tier;
+            target.seed = snapshot.seed;
+            target.rarity = snapshot.rarity;
+            target.corrupted = snapshot.corrupted;
+            target.quality = snapshot.quality;
+            target.affixIds = new List<string>(snapshot.affixIds);
+        }
+
         private static ArpgItem30 CloneItemState(ArpgItem30 item)
         {
             return new ArpgItem30
@@ -400,6 +480,8 @@ namespace ArcaneEngine
                 corrupted = item.corrupted,
                 fractured = item.fractured,
                 fracturedAffixId = item.fracturedAffixId,
+                locked = item.locked,
+                acquiredUnix = item.acquiredUnix,
                 prefixes = CloneAffixes(item.prefixes),
                 suffixes = CloneAffixes(item.suffixes)
             };
@@ -417,6 +499,8 @@ namespace ArcaneEngine
             target.corrupted = snapshot.corrupted;
             target.fractured = snapshot.fractured;
             target.fracturedAffixId = snapshot.fracturedAffixId;
+            target.locked = snapshot.locked;
+            target.acquiredUnix = snapshot.acquiredUnix;
             target.prefixes = CloneAffixes(snapshot.prefixes);
             target.suffixes = CloneAffixes(snapshot.suffixes);
         }

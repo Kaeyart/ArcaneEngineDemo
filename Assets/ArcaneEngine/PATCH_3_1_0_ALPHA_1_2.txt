@@ -1,0 +1,8 @@
+Arcane Engine 3.1.0-alpha.1.2
+Mouse UI Hotfix
+
+- Frontend menus are mouse-driven.
+- Typing character names no longer changes class or slot selection.
+- Character creation confirmation no longer clicks through to class cards.
+- Rename and delete dialogs block the underlying character-selection controls.
+- Carries forward the 3.1.0-alpha.1.1 CS0165 frontend compile repair.

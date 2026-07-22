@@ -1,0 +1,6 @@
+Arcane Engine 3.2.0-alpha.1
+Arsenal & Economy
+
+Variable-size equipment, dedicated non-equipment storage, shared stash, expanded
+item/affix catalogues, Unique and Exceptional items, crafting, corruption, map
+crafting, loot filters, vendor, salvage, gambling, migration, and in-game UI.

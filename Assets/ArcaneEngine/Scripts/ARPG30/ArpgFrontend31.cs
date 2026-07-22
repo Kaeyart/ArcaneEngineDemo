@@ -1,0 +1,1003 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
+
+namespace ArcaneEngine
+{
+    public enum ArpgFrontendState31
+    {
+        Title,
+        CharacterSelect,
+        CharacterCreate,
+        Options,
+        Credits,
+        Loading,
+        Gameplay
+    }
+
+    public sealed class ArpgFrontend31 : MonoBehaviour
+    {
+        public static ArpgFrontend31 Instance { get; private set; }
+
+        public ArpgFrontendState31 State { get; private set; }
+        public bool IsGameplay { get { return State == ArpgFrontendState31.Gameplay && !_pauseOpen; } }
+        public bool BlocksGameplayInput { get { return State != ArpgFrontendState31.Gameplay || _pauseOpen; } }
+
+        private const float ReferenceWidth = 1920f;
+        private const float ReferenceHeight = 1080f;
+
+        private readonly List<Vector3> _stars = new List<Vector3>();
+        private ArpgFrontendState31 _returnFromOptions = ArpgFrontendState31.Title;
+        private string _selectedCharacterId;
+        private int _selectedClassIndex;
+        private string _newCharacterName = string.Empty;
+        private string _message = string.Empty;
+        private string _deleteConfirmation = string.Empty;
+        private string _renameValue = string.Empty;
+        private bool _deleteMode;
+        private bool _renameMode;
+        private bool _createConfirm;
+        private bool _pauseOpen;
+        private float _loadingProgress;
+        private string _loadingTip = string.Empty;
+        private Vector2 _slotScroll;
+        private Vector2 _optionsScroll;
+        private ArpgAction31? _rebindingAction;
+        private int _titleFocus;
+        private int _slotFocus;
+        private int _classFocus;
+        private float _pulse;
+
+        private Texture2D _background;
+        private Texture2D _panel;
+        private Texture2D _panelStrong;
+        private Texture2D _accent;
+        private Texture2D _accentMuted;
+        private Texture2D _danger;
+        private Texture2D _white;
+        private GUIStyle _title;
+        private GUIStyle _subtitle;
+        private GUIStyle _heading;
+        private GUIStyle _body;
+        private GUIStyle _small;
+        private GUIStyle _button;
+        private GUIStyle _buttonSelected;
+        private GUIStyle _buttonDanger;
+        private GUIStyle _field;
+        private GUIStyle _center;
+        private GUIStyle _right;
+
+        private static readonly string[] LoadingTips =
+        {
+            "Connected Support Runes only become active when their occupied hexes touch the Core or another connected Rune.",
+            "Tier 0 is permanently recoverable from the Map Device.",
+            "Magic items are readable crafting foundations with one prefix and one suffix.",
+            "Completion unlocks progression. Mastery awards permanent Atlas power.",
+            "Constellation Completion Boons consume Attunement.",
+            "Death consumes the active map, not the character."
+        };
+
+        private void Awake()
+        {
+            if (Instance != null && Instance != this)
+            {
+                Destroy(this);
+                return;
+            }
+
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+            ArpgSettings31.Apply();
+            ArpgRosterStore31.Initialize();
+            BuildStars();
+            SelectLastPlayed();
+            State = ArpgFrontendState31.Title;
+            SetMenuMode(true);
+        }
+
+        private void OnDestroy()
+        {
+            if (Instance == this) Instance = null;
+            DestroyTexture(_background);
+            DestroyTexture(_panel);
+            DestroyTexture(_panelStrong);
+            DestroyTexture(_accent);
+            DestroyTexture(_accentMuted);
+            DestroyTexture(_danger);
+            DestroyTexture(_white);
+        }
+
+        private void Update()
+        {
+            _pulse += Time.unscaledDeltaTime;
+
+            if (State == ArpgFrontendState31.Gameplay)
+            {
+                if (ArpgInput31.Pressed(ArpgAction31.Pause))
+                {
+                    _pauseOpen = !_pauseOpen;
+                    SetMenuMode(_pauseOpen);
+                }
+                return;
+            }
+
+            if (State == ArpgFrontendState31.Loading) return;
+
+            // Frontend menus are pointer-driven. Keyboard input is reserved for
+            // text entry and explicit rebinding so character names cannot move
+            // class or slot selection while the player types.
+            if (ArpgInput31.CancelPressed())
+            {
+                if (_createConfirm)
+                {
+                    _createConfirm = false;
+                    _message = string.Empty;
+                    return;
+                }
+
+                if (_renameMode)
+                {
+                    _renameMode = false;
+                    _message = string.Empty;
+                    return;
+                }
+
+                if (_deleteMode)
+                {
+                    _deleteMode = false;
+                    _message = string.Empty;
+                    return;
+                }
+
+                if (State == ArpgFrontendState31.Title) return;
+                if (State == ArpgFrontendState31.Options)
+                {
+                    State = _returnFromOptions;
+                    _rebindingAction = null;
+                }
+                else if (State == ArpgFrontendState31.CharacterCreate) State = ArpgFrontendState31.CharacterSelect;
+                else if (State == ArpgFrontendState31.Credits) State = ArpgFrontendState31.Title;
+                else if (State == ArpgFrontendState31.CharacterSelect) State = ArpgFrontendState31.Title;
+                _message = string.Empty;
+            }
+        }
+
+        public void EnterGameplay()
+        {
+            State = ArpgFrontendState31.Gameplay;
+            _pauseOpen = false;
+            SetMenuMode(false);
+        }
+
+        public void ReturnToCharacterSelect()
+        {
+            if (ArpgFoundation30.Instance != null) ArpgFoundation30.Instance.DeactivateProfile();
+            SelectLastPlayed();
+            State = ArpgFrontendState31.CharacterSelect;
+            _pauseOpen = false;
+            SetMenuMode(true);
+        }
+
+        public void ReturnToTitle()
+        {
+            if (ArpgFoundation30.Instance != null) ArpgFoundation30.Instance.DeactivateProfile();
+            SelectLastPlayed();
+            State = ArpgFrontendState31.Title;
+            _pauseOpen = false;
+            SetMenuMode(true);
+        }
+
+        public void ShowMessage(string message)
+        {
+            _message = message ?? string.Empty;
+        }
+
+        private void OnGUI()
+        {
+            EnsureStyles();
+            GUI.depth = -1000;
+
+            if (State == ArpgFrontendState31.Gameplay && !_pauseOpen) return;
+
+            Matrix4x4 previous = GUI.matrix;
+            float baseScale = Mathf.Min(Screen.width / ReferenceWidth, Screen.height / ReferenceHeight);
+            float scale = Mathf.Clamp(baseScale * ArpgSettings31.InterfaceScale, 0.55f, 2f);
+            float offsetX = (Screen.width - ReferenceWidth * scale) * 0.5f;
+            float offsetY = (Screen.height - ReferenceHeight * scale) * 0.5f;
+            GUI.matrix = Matrix4x4.TRS(new Vector3(offsetX, offsetY, 0f), Quaternion.identity, new Vector3(scale, scale, 1f));
+
+            DrawBackground();
+
+            if (_pauseOpen) DrawPause();
+            else
+            {
+                switch (State)
+                {
+                    case ArpgFrontendState31.Title: DrawTitle(); break;
+                    case ArpgFrontendState31.CharacterSelect: DrawCharacterSelect(); break;
+                    case ArpgFrontendState31.CharacterCreate: DrawCharacterCreate(); break;
+                    case ArpgFrontendState31.Options: DrawOptions(); break;
+                    case ArpgFrontendState31.Credits: DrawCredits(); break;
+                    case ArpgFrontendState31.Loading: DrawLoading(); break;
+                }
+            }
+
+            DrawVersionAndSaveStatus();
+            GUI.matrix = previous;
+        }
+
+        private void DrawBackground()
+        {
+            GUI.DrawTexture(new Rect(0f, 0f, ReferenceWidth, ReferenceHeight), _background, ScaleMode.StretchToFill);
+            float drift = Mathf.Repeat(Time.realtimeSinceStartup * 8f, ReferenceWidth + 80f) - 40f;
+            foreach (Vector3 star in _stars)
+            {
+                float x = Mathf.Repeat(star.x + drift * star.z, ReferenceWidth);
+                float alpha = 0.2f + 0.6f * (0.5f + 0.5f * Mathf.Sin(_pulse * (0.5f + star.z) + star.y));
+                Color previous = GUI.color;
+                GUI.color = new Color(0.6f, 0.85f, 1f, alpha);
+                GUI.DrawTexture(new Rect(x, star.y, 2f + star.z * 3f, 2f + star.z * 3f), _white);
+                GUI.color = previous;
+            }
+
+            float sigil = 280f + Mathf.Sin(_pulse * 0.7f) * 8f;
+            Rect sigilRect = new Rect(ReferenceWidth * 0.5f - sigil * 0.5f, 90f, sigil, sigil);
+            Color old = GUI.color;
+            GUI.color = new Color(0.2f, 0.68f, 1f, 0.09f);
+            GUI.DrawTexture(sigilRect, _accent);
+            GUI.color = old;
+        }
+
+        private void DrawTitle()
+        {
+            GUI.Label(new Rect(120f, 120f, 820f, 90f), "ARCANE ENGINE", _title);
+            GUI.Label(new Rect(126f, 205f, 780f, 42f), "FIRST DESCENT", _subtitle);
+            GUI.Label(new Rect(126f, 260f, 660f, 70f), "Construct the spell. Enter the map. Keep what survives.", _body);
+
+            bool hasCharacters = ArpgRosterStore31.Slots.Count > 0;
+            float y = 410f;
+            int visualIndex = 0;
+            if (hasCharacters)
+            {
+                ArpgCharacterSlot31 last = ArpgRosterStore31.Slots[0];
+                if (MenuButton(new Rect(132f, y, 430f, 64f), "CONTINUE  ·  " + last.characterName, _titleFocus == visualIndex))
+                {
+                    _selectedCharacterId = last.characterId;
+                    StartSelectedCharacter();
+                }
+                y += 78f;
+                visualIndex++;
+            }
+
+            if (MenuButton(new Rect(132f, y, 430f, 58f), "START GAME", _titleFocus == visualIndex))
+            {
+                SelectLastPlayed();
+                State = ArpgFrontendState31.CharacterSelect;
+            }
+            y += 70f;
+            visualIndex++;
+
+            if (MenuButton(new Rect(132f, y, 430f, 58f), "OPTIONS", _titleFocus == visualIndex))
+            {
+                _returnFromOptions = ArpgFrontendState31.Title;
+                State = ArpgFrontendState31.Options;
+            }
+            y += 70f;
+            visualIndex++;
+
+            if (MenuButton(new Rect(132f, y, 430f, 58f), "CREDITS", _titleFocus == visualIndex))
+                State = ArpgFrontendState31.Credits;
+            y += 70f;
+            visualIndex++;
+
+            if (MenuButton(new Rect(132f, y, 430f, 58f), "EXIT GAME", _titleFocus == visualIndex))
+                RequestQuit();
+
+            DrawPortalPresentation(new Rect(990f, 245f, 700f, 650f), hasCharacters ? ArpgRosterStore31.Slots[0].characterClass : ArpgClass30.Mage, "THE ASTRAL REFUGE");
+        }
+
+        private void DrawCharacterSelect()
+        {
+            bool modalOpen = _renameMode || _deleteMode;
+            GUI.Label(new Rect(90f, 58f, 900f, 80f), "CHARACTER SELECT", _title);
+            GUI.Label(new Rect(96f, 135f, 700f, 42f), "The most recently played character is selected automatically.", _body);
+
+            Rect center = new Rect(80f, 205f, 1190f, 760f);
+            GUI.DrawTexture(center, _panel);
+            ArpgCharacterSlot31 selected = ArpgRosterStore31.Slot(_selectedCharacterId);
+            if (selected == null)
+            {
+                GUI.Label(new Rect(160f, 340f, 960f, 60f), "NO CHARACTER SELECTED", _heading);
+                GUI.Label(new Rect(160f, 415f, 820f, 90f), "Choose an empty slot to create a Mage, Ranger, or Warrior.", _body);
+                DrawClassEmblem(new Rect(475f, 535f, 300f, 300f), ArpgClass30.Unchosen, false);
+            }
+            else
+            {
+                DrawClassEmblem(new Rect(410f, 280f, 470f, 470f), selected.characterClass, true);
+                GUI.Label(new Rect(140f, 275f, 420f, 70f), selected.characterName, _title);
+                GUI.Label(new Rect(145f, 355f, 380f, 45f), selected.characterClass + "  ·  Level " + selected.level, _heading);
+                GUI.Label(new Rect(145f, 410f, 420f, 170f),
+                    "Highest Map Tier: " + Mathf.Max(0, selected.highestCompletedTier) + "\n" +
+                    "Ascendancy: " + (selected.ascendancy == ArpgAscendancy30.None ? "Not yet chosen" : selected.ascendancy.ToString()) + "\n" +
+                    "Location: " + selected.currentLocation + "\n" +
+                    "Playtime: " + FormatPlaytime(selected.totalPlaySeconds) + "\n" +
+                    "Save: " + selected.saveHealth,
+                    _body);
+
+                if (!modalOpen && GUI.Button(new Rect(900f, 750f, 280f, 62f), "START GAME", _buttonSelected))
+                    StartSelectedCharacter();
+                if (!modalOpen && GUI.Button(new Rect(900f, 825f, 132f, 48f), "RENAME", _button))
+                {
+                    _renameMode = true;
+                    _deleteMode = false;
+                    _renameValue = selected.characterName;
+                }
+                if (!modalOpen && GUI.Button(new Rect(1048f, 825f, 132f, 48f), "DELETE", _buttonDanger))
+                {
+                    _deleteMode = true;
+                    _renameMode = false;
+                    _deleteConfirmation = string.Empty;
+                }
+            }
+
+            Rect side = new Rect(1320f, 110f, 510f, 855f);
+            GUI.DrawTexture(side, _panelStrong);
+            GUI.Label(new Rect(1360f, 145f, 410f, 48f), "CHARACTER SLOTS", _heading);
+            Rect scrollRect = new Rect(1350f, 205f, 450f, 610f);
+            Rect content = new Rect(0f, 0f, 420f, ArpgRosterStore31.MaximumSlots * 102f);
+            _slotScroll = GUI.BeginScrollView(scrollRect, _slotScroll, content);
+            IReadOnlyList<ArpgCharacterSlot31> roster = ArpgRosterStore31.Slots;
+            for (int index = 0; index < ArpgRosterStore31.MaximumSlots; index++)
+            {
+                if (index < roster.Count)
+                {
+                    ArpgCharacterSlot31 slot = roster[index];
+                    bool selectedSlot = slot.characterId == _selectedCharacterId;
+                    if (!modalOpen && GUI.Button(new Rect(0f, index * 102f, 410f, 88f),
+                        "SLOT " + (index + 1) + " · " + slot.characterName + "\n" + slot.characterClass + " · Lv " + slot.level + " · T" + Mathf.Max(0, slot.highestCompletedTier),
+                        selectedSlot ? _buttonSelected : _button))
+                    {
+                        _selectedCharacterId = slot.characterId;
+                        _slotFocus = index;
+                        _deleteMode = false;
+                        _renameMode = false;
+                    }
+                }
+                else
+                {
+                    if (!modalOpen && GUI.Button(new Rect(0f, index * 102f, 410f, 88f), "SLOT " + (index + 1) + " · EMPTY\nCREATE CHARACTER", _button))
+                    {
+                        _slotFocus = index;
+                        _selectedClassIndex = 0;
+                        _classFocus = 0;
+                        _newCharacterName = string.Empty;
+                        State = ArpgFrontendState31.CharacterCreate;
+                    }
+                }
+            }
+            GUI.EndScrollView();
+
+            if (!modalOpen && GUI.Button(new Rect(1360f, 860f, 190f, 54f), "BACK", _button))
+                State = ArpgFrontendState31.Title;
+            if (!modalOpen && GUI.Button(new Rect(1570f, 860f, 210f, 54f), "CREATE", _buttonSelected))
+                State = ArpgFrontendState31.CharacterCreate;
+
+            if (_renameMode && selected != null) DrawRenameDialog(selected);
+            if (_deleteMode && selected != null) DrawDeleteDialog(selected);
+            DrawMessage();
+        }
+
+        private void DrawRenameDialog(ArpgCharacterSlot31 slot)
+        {
+            GUI.DrawTexture(new Rect(0f, 0f, ReferenceWidth, ReferenceHeight), _panel);
+            Rect dialog = new Rect(610f, 360f, 700f, 310f);
+            GUI.DrawTexture(dialog, _panelStrong);
+            GUI.Label(new Rect(660f, 395f, 600f, 48f), "RENAME " + slot.characterName.ToUpperInvariant(), _heading);
+            GUI.SetNextControlName("Arpg31RenameField");
+            _renameValue = GUI.TextField(new Rect(660f, 470f, 600f, 54f), _renameValue, 16, _field);
+            if (GUI.Button(new Rect(660f, 555f, 280f, 54f), "CANCEL", _button)) _renameMode = false;
+            if (GUI.Button(new Rect(980f, 555f, 280f, 54f), "CONFIRM", _buttonSelected))
+            {
+                string result;
+                if (ArpgRosterStore31.RenameCharacter(slot.characterId, _renameValue, out result))
+                {
+                    _renameMode = false;
+                    SelectLastPlayed();
+                }
+                _message = result;
+            }
+        }
+
+        private void DrawDeleteDialog(ArpgCharacterSlot31 slot)
+        {
+            GUI.DrawTexture(new Rect(0f, 0f, ReferenceWidth, ReferenceHeight), _panel);
+            Rect dialog = new Rect(560f, 320f, 800f, 420f);
+            GUI.DrawTexture(dialog, _panelStrong);
+            GUI.Label(new Rect(615f, 360f, 690f, 48f), "RECOVERABLE CHARACTER DELETION", _heading);
+            GUI.Label(new Rect(615f, 420f, 690f, 100f),
+                "This moves the character save into the recoverable DeletedCharacters folder. Type the exact name to confirm:\n" + slot.characterName,
+                _body);
+            GUI.SetNextControlName("Arpg31DeleteField");
+            _deleteConfirmation = GUI.TextField(new Rect(615f, 535f, 690f, 54f), _deleteConfirmation, 32, _field);
+            if (GUI.Button(new Rect(615f, 625f, 320f, 56f), "CANCEL", _button)) _deleteMode = false;
+            if (GUI.Button(new Rect(985f, 625f, 320f, 56f), "DELETE CHARACTER", _buttonDanger))
+            {
+                string result;
+                if (ArpgRosterStore31.DeleteCharacter(slot.characterId, _deleteConfirmation, out result))
+                {
+                    _deleteMode = false;
+                    SelectLastPlayed();
+                }
+                _message = result;
+            }
+        }
+
+        private void DrawCharacterCreate()
+        {
+            GUI.Label(new Rect(80f, 55f, 900f, 80f), "CREATE CHARACTER", _title);
+            GUI.Label(new Rect(86f, 135f, 900f, 42f), "Choose a class. Classes shape resources, defences, and efficiencies without locking SpellForge creativity.", _body);
+
+            ArpgClass30[] classes = { ArpgClass30.Mage, ArpgClass30.Ranger, ArpgClass30.Warrior };
+            for (int index = 0; index < classes.Length; index++)
+            {
+                ArpgClass30 classId = classes[index];
+                ArpgClassDefinition30 definition = ArpgContent30.Class(classId);
+                float x = 90f + index * 610f;
+                Rect card = new Rect(x, 220f, 560f, 585f);
+                bool selected = index == _selectedClassIndex;
+                GUI.DrawTexture(card, selected ? _panelStrong : _panel);
+                DrawClassEmblem(new Rect(x + 115f, 245f, 330f, 280f), classId, selected);
+                GUI.Label(new Rect(x + 45f, 520f, 470f, 55f), definition.displayName.ToUpperInvariant(), _heading);
+                GUI.Label(new Rect(x + 45f, 575f, 470f, 145f),
+                    definition.description + "\n\nResource: " + definition.resourceIdentity +
+                    "\nDefence: " + definition.defenceIdentity +
+                    "\nComplexity: " + definition.complexity,
+                    _body);
+                string ascendancies = string.Join(" · ", definition.ascendancies.Select(value => value.ToString()).ToArray());
+                GUI.Label(new Rect(x + 45f, 720f, 470f, 48f), ascendancies, _small);
+                if (!_createConfirm && GUI.Button(card, GUIContent.none, GUIStyle.none))
+                {
+                    _selectedClassIndex = index;
+                    _classFocus = index;
+                }
+            }
+
+            Rect naming = new Rect(345f, 835f, 1230f, 155f);
+            GUI.DrawTexture(naming, _panelStrong);
+            GUI.Label(new Rect(390f, 860f, 310f, 44f), "CHARACTER NAME", _heading);
+            GUI.SetNextControlName("Arpg31CharacterNameField");
+            bool previousEnabled = GUI.enabled;
+            GUI.enabled = !_createConfirm;
+            _newCharacterName = GUI.TextField(new Rect(700f, 855f, 520f, 54f), _newCharacterName, 16, _field);
+            if (GUI.Button(new Rect(390f, 925f, 260f, 48f), "BACK", _button))
+                State = ArpgFrontendState31.CharacterSelect;
+            if (GUI.Button(new Rect(1260f, 855f, 260f, 118f), "BEGIN", _buttonSelected))
+                RequestCharacterCreation();
+            GUI.enabled = previousEnabled;
+            if (_createConfirm) DrawCharacterCreationConfirmation();
+            DrawMessage();
+        }
+
+        private void DrawOptions()
+        {
+            GUI.Label(new Rect(80f, 55f, 700f, 80f), "OPTIONS", _title);
+            Rect outer = new Rect(80f, 150f, 1760f, 800f);
+            GUI.DrawTexture(outer, _panelStrong);
+            Rect scroll = new Rect(110f, 180f, 1700f, 700f);
+            Rect content = new Rect(0f, 0f, 1650f, 1250f);
+            _optionsScroll = GUI.BeginScrollView(scroll, _optionsScroll, content);
+
+            float y = 10f;
+            GUI.Label(new Rect(20f, y, 700f, 48f), "AUDIO", _heading); y += 55f;
+            ArpgSettings31.MasterVolume = DrawSlider("Master Volume", ArpgSettings31.MasterVolume, ref y);
+            ArpgSettings31.MusicVolume = DrawSlider("Music Volume", ArpgSettings31.MusicVolume, ref y);
+            ArpgSettings31.EffectsVolume = DrawSlider("Effects Volume", ArpgSettings31.EffectsVolume, ref y);
+            ArpgSettings31.InterfaceVolume = DrawSlider("Interface Volume", ArpgSettings31.InterfaceVolume, ref y);
+
+            y += 20f;
+            GUI.Label(new Rect(20f, y, 700f, 48f), "DISPLAY", _heading); y += 55f;
+            bool fullscreen = GUI.Toggle(new Rect(20f, y, 400f, 38f), ArpgSettings31.Fullscreen, " Fullscreen Window", _body);
+            if (fullscreen != ArpgSettings31.Fullscreen) ArpgSettings31.Fullscreen = fullscreen;
+            bool vsync = GUI.Toggle(new Rect(450f, y, 320f, 38f), ArpgSettings31.VSync, " VSync", _body);
+            if (vsync != ArpgSettings31.VSync) ArpgSettings31.VSync = vsync;
+            y += 48f;
+
+            GUI.Label(new Rect(20f, y, 280f, 40f), "Resolution", _body);
+            if (GUI.Button(new Rect(310f, y, 64f, 40f), "<", _button)) ArpgSettings31.ChangeResolution(-1);
+            GUI.Label(new Rect(390f, y, 340f, 40f), ArpgSettings31.ResolutionLabel, _body);
+            if (GUI.Button(new Rect(745f, y, 64f, 40f), ">", _button)) ArpgSettings31.ChangeResolution(1);
+            y += 50f;
+
+            GUI.Label(new Rect(20f, y, 280f, 40f), "Frame Limit", _body);
+            string[] limits = { "60", "120", "144", "240" };
+            int[] values = { 60, 120, 144, 240 };
+            for (int index = 0; index < values.Length; index++)
+            {
+                if (GUI.Button(new Rect(310f + index * 120f, y, 105f, 40f), limits[index],
+                    ArpgSettings31.FrameRateLimit == values[index] ? _buttonSelected : _button))
+                    ArpgSettings31.FrameRateLimit = values[index];
+            }
+            y += 55f;
+
+            GUI.Label(new Rect(20f, y, 280f, 40f), "Quality", _body);
+            string[] qualityNames = QualitySettings.names;
+            for (int index = 0; index < qualityNames.Length; index++)
+            {
+                if (GUI.Button(new Rect(310f + (index % 5) * 185f, y + (index / 5) * 48f, 170f, 40f), qualityNames[index],
+                    ArpgSettings31.QualityLevel == index ? _buttonSelected : _button))
+                    ArpgSettings31.QualityLevel = index;
+            }
+            y += Mathf.Max(60f, Mathf.Ceil(qualityNames.Length / 5f) * 48f + 12f);
+
+            y += 20f;
+            GUI.Label(new Rect(20f, y, 700f, 48f), "ACCESSIBILITY AND PRESENTATION", _heading); y += 55f;
+            ArpgSettings31.InterfaceScale = Mathf.Lerp(0.8f, 1.35f, DrawSlider("Interface Scale", Mathf.InverseLerp(0.8f, 1.35f, ArpgSettings31.InterfaceScale), ref y));
+            ArpgSettings31.CameraShake = DrawSlider("Camera Shake", ArpgSettings31.CameraShake, ref y);
+            ArpgSettings31.FlashIntensity = DrawSlider("Flash Intensity", ArpgSettings31.FlashIntensity, ref y);
+            ArpgSettings31.ShowDamageNumbers = GUI.Toggle(new Rect(20f, y, 500f, 38f), ArpgSettings31.ShowDamageNumbers, " Show Damage Numbers", _body);
+            ArpgSettings31.HighContrastLoot = GUI.Toggle(new Rect(530f, y, 500f, 38f), ArpgSettings31.HighContrastLoot, " High-Contrast Loot Labels", _body);
+            y += 48f;
+            ArpgSettings31.HoldToInteract = GUI.Toggle(new Rect(20f, y, 500f, 38f), ArpgSettings31.HoldToInteract, " Hold to Interact", _body);
+            y += 55f;
+
+            y += 20f;
+            GUI.Label(new Rect(20f, y, 700f, 48f), "CONTROLS", _heading); y += 55f;
+            foreach (ArpgAction31 action in Enum.GetValues(typeof(ArpgAction31)))
+            {
+                GUI.Label(new Rect(20f, y, 400f, 42f), action.ToString(), _body);
+                string label = _rebindingAction.HasValue && _rebindingAction.Value == action
+                    ? "PRESS A KEY..."
+                    : ArpgSettings31.BindingLabel(action);
+                if (GUI.Button(new Rect(450f, y, 260f, 42f), label, _rebindingAction == action ? _buttonSelected : _button))
+                    _rebindingAction = action;
+                y += 50f;
+            }
+
+            GUI.EndScrollView();
+
+            if (_rebindingAction.HasValue && Event.current.isKey && Event.current.type == EventType.KeyDown)
+            {
+                if (Event.current.keyCode != KeyCode.None && Event.current.keyCode != KeyCode.Escape)
+                {
+                    ArpgSettings31.SetKey(_rebindingAction.Value, Event.current.keyCode);
+                    _message = _rebindingAction.Value + " bound to " + Event.current.keyCode + ".";
+                }
+                _rebindingAction = null;
+                Event.current.Use();
+            }
+
+            if (GUI.Button(new Rect(110f, 895f, 280f, 54f), "BACK", _button))
+            {
+                PlayerPrefs.Save();
+                ArpgSettings31.Apply();
+                State = _returnFromOptions;
+                _rebindingAction = null;
+            }
+            DrawMessage();
+        }
+
+        private float DrawSlider(string label, float value, ref float y)
+        {
+            GUI.Label(new Rect(20f, y, 340f, 40f), label, _body);
+            value = GUI.HorizontalSlider(new Rect(370f, y + 10f, 520f, 24f), value, 0f, 1f);
+            GUI.Label(new Rect(920f, y, 120f, 40f), Mathf.RoundToInt(value * 100f) + "%", _body);
+            y += 48f;
+            return value;
+        }
+
+        private void DrawCredits()
+        {
+            Rect panel = new Rect(350f, 130f, 1220f, 800f);
+            GUI.DrawTexture(panel, _panelStrong);
+            GUI.Label(new Rect(430f, 190f, 1060f, 80f), "ARCANE ENGINE", _title);
+            GUI.Label(new Rect(430f, 285f, 1060f, 500f),
+                "Created and directed by Kaey\n\n" +
+                "Arcane Engine 3.1.0 — First Descent\n" +
+                "SpellForge, persistent Atlas progression, modular Constellations, and the seven-element reaction laboratory.\n\n" +
+                "Built with Unity.\n\n" +
+                "This development build uses procedural presentation and existing project assets. Final art, animation, audio, and balance remain in production.",
+                _body);
+            if (GUI.Button(new Rect(780f, 820f, 360f, 58f), "BACK", _buttonSelected))
+                State = ArpgFrontendState31.Title;
+        }
+
+        private void DrawLoading()
+        {
+            GUI.Label(new Rect(125f, 120f, 900f, 80f), "ENTERING THE ASTRAL REFUGE", _title);
+            ArpgCharacterSlot31 slot = ArpgRosterStore31.Slot(_selectedCharacterId);
+            ArpgClass30 classId = slot == null ? ArpgClass30.Mage : slot.characterClass;
+            DrawPortalPresentation(new Rect(500f, 210f, 920f, 620f), classId, slot == null ? "LOADING" : slot.characterName.ToUpperInvariant());
+
+            GUI.DrawTexture(new Rect(420f, 875f, 1080f, 22f), _panelStrong);
+            GUI.DrawTexture(new Rect(420f, 875f, 1080f * Mathf.Clamp01(_loadingProgress), 22f), _accent);
+            GUI.Label(new Rect(420f, 915f, 1080f, 70f), _loadingTip, _center);
+        }
+
+        private void DrawPause()
+        {
+            GUI.DrawTexture(new Rect(0f, 0f, ReferenceWidth, ReferenceHeight), _panel);
+            Rect panel = new Rect(650f, 175f, 620f, 735f);
+            GUI.DrawTexture(panel, _panelStrong);
+            GUI.Label(new Rect(725f, 235f, 470f, 70f), "PAUSED", _title);
+
+            float y = 350f;
+            if (GUI.Button(new Rect(735f, y, 450f, 58f), "RESUME", _buttonSelected))
+            {
+                _pauseOpen = false;
+                SetMenuMode(false);
+            }
+            y += 75f;
+            if (GUI.Button(new Rect(735f, y, 450f, 58f), "OPTIONS", _button))
+            {
+                _returnFromOptions = ArpgFrontendState31.Gameplay;
+                _pauseOpen = false;
+                State = ArpgFrontendState31.Options;
+            }
+            y += 75f;
+            if (GUI.Button(new Rect(735f, y, 450f, 58f), "SAVE AND CHARACTER SELECT", _button))
+                ReturnToCharacterSelect();
+            y += 75f;
+            if (GUI.Button(new Rect(735f, y, 450f, 58f), "SAVE AND TITLE", _button))
+                ReturnToTitle();
+            y += 75f;
+            if (GUI.Button(new Rect(735f, y, 450f, 58f), "EXIT GAME", _buttonDanger))
+            {
+                if (ArpgFoundation30.Profile != null) ArpgProfileStore30.Save(ArpgFoundation30.Profile);
+                RequestQuit();
+            }
+        }
+
+        private void DrawVersionAndSaveStatus()
+        {
+            GUI.Label(new Rect(20f, 1025f, 900f, 36f), "ARCANE ENGINE 3.1.0-alpha.1 · FIRST DESCENT", _small);
+            GUI.Label(new Rect(970f, 1025f, 920f, 36f), ArpgRosterStore31.LastSaveStatus, _right);
+        }
+
+        private void DrawPortalPresentation(Rect rect, ArpgClass30 classId, string caption)
+        {
+            GUI.DrawTexture(rect, _panel);
+            float size = Mathf.Min(rect.width, rect.height) * 0.68f;
+            Rect emblem = new Rect(rect.center.x - size * 0.5f, rect.y + 55f, size, size);
+            DrawClassEmblem(emblem, classId, true);
+            GUI.Label(new Rect(rect.x + 40f, rect.yMax - 105f, rect.width - 80f, 55f), caption, _center);
+        }
+
+        private void DrawClassEmblem(Rect rect, ArpgClass30 classId, bool selected)
+        {
+            Color classColor = ClassColor(classId);
+            Color old = GUI.color;
+            float pulse = selected ? 0.78f + Mathf.Sin(_pulse * 2f) * 0.12f : 0.45f;
+            GUI.color = new Color(classColor.r, classColor.g, classColor.b, pulse * 0.28f);
+            GUI.DrawTexture(rect, _accentMuted);
+
+            float centerX = rect.center.x;
+            float head = rect.width * 0.16f;
+            GUI.color = new Color(classColor.r, classColor.g, classColor.b, pulse);
+            GUI.DrawTexture(new Rect(centerX - head * 0.5f, rect.y + rect.height * 0.12f, head, head), _white);
+
+            if (classId == ArpgClass30.Mage)
+            {
+                GUI.DrawTexture(new Rect(centerX - rect.width * 0.17f, rect.y + rect.height * 0.30f, rect.width * 0.34f, rect.height * 0.48f), _white);
+                GUI.DrawTexture(new Rect(centerX - rect.width * 0.33f, rect.y + rect.height * 0.35f, rect.width * 0.15f, rect.height * 0.36f), _white);
+                GUI.DrawTexture(new Rect(centerX + rect.width * 0.18f, rect.y + rect.height * 0.35f, rect.width * 0.15f, rect.height * 0.36f), _white);
+            }
+            else if (classId == ArpgClass30.Ranger)
+            {
+                GUI.DrawTexture(new Rect(centerX - rect.width * 0.13f, rect.y + rect.height * 0.29f, rect.width * 0.26f, rect.height * 0.50f), _white);
+                GUI.DrawTexture(new Rect(centerX + rect.width * 0.18f, rect.y + rect.height * 0.25f, rect.width * 0.05f, rect.height * 0.60f), _white);
+                GUI.DrawTexture(new Rect(centerX - rect.width * 0.31f, rect.y + rect.height * 0.42f, rect.width * 0.18f, rect.height * 0.08f), _white);
+            }
+            else if (classId == ArpgClass30.Warrior)
+            {
+                GUI.DrawTexture(new Rect(centerX - rect.width * 0.23f, rect.y + rect.height * 0.27f, rect.width * 0.46f, rect.height * 0.52f), _white);
+                GUI.DrawTexture(new Rect(centerX - rect.width * 0.38f, rect.y + rect.height * 0.31f, rect.width * 0.16f, rect.height * 0.42f), _white);
+                GUI.DrawTexture(new Rect(centerX + rect.width * 0.22f, rect.y + rect.height * 0.31f, rect.width * 0.16f, rect.height * 0.42f), _white);
+            }
+            else
+            {
+                GUI.DrawTexture(new Rect(centerX - rect.width * 0.14f, rect.y + rect.height * 0.30f, rect.width * 0.28f, rect.height * 0.48f), _white);
+            }
+
+            GUI.color = old;
+        }
+
+        private void DrawMessage()
+        {
+            if (string.IsNullOrEmpty(_message)) return;
+            GUI.Label(new Rect(410f, 995f, 1100f, 42f), _message, _center);
+        }
+
+        private bool MenuButton(Rect rect, string label, bool focused)
+        {
+            return GUI.Button(rect, label, focused ? _buttonSelected : _button);
+        }
+
+        private void RequestCharacterCreation()
+        {
+            string validation = ArpgRosterStore31.ValidateCharacterName(_newCharacterName, null);
+            if (!string.IsNullOrEmpty(validation))
+            {
+                _message = validation;
+                _createConfirm = false;
+                return;
+            }
+            _createConfirm = true;
+            GUI.FocusControl(null);
+        }
+
+        private void DrawCharacterCreationConfirmation()
+        {
+            ArpgClass30[] classes = { ArpgClass30.Mage, ArpgClass30.Ranger, ArpgClass30.Warrior };
+            ArpgClass30 selectedClass = classes[Mathf.Clamp(_selectedClassIndex, 0, classes.Length - 1)];
+            Rect veil = new Rect(0f, 0f, ReferenceWidth, ReferenceHeight);
+            GUI.DrawTexture(veil, _panel);
+            Rect box = new Rect(575f, 330f, 770f, 390f);
+            GUI.DrawTexture(box, _panelStrong);
+            GUI.Label(new Rect(645f, 385f, 630f, 70f), "CONFIRM CHARACTER", _title);
+            GUI.Label(new Rect(645f, 485f, 630f, 80f), "Create " + _newCharacterName.Trim() + " as a " + selectedClass + "?", _center);
+            if (GUI.Button(new Rect(655f, 610f, 280f, 58f), "CANCEL", _button)) _createConfirm = false;
+            if (GUI.Button(new Rect(985f, 610f, 280f, 58f), "CREATE", _buttonSelected))
+            {
+                _createConfirm = false;
+                CreateCharacter();
+            }
+        }
+
+        private void CreateCharacter()
+        {
+            ArpgClass30[] classes = { ArpgClass30.Mage, ArpgClass30.Ranger, ArpgClass30.Warrior };
+            ArpgClass30 selectedClass = classes[Mathf.Clamp(_selectedClassIndex, 0, classes.Length - 1)];
+            string result;
+            ArpgProfile30 profile = ArpgRosterStore31.CreateCharacter(_newCharacterName, selectedClass, out result);
+            _message = result;
+            if (profile == null) return;
+
+            _selectedCharacterId = profile.characterId;
+            StartCoroutine(LoadCharacterRoutine(profile, true));
+        }
+
+        private void StartSelectedCharacter()
+        {
+            if (string.IsNullOrEmpty(_selectedCharacterId))
+            {
+                _message = "Select a character.";
+                return;
+            }
+
+            ArpgProfile30 profile = ArpgRosterStore31.LoadCharacter(_selectedCharacterId);
+            if (profile == null)
+            {
+                _message = "The selected character could not be loaded. A backup was attempted.";
+                return;
+            }
+
+            StartCoroutine(LoadCharacterRoutine(profile, false));
+        }
+
+        private IEnumerator LoadCharacterRoutine(ArpgProfile30 profile, bool fresh)
+        {
+            State = ArpgFrontendState31.Loading;
+            SetMenuMode(true);
+            _loadingProgress = 0f;
+            _loadingTip = LoadingTips[ArpgDeterminism30.Index(ArpgDeterminism30.StableHash(profile.characterId), LoadingTips.Length)];
+
+            float start = Time.realtimeSinceStartup;
+            while (GameWorld.Instance == null && Time.realtimeSinceStartup - start < 15f)
+            {
+                _loadingProgress = Mathf.Clamp01((Time.realtimeSinceStartup - start) / 15f) * 0.35f;
+                yield return null;
+            }
+
+            string result;
+            bool success;
+            ArpgFoundation30 foundation = ArpgFoundation30.Instance;
+            if (foundation == null)
+            {
+                result = "The persistent ARPG foundation is unavailable.";
+                success = false;
+            }
+            else
+            {
+                success = fresh
+                    ? foundation.InitializeNewCharacter(profile, out result)
+                    : foundation.ActivateProfile(profile, out result);
+            }
+
+            if (!success)
+            {
+                _message = result;
+                State = ArpgFrontendState31.CharacterSelect;
+                SetMenuMode(true);
+                yield break;
+            }
+
+            float transition = Time.realtimeSinceStartup;
+            while (Time.realtimeSinceStartup - transition < 0.8f)
+            {
+                _loadingProgress = Mathf.Lerp(0.35f, 1f, (Time.realtimeSinceStartup - transition) / 0.8f);
+                yield return null;
+            }
+
+            _loadingProgress = 1f;
+            _message = result;
+            EnterGameplay();
+        }
+
+        private void ActivateTitleChoice(int index)
+        {
+            bool hasCharacters = ArpgRosterStore31.Slots.Count > 0;
+            int cursor = 0;
+            if (hasCharacters)
+            {
+                if (index == cursor)
+                {
+                    ArpgCharacterSlot31 last = ArpgRosterStore31.Slots[0];
+                    _selectedCharacterId = last.characterId;
+                    StartSelectedCharacter();
+                    return;
+                }
+                cursor++;
+            }
+
+            if (index == cursor) { State = ArpgFrontendState31.CharacterSelect; return; }
+            cursor++;
+            if (index == cursor) { _returnFromOptions = ArpgFrontendState31.Title; State = ArpgFrontendState31.Options; return; }
+            cursor++;
+            if (index == cursor) { State = ArpgFrontendState31.Credits; return; }
+            RequestQuit();
+        }
+
+        private void SelectLastPlayed()
+        {
+            ArpgCharacterSlot31 slot = ArpgRosterStore31.Slots.FirstOrDefault();
+            _selectedCharacterId = slot == null ? string.Empty : slot.characterId;
+            _slotFocus = 0;
+        }
+
+        private void SelectSlotByFocus()
+        {
+            if (_slotFocus < 0 || _slotFocus >= ArpgRosterStore31.Slots.Count) return;
+            _selectedCharacterId = ArpgRosterStore31.Slots[_slotFocus].characterId;
+        }
+
+        private void SetMenuMode(bool menu)
+        {
+            Time.timeScale = menu ? 0f : 1f;
+            Cursor.visible = menu;
+            Cursor.lockState = menu ? CursorLockMode.None : CursorLockMode.Locked;
+        }
+
+        private void RequestQuit()
+        {
+            PlayerPrefs.Save();
+#if UNITY_EDITOR
+            Debug.Log("Arcane Engine 3.1 requested Exit Game. Application.Quit is ignored by the Editor.");
+#endif
+            Application.Quit();
+        }
+
+        private void EnsureStyles()
+        {
+            if (_background != null) return;
+            _background = Solid(new Color(0.015f, 0.025f, 0.055f, 1f));
+            _panel = Solid(new Color(0.035f, 0.06f, 0.11f, 0.92f));
+            _panelStrong = Solid(new Color(0.055f, 0.09f, 0.16f, 0.98f));
+            _accent = Solid(new Color(0.17f, 0.68f, 1f, 1f));
+            _accentMuted = Solid(new Color(0.13f, 0.35f, 0.55f, 1f));
+            _danger = Solid(new Color(0.68f, 0.12f, 0.18f, 1f));
+            _white = Solid(Color.white);
+
+            Font font = GUI.skin.font;
+            _title = new GUIStyle(GUI.skin.label)
+            {
+                font = font,
+                fontSize = 54,
+                fontStyle = FontStyle.Bold,
+                normal = { textColor = new Color(0.82f, 0.94f, 1f) }
+            };
+            _subtitle = new GUIStyle(_title)
+            {
+                fontSize = 28,
+                normal = { textColor = new Color(0.25f, 0.72f, 1f) }
+            };
+            _heading = new GUIStyle(_title)
+            {
+                fontSize = 28
+            };
+            _body = new GUIStyle(GUI.skin.label)
+            {
+                font = font,
+                fontSize = 21,
+                wordWrap = true,
+                normal = { textColor = new Color(0.75f, 0.83f, 0.9f) }
+            };
+            _small = new GUIStyle(_body)
+            {
+                fontSize = 16,
+                normal = { textColor = new Color(0.56f, 0.68f, 0.78f) }
+            };
+            _button = new GUIStyle(GUI.skin.button)
+            {
+                font = font,
+                fontSize = 21,
+                fontStyle = FontStyle.Bold,
+                alignment = TextAnchor.MiddleLeft,
+                padding = new RectOffset(24, 18, 8, 8),
+                normal = { background = _panelStrong, textColor = new Color(0.72f, 0.84f, 0.92f) },
+                hover = { background = _accentMuted, textColor = Color.white },
+                active = { background = _accentMuted, textColor = Color.white }
+            };
+            _buttonSelected = new GUIStyle(_button)
+            {
+                normal = { background = _accentMuted, textColor = Color.white },
+                alignment = TextAnchor.MiddleCenter
+            };
+            _buttonDanger = new GUIStyle(_buttonSelected)
+            {
+                normal = { background = _danger, textColor = Color.white }
+            };
+            _field = new GUIStyle(GUI.skin.textField)
+            {
+                font = font,
+                fontSize = 24,
+                padding = new RectOffset(16, 16, 10, 10),
+                normal = { textColor = Color.white, background = _panel }
+            };
+            _center = new GUIStyle(_body) { alignment = TextAnchor.MiddleCenter };
+            _right = new GUIStyle(_small) { alignment = TextAnchor.MiddleRight };
+        }
+
+        private void BuildStars()
+        {
+            System.Random random = new System.Random(310);
+            for (int index = 0; index < 100; index++)
+            {
+                _stars.Add(new Vector3(
+                    (float)random.NextDouble() * ReferenceWidth,
+                    (float)random.NextDouble() * ReferenceHeight,
+                    0.15f + (float)random.NextDouble() * 0.85f));
+            }
+        }
+
+        private static Texture2D Solid(Color color)
+        {
+            Texture2D texture = new Texture2D(1, 1, TextureFormat.RGBA32, false);
+            texture.name = "ArcaneEngine31_UI";
+            texture.SetPixel(0, 0, color);
+            texture.Apply();
+            texture.hideFlags = HideFlags.HideAndDontSave;
+            return texture;
+        }
+
+        private static void DestroyTexture(Texture2D texture)
+        {
+            if (texture != null) UnityEngine.Object.Destroy(texture);
+        }
+
+        private static Color ClassColor(ArpgClass30 classId)
+        {
+            if (classId == ArpgClass30.Mage) return new Color(0.25f, 0.68f, 1f);
+            if (classId == ArpgClass30.Ranger) return new Color(0.35f, 0.95f, 0.58f);
+            if (classId == ArpgClass30.Warrior) return new Color(1f, 0.5f, 0.28f);
+            return new Color(0.65f, 0.72f, 0.82f);
+        }
+
+        private static int Wrap(int value, int count)
+        {
+            if (count <= 0) return 0;
+            while (value < 0) value += count;
+            while (value >= count) value -= count;
+            return value;
+        }
+
+        private static string FormatPlaytime(long seconds)
+        {
+            TimeSpan time = TimeSpan.FromSeconds(Math.Max(0L, seconds));
+            return time.TotalHours >= 1d
+                ? ((int)time.TotalHours).ToString("00") + ":" + time.Minutes.ToString("00") + ":" + time.Seconds.ToString("00")
+                : time.Minutes.ToString("00") + ":" + time.Seconds.ToString("00");
+        }
+    }
+}
